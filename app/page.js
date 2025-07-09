@@ -6,10 +6,10 @@ export default function Home() {
 			<h1>Home page</h1>
 			<ul>
 				<li>
-					<Link href='/game/image1_1'>Game</Link>
+					<Link href='/differences/image1_1'>Найди отличия</Link>
 				</li>
 				<li>
-					<Link href='/editor'>Editor</Link>
+					<Link href='/editor'>Editor: differences</Link>
 				</li>
 			</ul>
 		</div>

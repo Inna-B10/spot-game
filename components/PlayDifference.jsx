@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export default function PlayLevel({ level }) {
+export default function PlayDifference({ level }) {
 	const imageRef = useRef(null)
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
@@ -46,11 +46,12 @@ export default function PlayLevel({ level }) {
 	return (
 		<div className='space-y-4'>
 			<div className='relative inline-block' onClick={handleClick}>
+				{/* next/image does not support correctly ref */}
 				<img
 					ref={imageRef}
 					src={`/images/differences/${level.image}`}
 					alt='Level'
-					className='max-w-full border'
+					className='max-w-full'
 				/>
 				{found.map(id => {
 					const diff = level.differences.find(d => d.id === id)

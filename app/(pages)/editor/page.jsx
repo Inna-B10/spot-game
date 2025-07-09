@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid'
 export default function DifferenceEditor() {
 	const [imageUrl, setImageUrl] = useState(null)
 	const [imageFile, setImageFile] = useState(null)
-	const [imageName, setImageName] = useState('level_image')
+	const [imageName, setImageName] = useState('image1')
 	const [differences, setDifferences] = useState([])
 	const [radius, setRadius] = useState(25)
 	const imageRef = useRef(null)
@@ -56,7 +56,7 @@ export default function DifferenceEditor() {
 
 	async function handleSave() {
 		if (!imageFile || differences.length === 0 || !imageName) {
-			alert('Заполните все поля и загрузите картинку')
+			alert('Fill in all fields and upload the image')
 			return
 		}
 
@@ -72,16 +72,16 @@ export default function DifferenceEditor() {
 
 		const data = await res.json()
 		if (res.ok) {
-			alert(`Уровень сохранён! Файл: ${data.file}`)
+			alert(`Level saves! File: ${data.file}`)
 		} else {
-			alert('Ошибка: ' + data.error)
+			alert('Error: ' + data.error)
 		}
 	}
 
 	return (
 		<div className='space-y-6'>
 			<div>
-				<label className='block mb-2 font-medium'>Загрузить изображение:</label>
+				<label className='block mb-2 font-medium'>UUpload image:</label>
 				<input type='file' accept='image/*' onChange={handleImageUpload} />
 			</div>
 
@@ -112,7 +112,7 @@ export default function DifferenceEditor() {
 				<div className='space-y-4'>
 					<div className='flex flex-wrap gap-4 items-center'>
 						<label>
-							Радиус:
+							Radius:
 							<input
 								type='number'
 								value={radius}
@@ -122,12 +122,12 @@ export default function DifferenceEditor() {
 						</label>
 
 						<label>
-							Имя картинки:
+							Image name:
 							<input
 								type='text'
 								value={imageName}
 								onChange={e => setImageName(e.target.value)}
-								placeholder='например: level1_image'
+								placeholder='f.ex: image1'
 								className='ml-2 border p-1 w-40'
 							/>
 						</label>
@@ -135,7 +135,7 @@ export default function DifferenceEditor() {
 						<button
 							onClick={handleSave}
 							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Сохранить уровень
+							Save level
 						</button>
 					</div>
 
