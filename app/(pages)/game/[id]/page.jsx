@@ -1,9 +1,10 @@
 import PlayDifference from '@/components/PlayDifference'
 import fs from 'fs/promises'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import path from 'path'
 
-export default async function GamePage({ params, searchParams }) {
+export default async function GameFindPage({ params, searchParams }) {
 	const { id } = await params
 	const { game } = await searchParams
 
@@ -24,9 +25,19 @@ export default async function GamePage({ params, searchParams }) {
 
 	if (!object) return notFound()
 
+	const nextObject = parseInt(object.id.split('_')[1]) + 1
+	const next = nextObject <= objects.length
+
 	return (
 		<main className='p-4'>
-			<h1 className='text-xl font-bold mb-4'>Level: {object.id}</h1>
+			<div className='flex justify-between items-center gap-16 mb-6'>
+				<h1 className='text-xl font-bold mb-4'>Level: {object.id}</h1>
+				{next && (
+					<p>
+						<Link href={`/game/image_${nextObject}?game=${game}`}>Next</Link>
+					</p>
+				)}
+			</div>
 			<PlayDifference object={object} game={game} />
 		</main>
 	)
