@@ -6,7 +6,7 @@ export default function Home() {
 			<h1>Home page</h1>
 			<ul>
 				<li>
-					<Link href='/differences/image1_1'>Найди отличия</Link>
+					<Link href='/game/image_1?game=find-all'>Найди отличия</Link>
 				</li>
 				<li>
 					<Link href='/editor'>Editor: differences</Link>

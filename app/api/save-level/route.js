@@ -5,15 +5,17 @@ import path from 'path'
 import { v4 as uuid } from 'uuid'
 
 export async function POST(req) {
+	const game = req.nextUrl.searchParams.get('game')
+
 	try {
 		const formData = await req.formData()
 
 		let id
 		const file = formData.get('file')
-		const differences = formData.get('differences')
+		const points = formData.get('points')
 		const name = formData.get('name')?.trim()
 
-		if (!file || !differences || !name) {
+		if (!file || !points || !name) {
 			return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
 		}
 
@@ -25,7 +27,7 @@ export async function POST(req) {
 		)}.${ext}`
 		const filePath = path.join(
 			process.cwd(),
-			'public/images/differences',
+			`public/images/${game}`,
 			uniqueName
 		)
 
@@ -34,8 +36,7 @@ export async function POST(req) {
 		await writeFile(filePath, buffer)
 
 		// Path to JSON with levels
-		const jsonPath = path.join(process.cwd(), 'data/differences.json')
-		console.log(jsonPath)
+		const jsonPath = path.join(process.cwd(), `data/${game}.json`)
 
 		let existing = []
 		if (fs.existsSync(jsonPath)) {
@@ -52,12 +53,12 @@ export async function POST(req) {
 			}
 		}
 
-		const parsedDiffs = JSON.parse(differences)
+		const parsedDiffs = JSON.parse(points)
 
 		existing.push({
 			id,
 			image: uniqueName,
-			differences: parsedDiffs,
+			points: parsedDiffs,
 		})
 
 		fs.writeFileSync(jsonPath, JSON.stringify(existing, null, 2), 'utf-8')

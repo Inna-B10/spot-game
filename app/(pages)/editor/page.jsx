@@ -7,7 +7,7 @@ export default function DifferenceEditor() {
 	const [imageUrl, setImageUrl] = useState(null)
 	const [imageFile, setImageFile] = useState(null)
 	const [imageName, setImageName] = useState('image1')
-	const [differences, setDifferences] = useState([])
+	const [points, setPoints] = useState([])
 	const [radius, setRadius] = useState(25)
 	const imageRef = useRef(null)
 
@@ -17,7 +17,7 @@ export default function DifferenceEditor() {
 			const url = URL.createObjectURL(file)
 			setImageUrl(url)
 			setImageFile(file)
-			setDifferences([])
+			setPoints([])
 		}
 	}
 
@@ -30,7 +30,7 @@ export default function DifferenceEditor() {
 
 		let removed = false
 
-		const updated = differences.filter(diff => {
+		const updated = points.filter(diff => {
 			const dx = x - diff.x
 			const dy = y - diff.y
 			const distance = Math.sqrt(dx * dx + dy * dy)
@@ -42,7 +42,7 @@ export default function DifferenceEditor() {
 		})
 
 		if (removed) {
-			setDifferences(updated)
+			setPoints(updated)
 		} else {
 			const newDiff = {
 				id: uuid(),
@@ -50,12 +50,12 @@ export default function DifferenceEditor() {
 				y: Math.round(y),
 				radius: Number(radius),
 			}
-			setDifferences(prev => [...prev, newDiff])
+			setPoints(prev => [...prev, newDiff])
 		}
 	}
 
-	async function handleSave() {
-		if (!imageFile || differences.length === 0 || !imageName) {
+	async function handleSave(game) {
+		if (!imageFile || points.length === 0 || !imageName) {
 			alert('Fill in all fields and upload the image')
 			return
 		}
@@ -63,9 +63,9 @@ export default function DifferenceEditor() {
 		const formData = new FormData()
 		formData.append('file', imageFile)
 		formData.append('name', imageName)
-		formData.append('differences', JSON.stringify(differences))
+		formData.append('points', JSON.stringify(points))
 
-		const res = await fetch('/api/save-level', {
+		const res = await fetch(`/api/save-level?game=${game}`, {
 			method: 'POST',
 			body: formData,
 		})
@@ -81,7 +81,7 @@ export default function DifferenceEditor() {
 	return (
 		<div className='space-y-6'>
 			<div>
-				<label className='block mb-2 font-medium'>UUpload image:</label>
+				<label className='block mb-2 font-medium'>Upload image:</label>
 				<input type='file' accept='image/*' onChange={handleImageUpload} />
 			</div>
 
@@ -93,7 +93,7 @@ export default function DifferenceEditor() {
 						alt='Uploaded'
 						className='max-w-full border'
 					/>
-					{differences.map((diff, index) => (
+					{points.map((diff, index) => (
 						<div
 							key={diff.id}
 							className='absolute border-2 border-red-500 rounded-full pointer-events-none'
@@ -133,14 +133,19 @@ export default function DifferenceEditor() {
 						</label>
 
 						<button
-							onClick={handleSave}
+							onClick={() => handleSave('differences')}
 							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Save level
+							Save to differences
+						</button>
+						<button
+							onClick={() => handleSave('find-all')}
+							className='px-4 py-2 bg-green-600 text-white rounded'>
+							Save to find-all
 						</button>
 					</div>
 
 					<pre className='bg-gray-100 p-4 text-sm max-h-64 overflow-auto'>
-						{JSON.stringify(differences, null, 2)}
+						{JSON.stringify(points, null, 2)}
 					</pre>
 				</div>
 			)}

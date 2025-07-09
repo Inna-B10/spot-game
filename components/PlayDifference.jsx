@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export default function PlayDifference({ level }) {
+export default function PlayDifference({ object, game }) {
 	const imageRef = useRef(null)
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
@@ -12,7 +12,7 @@ export default function PlayDifference({ level }) {
 		setFound([])
 		setCompleted(false)
 		setJustFound(null)
-	}, [level.id])
+	}, [object.id])
 
 	function handleClick(event) {
 		if (!imageRef.current) return
@@ -21,7 +21,7 @@ export default function PlayDifference({ level }) {
 		const x = event.clientX - rect.left
 		const y = event.clientY - rect.top
 
-		for (const diff of level.differences) {
+		for (const diff of object.points) {
 			if (found.includes(diff.id)) continue
 
 			const dx = x - diff.x
@@ -31,7 +31,7 @@ export default function PlayDifference({ level }) {
 			if (distance <= diff.radius) {
 				setFound(prev => {
 					const updated = [...prev, diff.id]
-					if (updated.length === level.differences.length) {
+					if (updated.length === object.points.length) {
 						setCompleted(true)
 					}
 					return updated
@@ -44,38 +44,43 @@ export default function PlayDifference({ level }) {
 	}
 
 	return (
-		<div className='space-y-4'>
-			<div className='relative inline-block' onClick={handleClick}>
-				{/* next/image does not support correctly ref */}
-				<img
-					ref={imageRef}
-					src={`/images/differences/${level.image}`}
-					alt='Level'
-					className='max-w-full'
-				/>
-				{found.map(id => {
-					const diff = level.differences.find(d => d.id === id)
-					const isRecent = justFound === id
-					return (
-						<div
-							key={id}
-							className={`absolute border-2 rounded-full pointer-events-none ${
-								isRecent ? 'border-green-500 animate-ping' : 'border-green-600'
-							}`}
-							style={{
-								left: diff.x - diff.radius,
-								top: diff.y - diff.radius,
-								width: diff.radius * 2,
-								height: diff.radius * 2,
-							}}
-						/>
-					)
-				})}
+		<div className='flex justify-center items-center gap-20 w-full max-h-[70vh] border'>
+			<div className='w-1/2 flex justify-center items-center'>
+				<div
+					className='relative border cursor-pointer content-center border-red-500 w-fit flex justify-center items-center'
+					onClick={handleClick}>
+					{/* next/image does not support correctly ref */}
+					<img
+						ref={imageRef}
+						src={`/images/${game}/${object.image}`}
+						alt={object.image}
+						className='max-w-full max-h-full'
+					/>
+					{found.map(id => {
+						const diff = object.points.find(d => d.id === id)
+						const isRecent = justFound === id
+						return (
+							<div
+								key={id}
+								className={`absolute border-2 rounded-full pointer-events-none ${
+									isRecent
+										? 'border-green-500 animate-ping'
+										: 'border-green-600'
+								}`}
+								style={{
+									left: diff.x - diff.radius,
+									top: diff.y - diff.radius,
+									width: diff.radius * 2,
+									height: diff.radius * 2,
+								}}
+							/>
+						)
+					})}
+				</div>
 			</div>
-
-			<div>
+			<div className='w-1/2'>
 				<p>
-					Найдено отличий: {found.length} из {level.differences.length}
+					Найдено отличий: {found.length} из {object.points.length}
 				</p>
 				{completed && (
 					<div className='text-green-600 font-bold text-xl mt-4'>
