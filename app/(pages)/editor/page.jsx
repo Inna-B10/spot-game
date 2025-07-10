@@ -133,14 +133,19 @@ export default function DifferenceEditor() {
 						</label>
 
 						<button
-							onClick={() => handleSave('differences')}
+							onClick={() => handleSave('find-differences')}
 							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Save to differences
+							Save to find differences
 						</button>
 						<button
 							onClick={() => handleSave('find-all')}
 							className='px-4 py-2 bg-green-600 text-white rounded'>
 							Save to find-all
+						</button>
+						<button
+							onClick={() => handleSave('find-odd')}
+							className='px-4 py-2 bg-green-600 text-white rounded'>
+							Save to find odd
 						</button>
 					</div>
 

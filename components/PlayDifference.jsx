@@ -45,7 +45,7 @@ export default function PlayDifference({ object, game }) {
 
 	return (
 		<div className='flex justify-center items-center gap-20 w-full max-h-[70vh] border'>
-			<div className='w-1/2 flex justify-center items-center'>
+			<div className='w-fit flex justify-center items-center'>
 				<div
 					className='relative border cursor-pointer content-center border-red-500 w-fit flex justify-center items-center'
 					onClick={handleClick}>
@@ -55,6 +55,7 @@ export default function PlayDifference({ object, game }) {
 						src={`/images/${game}/${object.image}`}
 						alt={object.image}
 						className='max-w-full max-h-full'
+						draggable='false'
 					/>
 					{found.map(id => {
 						const diff = object.points.find(d => d.id === id)
@@ -78,7 +79,7 @@ export default function PlayDifference({ object, game }) {
 					})}
 				</div>
 			</div>
-			<div className='w-1/2'>
+			<div>
 				<p>
 					Найдено отличий: {found.length} из {object.points.length}
 				</p>

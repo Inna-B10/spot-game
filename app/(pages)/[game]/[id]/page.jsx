@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import path from 'path'
 
-export default async function GameFindPage({ params, searchParams }) {
+export default async function PlayFindPage({ params, searchParams }) {
 	const { id } = await params
 	const { game } = await searchParams
 
