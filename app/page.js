@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default async function Home() {
 	return (
-		<main>
+		<>
 			<h1 className='text-2xl font-bold'>🏠 Главная страница</h1>
 			<ul className='mb-4'>
 				<li>
@@ -26,6 +26,6 @@ export default async function Home() {
 					</li>
 				))}
 			</ul>
-		</main>
+		</>
 	)
 }

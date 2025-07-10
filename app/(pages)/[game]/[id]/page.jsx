@@ -1,4 +1,4 @@
-import PlayDifference from '@/components/PlayDifference'
+import PlayFind from '@/components/PlayFind'
 import fs from 'fs/promises'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -12,33 +12,35 @@ export default async function PlayFindPage({ params, searchParams }) {
 
 	const dataPath = path.join(process.cwd(), `data/${game}.json`)
 
-	let objects = []
+	let levels = []
 
 	try {
 		const file = await fs.readFile(dataPath, 'utf-8')
-		objects = JSON.parse(file)
+		levels = JSON.parse(file)
 	} catch (e) {
-		console.error('Error reading data:', e)
+		if (env.NODE_ENV === 'development') {
+			console.error('Error reading data:', e)
+		}
 	}
 
-	const object = objects.find(object => object.id === id)
+	const level = levels.find(level => level.id === id)
 
-	if (!object) return notFound()
+	if (!level) return notFound()
 
-	const nextObject = parseInt(object.id.split('_')[1]) + 1
-	const next = nextObject <= objects.length
+	const nextLevel = parseInt(level.id.split('_')[1]) + 1
+	const next = nextLevel <= levels.length
 
 	return (
-		<main className='p-4'>
+		<>
 			<div className='flex justify-between items-center gap-16 mb-6'>
-				<h1 className='text-xl font-bold mb-4'>Level: {object.id}</h1>
+				<h1 className='text-xl font-bold mb-4'>Level: {level.id}</h1>
 				{next && (
 					<p>
-						<Link href={`/game/image_${nextObject}?game=${game}`}>Next</Link>
+						<Link href={`/game/image_${nextLevel}?game=${game}`}>Next</Link>
 					</p>
 				)}
 			</div>
-			<PlayDifference object={object} game={game} />
-		</main>
+			<PlayFind level={level} game={game} />
+		</>
 	)
 }

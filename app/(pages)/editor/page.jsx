@@ -1,159 +1,93 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { v4 as uuid } from 'uuid'
+import { GAMES } from '@/constants/games'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
-export default function DifferenceEditor() {
-	const [imageUrl, setImageUrl] = useState(null)
-	const [imageFile, setImageFile] = useState(null)
-	const [imageName, setImageName] = useState('image1')
-	const [points, setPoints] = useState([])
-	const [radius, setRadius] = useState(25)
-	const imageRef = useRef(null)
+export default function EditorPage() {
+	const [game, setGame] = useState('')
+	const [levelId, setLevelId] = useState('')
+	const [availableLevels, setAvailableLevels] = useState([])
+	const router = useRouter()
 
-	function handleImageUpload(e) {
-		const file = e.target.files[0]
-		if (file) {
-			const url = URL.createObjectURL(file)
-			setImageUrl(url)
-			setImageFile(file)
-			setPoints([])
-		}
-	}
-
-	function handleClick(event) {
-		if (!imageRef.current) return
-
-		const rect = imageRef.current.getBoundingClientRect()
-		const x = event.clientX - rect.left
-		const y = event.clientY - rect.top
-
-		let removed = false
-
-		const updated = points.filter(diff => {
-			const dx = x - diff.x
-			const dy = y - diff.y
-			const distance = Math.sqrt(dx * dx + dy * dy)
-			if (distance < diff.radius) {
-				removed = true
-				return false
+	useEffect(() => {
+		if (game) {
+			async function fetchLevels() {
+				try {
+					const res = await fetch(`/api/get-level?game=${game}&id=_all`)
+					const data = await res.json()
+					if (Array.isArray(data)) setAvailableLevels(data.map(l => l.id))
+				} catch (e) {
+					console.warn('Error loading level(s)', e)
+				}
 			}
-			return true
-		})
-
-		if (removed) {
-			setPoints(updated)
-		} else {
-			const newDiff = {
-				id: uuid(),
-				x: Math.round(x),
-				y: Math.round(y),
-				radius: Number(radius),
-			}
-			setPoints(prev => [...prev, newDiff])
+			fetchLevels()
 		}
-	}
+	}, [game])
 
-	async function handleSave(game) {
-		if (!imageFile || points.length === 0 || !imageName) {
-			alert('Fill in all fields and upload the image')
+	function handleEdit() {
+		if (!game || !levelId) {
+			let message = 'Fill in all fields!'
+			if (!game) message += '\nMissing game'
+			if (!levelId) message += '\nMissing level ID'
+			alert(message)
 			return
 		}
+		router.push(`/editor/level?game=${game}&id=${levelId}`)
+	}
 
-		const formData = new FormData()
-		formData.append('file', imageFile)
-		formData.append('name', imageName)
-		formData.append('points', JSON.stringify(points))
-
-		const res = await fetch(`/api/save-level?game=${game}`, {
-			method: 'POST',
-			body: formData,
-		})
-
-		const data = await res.json()
-		if (res.ok) {
-			alert(`Level saves! File: ${data.file}`)
-		} else {
-			alert('Error: ' + data.error)
-		}
+	function handleCreate() {
+		router.push('/editor/level')
 	}
 
 	return (
-		<div className='space-y-6'>
-			<div>
-				<label className='block mb-2 font-medium'>Upload image:</label>
-				<input type='file' accept='image/*' onChange={handleImageUpload} />
-			</div>
+		<>
+			<h1 className='text-2xl font-bold text-center'>Level editor</h1>
 
-			{imageUrl && (
-				<div className='relative inline-block' onClick={handleClick}>
-					<img
-						ref={imageRef}
-						src={imageUrl}
-						alt='Uploaded'
-						className='max-w-full border'
-					/>
-					{points.map((diff, index) => (
-						<div
-							key={diff.id}
-							className='absolute border-2 border-red-500 rounded-full pointer-events-none'
-							style={{
-								left: diff.x - diff.radius,
-								top: diff.y - diff.radius,
-								width: diff.radius * 2,
-								height: diff.radius * 2,
-							}}
-						/>
-					))}
-				</div>
-			)}
-
-			{imageUrl && (
+			<div className='space-y-6 flex flex-col'>
+				<button
+					onClick={handleCreate}
+					className='bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-fit'>
+					Create new
+				</button>
+				<p>or</p>
 				<div className='space-y-4'>
-					<div className='flex flex-wrap gap-4 items-center'>
-						<label>
-							Radius:
-							<input
-								type='number'
-								value={radius}
-								onChange={e => setRadius(e.target.value)}
-								className='ml-2 border p-1 w-16'
-							/>
-						</label>
-
-						<label>
-							Image name:
-							<input
-								type='text'
-								value={imageName}
-								onChange={e => setImageName(e.target.value)}
-								placeholder='f.ex: image1'
-								className='ml-2 border p-1 w-40'
-							/>
-						</label>
-
-						<button
-							onClick={() => handleSave('find-differences')}
-							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Save to find differences
-						</button>
-						<button
-							onClick={() => handleSave('find-all')}
-							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Save to find-all
-						</button>
-						<button
-							onClick={() => handleSave('find-odd')}
-							className='px-4 py-2 bg-green-600 text-white rounded'>
-							Save to find odd
-						</button>
+					<h2 className='text-xl font-semibold'>Load level</h2>
+					<div className='w-fit'>
+						<label className='mr-2 font-medium'>Game:</label>
+						<select
+							value={game}
+							onChange={e => setGame(e.target.value)}
+							className='border px-2 py-1 rounded'>
+							<option value=''>Select game</option>
+							{GAMES.map(g => (
+								<option key={g.game} value={g.game}>
+									{g.label}
+								</option>
+							))}
+						</select>
 					</div>
-
-					<pre className='bg-gray-100 p-4 text-sm max-h-64 overflow-auto'>
-						{JSON.stringify(points, null, 2)}
-					</pre>
+					<div>
+						<label className='mr-2 font-medium'>ID level:</label>
+						<input
+							value={levelId}
+							onChange={e => setLevelId(e.target.value)}
+							list='level-list'
+							className='border px-2 py-1 rounded w-30'
+						/>
+						<datalist id='level-list'>
+							{availableLevels.map(id => (
+								<option key={id} value={id} />
+							))}
+						</datalist>
+					</div>
+					<button
+						onClick={handleEdit}
+						className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
+						Edit
+					</button>
 				</div>
-			)}
-		</div>
+			</div>
+		</>
 	)
 }
