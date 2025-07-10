@@ -1,19 +1,24 @@
 'use client'
 
 import Editor from '@/components/Editor'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 
-import { useEffect, useState } from 'react'
+export const metadata = {
+	title: 'Editor Level',
+	...NO_INDEX_PAGE,
+}
 
-export default function EditorLevelPage() {
+function EditorLevelContent() {
 	const searchParams = useSearchParams()
 	const game = searchParams.get('game')
 	const id = searchParams.get('id')
 
 	const [initialLevel, setInitialLevel] = useState(null)
 	const [status, setStatus] = useState('')
-
 	const [modified, setModified] = useState(false)
+
 	const router = useRouter()
 
 	const goBack = () => {
@@ -83,5 +88,13 @@ export default function EditorLevelPage() {
 				setModified={setModified}
 			/>
 		</>
+	)
+}
+
+export default function EditorLevelPage() {
+	return (
+		<Suspense fallback={<div>Loading editor...</div>}>
+			<EditorLevelContent />
+		</Suspense>
 	)
 }

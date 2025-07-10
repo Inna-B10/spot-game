@@ -1,9 +1,14 @@
 'use client'
 
 import { GAMES } from '@/constants/games'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+export const metadata = {
+	title: 'Editor Home',
+	...NO_INDEX_PAGE,
+}
 export default function EditorPage() {
 	const [game, setGame] = useState('')
 	const [levelId, setLevelId] = useState('')
