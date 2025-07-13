@@ -91,6 +91,7 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 				if (res.ok) {
 					setStatus('✅ Level saved')
 					alert(`Level saved! File: ${data.file}`)
+					setModified(false)
 				} else {
 					setStatus('❌ Error')
 					alert('Error: ' + data.error)
@@ -161,6 +162,7 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 							<div className='flex gap-2 items-center'>
 								{GAMES.map(g => (
 									<button
+										key={g.game}
 										onClick={() => handleSave(g.game)}
 										className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
 										Save to {g.label}
@@ -175,28 +177,32 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 							</button>
 						)}
 					</div>
-					<div
-						className='relative border content-center border-red-500 w-fit'
-						onClick={handleClick}>
-						<img
-							ref={imageRef}
-							src={mode === 'create' ? imageUrl : `/images/${game}/${imageUrl}`}
-							alt='preview'
-							className='max-w-[900px] h-auto cursor-crosshair'
-						/>
-						{points.map(diff => (
-							<div
-								key={diff.id}
-								className='absolute border-2 border-red-500 rounded-full pointer-events-none'
-								style={{
-									left: diff.x - diff.radius,
-									top: diff.y - diff.radius,
-									width: diff.radius * 2,
-									height: diff.radius * 2,
-								}}
-								title='Нажмите, чтобы удалить'
+					<div className='w-full flex justify-center'>
+						<div
+							className='relative border content-center border-red-500 w-fit'
+							onClick={handleClick}>
+							<img
+								ref={imageRef}
+								src={
+									mode === 'create' ? imageUrl : `/images/${game}/${imageUrl}`
+								}
+								alt='preview'
+								className='max-w-[900px] h-auto cursor-crosshair'
 							/>
-						))}
+							{points.map(diff => (
+								<div
+									key={diff.id}
+									className='absolute border-2 border-red-500 rounded-full pointer-events-none'
+									style={{
+										left: diff.x - diff.radius,
+										top: diff.y - diff.radius,
+										width: diff.radius * 2,
+										height: diff.radius * 2,
+									}}
+									title='Нажмите, чтобы удалить'
+								/>
+							))}
+						</div>
 					</div>
 
 					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>

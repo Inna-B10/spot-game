@@ -65,7 +65,7 @@ export default function PlayFind({ level, game }) {
 					</div>
 				)}
 			</div>
-			<div className='w-fit flex justify-center items-center'>
+			<div className='w-full flex justify-center'>
 				<div
 					className='relative border cursor-pointer content-center border-red-500 w-fit '
 					onClick={handleClick}>
