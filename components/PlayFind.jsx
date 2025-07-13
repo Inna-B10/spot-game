@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { ImageWithPoints } from './ImageWithPoints'
 
 export default function PlayFind({ level, game }) {
-	const imageRef = useRef(null)
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)
@@ -14,34 +14,29 @@ export default function PlayFind({ level, game }) {
 		setJustFound(null)
 	}, [level.id])
 
-	function handleClick(event) {
-		if (!imageRef.current) return
+	const handlePointClick = useCallback(
+		({ x, y }) => {
+			if (completed) return
 
-		const rect = imageRef.current.getBoundingClientRect()
-		const x = event.clientX - rect.left
-		const y = event.clientY - rect.top
+			for (const diff of level.points) {
+				if (found.includes(diff.id)) continue
 
-		for (const diff of level.points) {
-			if (found.includes(diff.id)) continue
+				const dx = x - diff.x
+				const dy = y - diff.y
+				const distance = Math.sqrt(dx * dx + dy * dy)
 
-			const dx = x - diff.x
-			const dy = y - diff.y
-			const distance = Math.sqrt(dx * dx + dy * dy)
-
-			if (distance <= diff.radius) {
-				setFound(prev => {
-					const updated = [...prev, diff.id]
-					if (updated.length === level.points.length) {
-						setCompleted(true)
-					}
-					return updated
-				})
-				setJustFound(diff.id)
-				setTimeout(() => setJustFound(null), 800)
-				break
+				if (distance <= diff.radius) {
+					const updated = [...found, diff.id]
+					setFound(updated)
+					if (updated.length === level.points.length) setCompleted(true)
+					setJustFound(diff.id)
+					setTimeout(() => setJustFound(null), 800)
+					break
+				}
 			}
-		}
-	}
+		},
+		[found, level.points, completed]
+	)
 
 	return (
 		<div className='space-y-6 text-center w-full'>
@@ -66,38 +61,12 @@ export default function PlayFind({ level, game }) {
 				)}
 			</div>
 			<div className='w-full flex justify-center'>
-				<div
-					className='relative border cursor-pointer content-center border-red-500 w-fit '
-					onClick={handleClick}>
-					{/* next/image does not support correctly ref */}
-					<img
-						ref={imageRef}
-						src={`/images/${game}/${level.image}`}
-						alt={level.image}
-						className='max-w-[900px] h-auto'
-						draggable='false'
-					/>
-					{found.map(id => {
-						const diff = level.points.find(d => d.id === id)
-						const isRecent = justFound === id
-						return (
-							<div
-								key={id}
-								className={`absolute border-2 rounded-full pointer-events-none ${
-									isRecent
-										? 'border-green-500 animate-ping'
-										: 'border-green-600'
-								}`}
-								style={{
-									left: diff.x - diff.radius,
-									top: diff.y - diff.radius,
-									width: diff.radius * 2,
-									height: diff.radius * 2,
-								}}
-							/>
-						)
-					})}
-				</div>
+				<ImageWithPoints
+					imageUrl={`/images/${game}/${level.image}`}
+					points={level.points.filter(p => found.includes(p.id))}
+					onPointClick={handlePointClick}
+					highlightId={justFound}
+				/>
 			</div>
 		</div>
 	)
