@@ -5,12 +5,30 @@ import Link from 'next/link'
 import path from 'path'
 import { env } from 'process'
 
+export const revalidate = 86400
+
+export async function generateMetadata({ params }) {
+	const { game } = await params
+
+	if (!game) return {}
+
+	const label = GAMES.find(g => g.game === game)?.label || 'Game'
+
+	return {
+		title: `Уровни игры ${label}`,
+		description: `Список уровней для игры ${label}`,
+	}
+}
+
+export async function generateStaticParams() {
+	return GAMES.map(game => ({ game: game.game }))
+}
 export default async function GamePage({ params }) {
 	const { game } = await params
 
 	if (!game) return notFound()
 
-	const label = GAMES.find(g => g.game === game)?.label
+	const label = GAMES.find(g => g.game === game)?.label || 'Game'
 	let levelsByGame = []
 
 	const dataPath = path.join(process.cwd(), `data/${game}.json`)
