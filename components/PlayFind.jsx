@@ -40,7 +40,7 @@ export default function PlayFind({ level, game }) {
 
 	return (
 		<div className='space-y-6 text-center w-full'>
-			<div>
+			<div className='min-h-30'>
 				{game === 'find-pair' ? (
 					<p>
 						Найдено:{' '}

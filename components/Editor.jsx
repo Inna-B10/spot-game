@@ -62,8 +62,13 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 		<div className='space-y-6 w-full'>
 			{mode === 'create' && (
 				<div>
-					<label>Upload image:</label>
-					<input type='file' accept='image/*' onChange={handleImageUpload} />
+					<label>Upload image: </label>
+					<input
+						type='file'
+						accept='image/*'
+						onChange={handleImageUpload}
+						className='bg-gray-200 p-2 w-fit rounded border border-gray-400'
+					/>
 				</div>
 			)}
 
@@ -78,6 +83,7 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 						setModified={setModified}
 						id={id}
 						imageUrl={imageUrl}
+						imageFile={imageFile}
 					/>
 
 					<div className='w-full flex justify-center'>

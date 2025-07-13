@@ -1,6 +1,6 @@
 [
   {
-    "id": "image1_1",
+    "id": "image_1",
     "image": "image1_5d05fa.jpg",
     "points": [
       {
@@ -20,6 +20,54 @@
         "x": 848,
         "y": 442,
         "radius": 90
+      }
+    ]
+  },
+  {
+    "id": "image_2",
+    "image": "image_c5bb33.jpg",
+    "points": [
+      {
+        "id": "eab1fef7-af7b-4e21-83df-9190608da4bb",
+        "x": 526,
+        "y": 178,
+        "radius": 80
+      },
+      {
+        "id": "78560572-079b-45cb-b807-2d959a2e9bc4",
+        "x": 519,
+        "y": 452,
+        "radius": 90
+      },
+      {
+        "id": "ab97aa1e-1ec2-4530-a271-0a6a8432b433",
+        "x": 312,
+        "y": 736,
+        "radius": 100
+      }
+    ]
+  },
+  {
+    "id": "image_3",
+    "image": "image_9795ac.jpg",
+    "points": [
+      {
+        "id": "6f84676e-45fd-4f65-bb0f-db73f6c99ec8",
+        "x": 106,
+        "y": 171,
+        "radius": 100
+      },
+      {
+        "id": "36a1a3f6-83fc-4479-b749-b31e59787b5c",
+        "x": 88,
+        "y": 454,
+        "radius": 80
+      },
+      {
+        "id": "1ea95ff5-517d-4b03-9ec1-41ec7b47945f",
+        "x": 306,
+        "y": 755,
+        "radius": 100
       }
     ]
   }

@@ -3,10 +3,11 @@ export async function useSaveGame(
 	mode,
 	id,
 	imageUrl,
+	imageFile,
 	points,
-	setModified,
-	game
+	setModified
 ) {
+	/* ----------------------------- Mode === 'create' */
 	if (mode === 'create') {
 		if (!imageFile || points.length === 0) {
 			alert('Fill in all fields and upload the image')
@@ -45,10 +46,10 @@ export async function useSaveGame(
 			const res = await fetch('/api/update-level', {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ game, id, updatedLevel }),
+				body: JSON.stringify({ game: saveGame, id, updatedLevel }),
 			})
 
-			alert(res.ok ? '✅ Level updated!' : '❌ Failed')
+			alert(res.ok ? '✅ Level updated!' : '❌ Error updating level')
 			setModified(res.ok ? false : true)
 		} catch (e) {
 			alert('❌ Failed to update: ' + e.message)

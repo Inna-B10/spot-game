@@ -50,7 +50,7 @@ export function EditorContent() {
 				</button>
 				<p>or</p>
 				<div className='space-y-4'>
-					<h2 className='text-xl font-semibold'>Load level</h2>
+					<h2 className='text-xl font-semibold'>Load existing level</h2>
 					<div className='w-fit'>
 						<label className='mr-2 font-medium'>Game:</label>
 						<select

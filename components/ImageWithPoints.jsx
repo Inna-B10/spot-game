@@ -17,9 +17,7 @@ export function ImageWithPoints({
 	}
 
 	return (
-		<div
-			className='relative border content-center border-red-500 w-fit'
-			onClick={handleClick}>
+		<div className='relative border content-center w-fit' onClick={handleClick}>
 			{/* next/image does not support correctly ref */}
 			<img
 				ref={imageRef}
@@ -31,7 +29,6 @@ export function ImageWithPoints({
 			{points.map(diff => (
 				<div
 					key={diff.id}
-					// className='absolute border-2 border-red-500 rounded-full pointer-events-none'
 					className={`absolute border-2 rounded-full pointer-events-none
             ${
 							highlightId === diff.id

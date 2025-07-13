@@ -10,6 +10,7 @@ export function EditorToolbar({
 	setModified,
 	id,
 	imageUrl,
+	imageFile,
 }) {
 	return (
 		<div className='w-full flex gap-4 justify-between'>
@@ -19,7 +20,7 @@ export function EditorToolbar({
 					type='number'
 					value={radius}
 					onChange={e => setRadius(e.target.value)}
-					className='border p-1 w-15 text-right'
+					className='border p-1 w-15 text-right rounded'
 				/>
 			</label>
 
@@ -42,9 +43,9 @@ export function EditorToolbar({
 									mode,
 									id,
 									imageUrl,
+									imageFile,
 									points,
-									setModified,
-									game
+									setModified
 								)
 							}
 							className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
@@ -55,7 +56,15 @@ export function EditorToolbar({
 			) : (
 				<button
 					onClick={() =>
-						useSaveGame(game, mode, id, imageUrl, points, setModified, game)
+						useSaveGame(
+							game,
+							mode,
+							id,
+							imageUrl,
+							imageFile,
+							points,
+							setModified
+						)
 					}
 					className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
 					Save
