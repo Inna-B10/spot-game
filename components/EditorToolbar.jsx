@@ -1,5 +1,6 @@
 import { GAMES } from '@/constants/games'
 import { useSaveGame } from '@/hooks/useSaveGame'
+import { Button } from './ui/buttons/Button'
 
 export function EditorToolbar({
 	radius,
@@ -35,7 +36,7 @@ export function EditorToolbar({
 			{mode === 'create' ? (
 				<div className='flex gap-2 items-center'>
 					{GAMES.map(g => (
-						<button
+						<Button
 							key={g.game}
 							onClick={() =>
 								useSaveGame(
@@ -48,13 +49,14 @@ export function EditorToolbar({
 									setModified
 								)
 							}
-							className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
+							aria-label={`Save to ${g.label} game`}
+							variant='primary'>
 							Save to {g.label}
-						</button>
+						</Button>
 					))}
 				</div>
 			) : (
-				<button
+				<Button
 					onClick={() =>
 						useSaveGame(
 							game,
@@ -66,9 +68,10 @@ export function EditorToolbar({
 							setModified
 						)
 					}
-					className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
-					Save
-				</button>
+					variant='primary'
+					aria-label='Save level'>
+					Save level
+				</Button>
 			)}
 		</div>
 	)

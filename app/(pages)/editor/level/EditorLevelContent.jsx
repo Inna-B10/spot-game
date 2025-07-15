@@ -1,4 +1,5 @@
 import Editor from '@/components/Editor'
+import { Button } from '@/components/ui/buttons/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -64,11 +65,9 @@ export function EditorLevelContent() {
 						<h1 className='text-2xl font-bold'>Create new level</h1>
 					)}
 				</div>
-				<button
-					onClick={goBack}
-					className='bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700'>
+				<Button onClick={goBack} variant='secondary'>
 					Back to Editor Home
-				</button>
+				</Button>
 			</div>
 
 			{status && <p className='text-gray-600 text-sm'>{status}</p>}

@@ -1,3 +1,4 @@
+import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { GAMES } from '@/constants/games'
 import fs from 'fs/promises'
 import Image from 'next/image'
@@ -46,24 +47,29 @@ export default async function GamePage({ params }) {
 		return (
 			<>
 				<p>Уровней нет</p>
-				<Link
-					href='/'
-					className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit'>
+				<LinkButton href='/' role='button' aria-label='Go to main page'>
 					На главную
-				</Link>
+				</LinkButton>
 			</>
 		)
 	}
 
 	return (
-		<section key={game} className='space-y-8 w-fit'>
-			<h2 className='text-xl font-semibold'>{label}</h2>
+		<section key={game} className='space-y-8 w-full'>
+			<div className='flex justify-between items-center gap-2'>
+				<h2 className='text-xl font-semibold'>{label}</h2>
+				<LinkButton href='/' role='button' aria-label='Go to homepage'>
+					Back to Home
+				</LinkButton>
+			</div>
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
 					<li
 						key={level.id}
 						className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/game/${level.id}?game=${game}`} title={level.id}>
+						<Link
+							href={`/game/${level.id}?game=${game}`}
+							title={`open level ${level.id}`}>
 							{level.id}
 							<Image
 								src={`/images/${game}/${level.image}`}

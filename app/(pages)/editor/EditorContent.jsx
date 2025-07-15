@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/buttons/Button'
 import { GAMES } from '@/constants/games'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -43,11 +44,12 @@ export function EditorContent() {
 			<h1 className='text-2xl font-bold text-center'>Level editor</h1>
 
 			<div className='space-y-6 flex flex-col'>
-				<button
+				<Button
+					aria-label='Create new level'
 					onClick={handleCreate}
-					className='bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-fit'>
+					variant='secondary'>
 					Create new
-				</button>
+				</Button>
 				<p>or</p>
 				<div className='space-y-4'>
 					<h2 className='text-xl font-semibold'>Load existing level</h2>
@@ -79,11 +81,12 @@ export function EditorContent() {
 							))}
 						</datalist>
 					</div>
-					<button
+					<Button
+						aria-label='Edit level'
 						onClick={handleEdit}
-						className='bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700'>
-						Edit
-					</button>
+						variant='primary'>
+						Edit level
+					</Button>
 				</div>
 			</div>
 		</>
