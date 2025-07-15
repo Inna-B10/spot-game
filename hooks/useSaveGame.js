@@ -1,4 +1,7 @@
-export async function useSaveGame(
+import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
+
+export function useSaveGame(
 	saveGame,
 	mode,
 	id,
@@ -7,52 +10,59 @@ export async function useSaveGame(
 	points,
 	setModified
 ) {
+	const router = useRouter()
 	/* ----------------------------- Mode === 'create' */
-	if (mode === 'create') {
-		if (!imageFile || points.length === 0) {
-			alert('Fill in all fields and upload the image')
-			return
-		}
+	const save = useCallback(async () => {
+		if (mode === 'create') {
+			if (!imageFile || points.length === 0) {
+				alert('Fill in all fields and upload the image')
+				return
+			}
 
-		const formData = new FormData()
-		formData.append('file', imageFile)
-		formData.append('name', 'image')
-		formData.append('points', JSON.stringify(points))
-		try {
-			const res = await fetch(`/api/create-level?game=${saveGame}`, {
-				method: 'POST',
-				body: formData,
-			})
-			const data = await res.json()
-			alert(
-				res.ok
-					? `✅ Level saved! File: ${data.file}`
-					: `❌ Error: ${data.error}`
-			)
-			setModified(res.ok ? false : true)
-		} catch (e) {
-			alert('❌ Error: ' + e.message)
-		}
-	} else {
-		/* ----------------------------- Mode === 'edit' */
-		if (!id || !imageUrl || points.length === 0) {
-			alert('❌ Missing fields')
-			return
-		}
+			const formData = new FormData()
+			formData.append('file', imageFile)
+			formData.append('name', 'image')
+			formData.append('points', JSON.stringify(points))
+			try {
+				const res = await fetch(`/api/create-level?game=${saveGame}`, {
+					method: 'POST',
+					body: formData,
+				})
+				const data = await res.json()
 
-		const updatedLevel = { id, image: imageUrl, points }
+				if (res.ok) {
+					alert('✅ Level saved! File: ' + data.file)
+					setModified(false)
+					router.replace(`/editor/${saveGame}/${data.id}`)
+				} else {
+					alert('❌ Error: ' + data.error)
+					setModified(true)
+				}
+			} catch (e) {
+				alert('❌ Error: ' + e.message)
+			}
+		} else {
+			/* ----------------------------- Mode === 'edit' */
+			if (!id || !imageUrl || points.length === 0) {
+				alert('❌ Missing fields')
+				return
+			}
 
-		try {
-			const res = await fetch('/api/update-level', {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ game: saveGame, id, updatedLevel }),
-			})
+			const updatedLevel = { id, image: imageUrl, points }
 
-			alert(res.ok ? '✅ Level updated!' : '❌ Error updating level')
-			setModified(res.ok ? false : true)
-		} catch (e) {
-			alert('❌ Failed to update: ' + e.message)
+			try {
+				const res = await fetch('/api/update-level', {
+					method: 'PUT',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ game: saveGame, id, updatedLevel }),
+				})
+
+				alert(res.ok ? '✅ Level updated!' : '❌ Error updating level')
+				setModified(res.ok ? false : true)
+			} catch (e) {
+				alert('❌ Failed to update: ' + e.message)
+			}
 		}
-	}
+	}, [saveGame, mode, id, imageUrl, imageFile, points, setModified, router])
+	return save
 }

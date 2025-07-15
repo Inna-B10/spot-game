@@ -1,4 +1,3 @@
-import { GAMES } from '@/constants/games'
 import { useSaveGame } from '@/hooks/useSaveGame'
 import { Button } from './ui/buttons/Button'
 
@@ -13,6 +12,15 @@ export function EditorToolbar({
 	imageUrl,
 	imageFile,
 }) {
+	const saveGame = useSaveGame(
+		game,
+		mode,
+		id,
+		imageUrl,
+		imageFile,
+		points,
+		setModified
+	)
 	return (
 		<div className='w-full flex gap-4 justify-between'>
 			<label className='flex flex-col lg:flex-row lg:items-center gap-2'>
@@ -35,41 +43,12 @@ export function EditorToolbar({
 
 			{mode === 'create' ? (
 				<div className='flex gap-2 items-center'>
-					{GAMES.map(g => (
-						<Button
-							key={g.game}
-							onClick={() =>
-								useSaveGame(
-									g.game,
-									mode,
-									id,
-									imageUrl,
-									imageFile,
-									points,
-									setModified
-								)
-							}
-							aria-label={`Save to ${g.label} game`}
-							variant='primary'>
-							Save to {g.label}
-						</Button>
-					))}
+					<Button onClick={saveGame} aria-label='Save level' variant='primary'>
+						Save level
+					</Button>
 				</div>
 			) : (
-				<Button
-					onClick={() =>
-						useSaveGame(
-							game,
-							mode,
-							id,
-							imageUrl,
-							imageFile,
-							points,
-							setModified
-						)
-					}
-					variant='primary'
-					aria-label='Save level'>
+				<Button onClick={saveGame} variant='primary' aria-label='Save level'>
 					Save level
 				</Button>
 			)}

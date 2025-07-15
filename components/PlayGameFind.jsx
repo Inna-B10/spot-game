@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ImageWithPoints } from './ImageWithPoints'
 
-export default function PlayFind({ level, game }) {
+export default function PlayGameFind({ level, game }) {
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)

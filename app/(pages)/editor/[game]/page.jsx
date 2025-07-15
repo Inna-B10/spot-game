@@ -6,25 +6,7 @@ import Link from 'next/link'
 import path from 'path'
 import { env } from 'process'
 
-export const revalidate = 86400
-
-export async function generateMetadata({ params }) {
-	const { game } = await params
-
-	if (!game) return {}
-
-	const label = GAMES.find(g => g.game === game)?.label || 'Game'
-
-	return {
-		title: `Уровни игры ${label}`,
-		description: `Список уровней для игры ${label}`,
-	}
-}
-
-export async function generateStaticParams() {
-	return GAMES.map(game => ({ game: game.game }))
-}
-export default async function GamePage({ params }) {
+export default async function GameIndex({ params }) {
 	const { game } = await params
 
 	if (!game) return notFound()
@@ -45,31 +27,46 @@ export default async function GamePage({ params }) {
 
 	if (levelsByGame.length === 0) {
 		return (
-			<>
+			<div className='flex flex-col items-center gap-8'>
 				<p>Уровней нет</p>
 				<LinkButton href='/' role='button' aria-label='Go to main page'>
 					На главную
 				</LinkButton>
-			</>
+			</div>
 		)
 	}
 
 	return (
-		<section key={game} className='space-y-8 w-full'>
+		<section className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
-				<h2 className='text-xl font-semibold'>{label}</h2>
-				<LinkButton href='/' role='button' aria-label='Go to homepage'>
-					Back to Home
-				</LinkButton>
+				<h1 className='text-xl font-bold'>Game: {label}</h1>
+				<span className='space-x-4'>
+					<LinkButton
+						href='/editor'
+						role='button'
+						aria-label='Go to main editor page'>
+						Back to Editor
+					</LinkButton>
+					<LinkButton href='/' role='button' aria-label='Go to homepage'>
+						Back to Home
+					</LinkButton>
+				</span>
 			</div>
+			<h2 className='text-lg font-semibold inline-block'>choose the level</h2>
+			&nbsp; &nbsp;or&nbsp;&nbsp;&nbsp;
+			<LinkButton
+				href={`/editor/${game}/new`}
+				className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit w-fit'>
+				Create a new
+			</LinkButton>
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
 					<li
 						key={level.id}
 						className='border p-4 rounded shadow hover:shadow-md'>
 						<Link
-							href={`/${game}/${level.id}`}
-							title={`open level ${level.id}`}>
+							href={`/editor/${game}/${level.id}`}
+							title={`open ${level.id} to edit`}>
 							{level.id}
 							<Image
 								src={`/images/${game}/${level.image}`}

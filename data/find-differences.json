@@ -1,7 +1,7 @@
 [
 	{
 		"id": "image_1",
-		"image": "image_fb6a2d.jpg",
+		"image": "image_1_fb6a2d.jpg",
 		"points": [
 			{
 				"id": "8fe6abd9-458d-4c21-90f7-0259d8a9baab",
@@ -61,7 +61,7 @@
 	},
 	{
 		"id": "image_2",
-		"image": "image_380243.jpg",
+		"image": "image_2_380243.jpg",
 		"points": [
 			{
 				"id": "40c147d9-e94d-48bb-b485-79281ae0448d",
@@ -94,12 +94,6 @@
 				"radius": 20
 			},
 			{
-				"id": "4f10af85-09e2-4eb0-9eff-0c0bf613e2bf",
-				"x": 145,
-				"y": 148,
-				"radius": 23
-			},
-			{
 				"id": "1f1a28b0-8a17-4a72-8e8b-2241286119c2",
 				"x": 236,
 				"y": 59,
@@ -122,12 +116,18 @@
 				"x": 264,
 				"y": 51,
 				"radius": 15
+			},
+			{
+				"id": "473ec0f6-9b35-4cd3-b4f3-4c274e71ef6e",
+				"x": 145,
+				"y": 147,
+				"radius": 25
 			}
 		]
 	},
 	{
 		"id": "image_3",
-		"image": "image_c9ab65.jpg",
+		"image": "image_3_c9ab65.jpg",
 		"points": [
 			{
 				"id": "6cef68bb-4c30-4803-9af9-1738f0eeb189",
@@ -169,7 +169,7 @@
 	},
 	{
 		"id": "image_4",
-		"image": "image_0abc2d.jpg",
+		"image": "image_4_0abc2d.jpg",
 		"points": [
 			{
 				"id": "3ef05b9d-f7aa-4225-8e62-7e032c3578f8",
@@ -241,7 +241,7 @@
 	},
 	{
 		"id": "image_5",
-		"image": "image_50b54d.jpg",
+		"image": "image_5_50b54d.jpg",
 		"points": [
 			{
 				"id": "776a35f3-1405-4c47-ab7e-67d5aebfba3e",

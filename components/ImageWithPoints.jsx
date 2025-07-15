@@ -17,7 +17,7 @@ export function ImageWithPoints({
 	}
 
 	return (
-		<div className='relative border content-center w-fit' onClick={handleClick}>
+		<div className='relative content-center w-fit' onClick={handleClick}>
 			{/* next/image does not support correctly ref */}
 			<img
 				ref={imageRef}

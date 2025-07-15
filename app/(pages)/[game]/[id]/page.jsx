@@ -1,21 +1,23 @@
-import PlayFind from '@/components/PlayFind'
+import PlayGameFind from '@/components/PlayGameFind'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
+import { GAME_DESC } from '@/constants/gameDescriptions'
 import { GAMES } from '@/constants/games'
 import fs from 'fs/promises'
 import { notFound } from 'next/navigation'
 import path from 'path'
+import { env } from 'process'
 
 export const revalidate = 86400
 
-export async function generateMetadata({ params, searchParams }) {
-	const { id } = await params
-	const { game } = await searchParams
+export async function generateMetadata({ params }) {
+	const { game, id } = await params
 
 	if (!id || !game) return {}
+	const description = GAME_DESC.find(g => g.game === game)?.description
 
 	return {
-		title: `Игра ${game} | Уровень ${id}`,
-		// description: `Описание уровня ${id} для игры ${game}`,
+		title: `Game ${game} | Level ${id}`,
+		description: `${description} | Level ${id}`,
 	}
 }
 
@@ -43,9 +45,8 @@ export async function generateStaticParams() {
 	return paths
 }
 
-export default async function PlayFindPage({ params, searchParams }) {
-	const { id } = await params
-	const { game } = await searchParams
+export default async function PlayFindPage({ params }) {
+	const { game, id } = await params
 
 	if (!id || !game) return notFound()
 
@@ -66,28 +67,41 @@ export default async function PlayFindPage({ params, searchParams }) {
 
 	if (!level) return notFound()
 
+	const description = GAME_DESC.find(g => g.game === game)?.description
 	const nextLevel = parseInt(level.id.split('_')[1]) + 1
-	const next = nextLevel <= levels.length
+	const isNext = nextLevel <= levels.length
 
 	return (
 		<>
-			<div className='flex justify-between items-center gap-16 mb-6'>
-				<h1 className='text-xl font-bold'>Level: {level.id}</h1>
-				<div className='flex items-center gap-4'>
-					<LinkButton href='/' role='button' aria-label='Go to homepage'>
-						Back to Home
-					</LinkButton>
-					<LinkButton
-						href={`/${game}`}
-						role='button'
-						aria-label='Go to game levels'>
-						Back to {GAMES.find(g => g.game === game)?.label || 'Game'}
-					</LinkButton>
+			<div className='flex justify-center items-center gap-4'>
+				<LinkButton href='/' role='button' aria-label='Go to homepage'>
+					Choose another game
+				</LinkButton>
+				<LinkButton
+					href={`/${game}`}
+					role='button'
+					aria-label='Go to game levels'>
+					Choose another level
+				</LinkButton>
+			</div>
+			<div className='flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row'>
+				<div className='flex gap-8 justify-center'>
+					<p>
+						<span className='font-semibold text-blue-500'>Game:</span> {game}
+					</p>
+					<p>
+						<span className='font-semibold text-blue-500'>Level:</span>{' '}
+						{level.id}
+					</p>
 				</div>
-				<div className='min-w-16'>
-					{next && (
+				<div>
+					<span className='font-semibold text-blue-500'>Description:</span>{' '}
+					{description}
+				</div>
+				<div className='min-w-16 mt-2 lg:mt-0'>
+					{isNext && (
 						<LinkButton
-							href={`/game/image_${nextLevel}?game=${game}`}
+							href={`/${game}/image_${nextLevel}`}
 							role='button'
 							aria-label='Go to next level'>
 							Next
@@ -95,7 +109,7 @@ export default async function PlayFindPage({ params, searchParams }) {
 					)}
 				</div>
 			</div>
-			<PlayFind level={level} game={game} />
+			<PlayGameFind level={level} game={game} />
 		</>
 	)
 }

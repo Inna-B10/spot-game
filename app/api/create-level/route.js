@@ -19,22 +19,6 @@ export async function POST(req) {
 			return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
 		}
 
-		// Get the file extension
-		const ext = file.name.split('.').pop()
-		const uniqueName = `${name.replace(/\s/g, '_')}_${uuid().slice(
-			0,
-			6
-		)}.${ext}`
-		const filePath = path.join(
-			process.cwd(),
-			`public/images/${game}`,
-			uniqueName
-		)
-
-		// Save the image
-		const buffer = Buffer.from(await file.arrayBuffer())
-		await writeFile(filePath, buffer)
-
 		// Path to JSON with levels
 		const jsonPath = path.join(process.cwd(), `data/${game}.json`)
 
@@ -53,6 +37,18 @@ export async function POST(req) {
 			}
 		}
 
+		// Get the file extension
+		const ext = file.name.split('.').pop()
+		const uniqueName = `${id.replace(/\s/g, '_')}_${uuid().slice(0, 6)}.${ext}`
+		const filePath = path.join(
+			process.cwd(),
+			`public/images/${game}`,
+			uniqueName
+		)
+		// Save the image
+		const buffer = Buffer.from(await file.arrayBuffer())
+		await writeFile(filePath, buffer)
+
 		const parsedDiffs = JSON.parse(points)
 
 		existing.push({
@@ -63,7 +59,7 @@ export async function POST(req) {
 
 		fs.writeFileSync(jsonPath, JSON.stringify(existing, null, 2), 'utf-8')
 
-		return NextResponse.json({ success: true, file: uniqueName })
+		return NextResponse.json({ success: true, file: uniqueName, id: id })
 	} catch (error) {
 		if (env.NODE_ENV === 'development') {
 			console.error('Save error:', error)

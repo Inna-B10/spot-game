@@ -1,16 +1,18 @@
 'use client'
 
+import { BackNavLinks } from '@/app/(pages)/editor/[game]/[id]/BackNavLinks'
 import { useCallback, useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { EditorToolbar } from './EditorToolbar'
 import { ImageWithPoints } from './ImageWithPoints'
 
-export default function Editor({ initialLevel, mode, game, setModified }) {
+export default function Editor({ initialLevel, mode, game }) {
 	const [id, setId] = useState('')
 	const [imageUrl, setImageUrl] = useState(null)
 	const [imageFile, setImageFile] = useState(null)
 	const [radius, setRadius] = useState(25)
 	const [points, setPoints] = useState([])
+	const [modified, setModified] = useState(false)
 
 	useEffect(() => {
 		if (initialLevel) {
@@ -60,6 +62,9 @@ export default function Editor({ initialLevel, mode, game, setModified }) {
 
 	return (
 		<div className='space-y-6 w-full'>
+			<div className='flex justify-end items-center gap-4'>
+				<BackNavLinks game={game} modified={modified} />
+			</div>
 			{mode === 'create' && (
 				<div>
 					<label>Upload image: </label>
