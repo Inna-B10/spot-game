@@ -2,6 +2,7 @@ import PlayGameFind from '@/components/PlayGameFind'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { GAME_DESC } from '@/constants/gameDescriptions'
 import { GAMES } from '@/constants/games'
+import clsx from 'clsx'
 import fs from 'fs/promises'
 import { notFound } from 'next/navigation'
 import path from 'path'
@@ -73,7 +74,7 @@ export default async function PlayFindPage({ params }) {
 
 	return (
 		<>
-			<div className='flex justify-center items-center gap-4'>
+			<div className='flex justify-center items-center gap-4 mb-10'>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Choose another game
 				</LinkButton>
@@ -84,7 +85,11 @@ export default async function PlayFindPage({ params }) {
 					Choose another level
 				</LinkButton>
 			</div>
-			<div className='flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row'>
+			<div
+				className={clsx(
+					'flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded',
+					isNext ? 'p-2' : 'py-4 px-2'
+				)}>
 				<div className='flex gap-8 justify-center'>
 					<p>
 						<span className='font-semibold text-blue-500'>Game:</span> {game}

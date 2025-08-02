@@ -3,9 +3,9 @@ import { GAMES } from '@/constants/games'
 
 export default async function Home() {
 	return (
-		<>
+		<div className='space-y-6'>
 			<h1 className='text-2xl font-bold'>🏠 Главная страница</h1>
-			<ul className='mb-4'>
+			<ul className='mb-8'>
 				<li>
 					<LinkButton
 						href='/editor'
@@ -28,6 +28,6 @@ export default async function Home() {
 					</li>
 				))}
 			</ul>
-		</>
+		</div>
 	)
 }
