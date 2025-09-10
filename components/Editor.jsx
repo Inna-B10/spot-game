@@ -4,21 +4,21 @@ import { BackNavLinks } from '@/app/(pages)/editor/[game]/[id]/BackNavLinks'
 import { useCallback, useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { EditorToolbar } from './EditorToolbar'
-import { ImageWithPoints } from './ImageWithPoints'
+import { ImageWithAreas } from './ImageWithAreas'
 
 export default function Editor({ initialLevel, mode, game }) {
 	const [id, setId] = useState('')
 	const [imageUrl, setImageUrl] = useState(null)
 	const [imageFile, setImageFile] = useState(null)
 	const [radius, setRadius] = useState(25)
-	const [points, setPoints] = useState([])
+	const [areas, setAreas] = useState([])
 	const [modified, setModified] = useState(false)
 
 	useEffect(() => {
 		if (initialLevel) {
 			setId(initialLevel.id || '')
 			setImageUrl(initialLevel.image || '')
-			setPoints(initialLevel.points || [])
+			setAreas(initialLevel.areas || [])
 		}
 	}, [initialLevel])
 
@@ -28,14 +28,14 @@ export default function Editor({ initialLevel, mode, game }) {
 			const url = URL.createObjectURL(file)
 			setImageUrl(url)
 			setImageFile(file)
-			setPoints([])
+			setAreas([])
 		}
 	}, [])
 
 	const handleImageClick = useCallback(
 		({ x, y }) => {
 			setModified(true)
-			setPoints(prev => {
+			setAreas(prev => {
 				const existing = prev.find(point => {
 					const dx = x - point.x
 					const dy = y - point.y
@@ -82,7 +82,7 @@ export default function Editor({ initialLevel, mode, game }) {
 					<EditorToolbar
 						radius={radius}
 						setRadius={setRadius}
-						points={points}
+						areas={areas}
 						game={game}
 						mode={mode}
 						setModified={setModified}
@@ -92,17 +92,17 @@ export default function Editor({ initialLevel, mode, game }) {
 					/>
 
 					<div className='w-full flex justify-center'>
-						<ImageWithPoints
+						<ImageWithAreas
 							imageUrl={
 								mode === 'create' ? imageUrl : `/images/${game}/${imageUrl}`
 							}
-							points={points}
+							areas={areas}
 							onPointClick={handleImageClick}
 						/>
 					</div>
 
 					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>
-						{JSON.stringify(points, null, 2)}
+						{JSON.stringify(areas, null, 2)}
 					</pre>
 				</div>
 			)}

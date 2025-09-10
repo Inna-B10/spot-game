@@ -7,14 +7,14 @@ export function useSaveGame(
 	id,
 	imageUrl,
 	imageFile,
-	points,
+	areas,
 	setModified
 ) {
 	const router = useRouter()
 	/* ----------------------------- Mode === 'create' */
 	const save = useCallback(async () => {
 		if (mode === 'create') {
-			if (!imageFile || points.length === 0) {
+			if (!imageFile || areas.length === 0) {
 				alert('Fill in all fields and upload the image')
 				return
 			}
@@ -22,7 +22,7 @@ export function useSaveGame(
 			const formData = new FormData()
 			formData.append('file', imageFile)
 			formData.append('name', 'image')
-			formData.append('points', JSON.stringify(points))
+			formData.append('areas', JSON.stringify(areas))
 			try {
 				const res = await fetch(`/api/create-level?game=${saveGame}`, {
 					method: 'POST',
@@ -43,12 +43,12 @@ export function useSaveGame(
 			}
 		} else {
 			/* ----------------------------- Mode === 'edit' */
-			if (!id || !imageUrl || points.length === 0) {
+			if (!id || !imageUrl || areas.length === 0) {
 				alert('❌ Missing fields')
 				return
 			}
 
-			const updatedLevel = { id, image: imageUrl, points }
+			const updatedLevel = { id, image: imageUrl, areas }
 
 			try {
 				const res = await fetch('/api/update-level', {
@@ -63,6 +63,6 @@ export function useSaveGame(
 				alert('❌ Failed to update: ' + e.message)
 			}
 		}
-	}, [saveGame, mode, id, imageUrl, imageFile, points, setModified, router])
+	}, [saveGame, mode, id, imageUrl, imageFile, areas, setModified, router])
 	return save
 }

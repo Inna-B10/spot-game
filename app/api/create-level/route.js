@@ -12,10 +12,10 @@ export async function POST(req) {
 
 		let id
 		const file = formData.get('file')
-		const points = formData.get('points')
+		const areas = formData.get('areas')
 		const name = formData.get('name')?.trim()
 
-		if (!file || !points || !name) {
+		if (!file || !areas || !name) {
 			return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
 		}
 
@@ -49,12 +49,12 @@ export async function POST(req) {
 		const buffer = Buffer.from(await file.arrayBuffer())
 		await writeFile(filePath, buffer)
 
-		const parsedDiffs = JSON.parse(points)
+		const parsedDiffs = JSON.parse(areas)
 
 		existing.push({
 			id,
 			image: uniqueName,
-			points: parsedDiffs,
+			areas: parsedDiffs,
 		})
 
 		fs.writeFileSync(jsonPath, JSON.stringify(existing, null, 2), 'utf-8')

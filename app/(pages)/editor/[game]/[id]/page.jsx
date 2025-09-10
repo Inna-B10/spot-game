@@ -17,7 +17,7 @@ export default async function EditLevel({ params }) {
 		level = {
 			id: '',
 			imageUrl: '',
-			points: [],
+			areas: [],
 			radius: 25,
 		}
 	} else {

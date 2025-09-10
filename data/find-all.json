@@ -2,51 +2,59 @@
 	{
 		"id": "image_1",
 		"image": "image_1_02b004.gif",
-		"points": [
+		"areas": [
 			{
 				"id": "741edb9c-e850-4843-9124-1522131a8d0f",
 				"x": 395,
 				"y": 50,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "f791d1e4-7a6a-42de-a84e-5a19fe1cba6e",
 				"x": 184,
 				"y": 458,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "0cb1aaab-a371-46a5-823b-bda31e1ec678",
 				"x": 281,
 				"y": 341,
+				"type": "circle",
 				"radius": 20
 			},
 			{
 				"id": "ad3b8f80-1edd-4a84-8e91-998f7dae7084",
 				"x": 396,
 				"y": 174,
+				"type": "circle",
 				"radius": 20
 			},
 			{
 				"id": "5a1ff603-15c1-4a85-ad57-beb179a9cd9a",
 				"x": 334,
 				"y": 207,
+				"type": "circle",
 				"radius": 18
 			},
 			{
 				"id": "4aa87965-ecc9-4363-96ce-62a55be68ccb",
 				"x": 423,
 				"y": 252,
+				"type": "circle",
 				"radius": 30
 			},
 			{
 				"id": "4bcacd1e-f3ce-4ffe-82f8-8e262795d5f8",
 				"x": 68,
 				"y": 427,
+				"type": "circle",
 				"radius": 30
 			},
 			{
 				"id": "a390179c-55b1-46de-b1c1-020221351938",
+				"type": "circle",
 				"x": 81,
 				"y": 218,
 				"radius": 30
@@ -55,28 +63,33 @@
 				"id": "ad323705-dce5-4671-9e6e-d317d40808aa",
 				"x": 65,
 				"y": 296,
+				"type": "circle",
 				"radius": 40
 			},
 			{
 				"id": "0f3194d6-099c-4e4b-9ece-fd63303d6f6e",
 				"x": 213,
 				"y": 44,
+				"type": "circle",
 				"radius": 40
 			},
 			{
 				"id": "0c1e7d66-962c-483d-bdbb-3726b6b1f9ff",
 				"x": 191,
 				"y": 293,
+				"type": "circle",
 				"radius": 20
 			},
 			{
 				"id": "0f418bd4-500b-404c-97bd-6527184b9388",
 				"x": 285,
 				"y": 84,
+				"type": "circle",
 				"radius": 30
 			},
 			{
 				"id": "66d7813f-221f-4589-9f40-17fc3d8c94d8",
+				"type": "circle",
 				"x": 412,
 				"y": 345,
 				"radius": 30
@@ -85,6 +98,7 @@
 				"id": "1d872b95-c514-4ed8-9c28-af3f7c47da8a",
 				"x": 345,
 				"y": 430,
+				"type": "circle",
 				"radius": 25
 			}
 		]
@@ -92,41 +106,47 @@
 	{
 		"id": "image_2",
 		"image": "image_2_d5e755.jpg",
-		"points": [
+		"areas": [
 			{
 				"id": "33b5dcbf-d7ec-4327-b94e-2cba3c756c7e",
 				"x": 229,
 				"y": 291,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "e8c5240e-742c-46b3-b584-686509a22a2c",
 				"x": 562,
 				"y": 287,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "5e3e7627-ef0f-4ae6-beca-d6a6bb4b0299",
 				"x": 371,
 				"y": 218,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "c06a808d-67d8-4d52-a567-83ac223aa29b",
 				"x": 301,
 				"y": 312,
+				"type": "circle",
 				"radius": 25
 			},
 			{
 				"id": "614b62a2-b064-4643-9109-cd9bbc9c1a3e",
 				"x": 499,
 				"y": 57,
+				"type": "circle",
 				"radius": 50
 			},
 			{
 				"id": "332984d3-edd6-4b95-a1a3-f56cf9a4e509",
 				"x": 239,
 				"y": 56,
+				"type": "circle",
 				"radius": 20
 			}
 		]

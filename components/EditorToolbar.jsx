@@ -4,7 +4,7 @@ import { Button } from './ui/buttons/Button'
 export function EditorToolbar({
 	radius,
 	setRadius,
-	points,
+	areas,
 	game,
 	mode,
 	setModified,
@@ -18,7 +18,7 @@ export function EditorToolbar({
 		id,
 		imageUrl,
 		imageFile,
-		points,
+		areas,
 		setModified
 	)
 	return (
@@ -35,10 +35,10 @@ export function EditorToolbar({
 
 			<div className='flex justify-center items-center'>
 				{game === 'find-pair'
-					? points?.length % 2 > 0
-						? `${(points?.length - 1) / 2} pairs + 1 point`
-						: `${points?.length / 2} pairs`
-					: `${points?.length} points`}
+					? areas?.length % 2 > 0
+						? `${(areas?.length - 1) / 2} pairs + 1 point`
+						: `${areas?.length / 2} pairs`
+					: `${areas?.length} areas`}
 			</div>
 
 			{mode === 'create' ? (

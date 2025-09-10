@@ -1,11 +1,6 @@
 import { useRef } from 'react'
 
-export function ImageWithPoints({
-	imageUrl,
-	points,
-	onPointClick,
-	highlightId,
-}) {
+export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId }) {
 	const imageRef = useRef(null)
 
 	const handleClick = e => {
@@ -26,7 +21,7 @@ export function ImageWithPoints({
 				className='max-w-[900px] h-auto cursor-crosshair'
 				draggable='false'
 			/>
-			{points.map(diff => (
+			{areas.map(diff => (
 				<div
 					key={diff.id}
 					className={`absolute border-2 rounded-full pointer-events-none
