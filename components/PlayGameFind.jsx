@@ -22,31 +22,26 @@ export default function PlayGameFind({ level, game }) {
 			for (const diff of level.areas) {
 				if (found.includes(diff.id)) continue
 
+				let isInside = false
+
 				if (diff.type === 'circle') {
 					const dx = x - diff.x
 					const dy = y - diff.y
 					const distance = Math.sqrt(dx * dx + dy * dy)
-
-					if (distance <= diff.radius) {
-						const updated = [...found, diff.id]
-						setFound(updated)
-						if (updated.length === level.areas.length) setCompleted(true)
-						setJustFound(diff.id)
-						setTimeout(() => setJustFound(null), 800)
-						break
-					}
+					isInside = distance <= diff.radius
 				}
-				if (diff.type === 'rect') {
-					const inside = x >= diff.x && x <= diff.x + diff.width && y >= diff.y && y <= diff.y + diff.height
 
-					if (inside) {
-						const updated = [...found, diff.id]
-						setFound(updated)
-						if (updated.length === level.areas.length) setCompleted(true)
-						setJustFound(diff.id)
-						setTimeout(() => setJustFound(null), 800)
-						break
-					}
+				if (diff.type === 'rect') {
+					isInside = x >= diff.x && x <= diff.x + diff.width && y >= diff.y && y <= diff.y + diff.height
+				}
+
+				if (isInside) {
+					const updated = [...found, diff.id]
+					setFound(updated)
+					if (updated.length === level.areas.length) setCompleted(true)
+					setJustFound(diff.id)
+					setTimeout(() => setJustFound(null), 800)
+					break
 				}
 			}
 		},
@@ -74,7 +69,13 @@ export default function PlayGameFind({ level, game }) {
 				)}
 			</div>
 			<div className='w-full flex justify-center'>
-				<ImageWithAreas imageUrl={`/images/${game}/${level.image}`} areas={level.areas.filter(p => found.includes(p.id))} onPointClick={handlePointClick} highlightId={justFound} imageRef={imageRef} />
+				<ImageWithAreas
+					imageUrl={`/images/${game}/${level.image}`}
+					areas={level.areas.filter(p => found.includes(p.id))}
+					onPointClick={handlePointClick}
+					highlightId={justFound}
+					imageRef={imageRef}
+				/>
 			</div>
 		</div>
 	)

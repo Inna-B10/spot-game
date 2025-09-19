@@ -1,4 +1,4 @@
-export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId, imageRef, onMouseDown, onMouseMove, onMouseUp }) {
+export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId, imageRef, onMouseDown, onMouseMove, onMouseUp, onContextMenu }) {
 	console.log('imageRef', imageRef)
 	const handleClick = e => {
 		if (!imageRef?.current) return
@@ -9,7 +9,13 @@ export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId, ima
 	}
 
 	return (
-		<div className='relative content-center w-fit' onClick={handleClick} onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp}>
+		<div
+			className='relative content-center w-fit'
+			onClick={handleClick}
+			onMouseDown={onMouseDown}
+			onMouseMove={onMouseMove}
+			onMouseUp={onMouseUp}
+			onContextMenu={onContextMenu}>
 			{/* next/image does not support correctly ref */}
 			<img ref={imageRef} src={imageUrl} alt='preview' className='max-w-[900px] h-auto cursor-crosshair' draggable='false' />
 

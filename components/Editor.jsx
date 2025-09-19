@@ -36,6 +36,35 @@ export default function Editor({ initialLevel, mode, game }) {
 		}
 	}, [])
 
+	// удаление областей по правому клику мыши
+	const handleContextMenu = useCallback(e => {
+		e.preventDefault() // отключаем стандартное меню
+
+		if (!imageRef.current) return
+		const rect = imageRef.current.getBoundingClientRect()
+		const x = e.clientX - rect.left
+		const y = e.clientY - rect.top
+
+		setAreas(prev => {
+			const existing = prev.find(area => {
+				if (area.type === 'circle') {
+					const dx = x - area.x
+					const dy = y - area.y
+					return Math.sqrt(dx ** 2 + dy ** 2) < area.radius
+				}
+				if (area.type === 'rect') {
+					return x >= area.x && x <= area.x + area.width && y >= area.y && y <= area.y + area.height
+				}
+				return false
+			})
+
+			if (existing) {
+				return prev.filter(area => area.id !== existing.id)
+			}
+			return prev
+		})
+	}, [])
+
 	const handleImageClick = useCallback(
 		({ x, y }) => {
 			setModified(true)
@@ -49,21 +78,12 @@ export default function Editor({ initialLevel, mode, game }) {
 						return Math.sqrt(dx ** 2 + dy ** 2) < area.radius
 					}
 					if (area.type === 'rect') {
-						return (
-							x >= area.x &&
-							x <= area.x + area.width &&
-							y >= area.y &&
-							y <= area.y + area.height
-						)
+						return x >= area.x && x <= area.x + area.width && y >= area.y && y <= area.y + area.height
 					}
 					return false
 				})
-
+				// если попали в область - ничего не рисуем
 				if (existing) {
-					if (drawMode === 'circle') {
-						// Удаляем найденную область
-						return prev.filter(area => area.id !== existing.id)
-					}
 					return prev
 				}
 
@@ -91,8 +111,25 @@ export default function Editor({ initialLevel, mode, game }) {
 	// Drag and drop for rectangle drawing
 	const handleMouseDown = e => {
 		if (drawMode !== 'rect') return
-		setIsDragging(true)
 		const { x, y } = getRelativeCoordsPx(e)
+
+		// Ищем существующую область
+		const existing = areas.find(area => {
+			if (area.type === 'circle') {
+				const dx = x - area.x
+				const dy = y - area.y
+				return Math.sqrt(dx * dx + dy * dy) < area.radius
+			}
+			if (area.type === 'rect') {
+				return x >= area.x && x <= area.x + area.width && y >= area.y && y <= area.y + area.height
+			}
+			return false
+		})
+
+		// Если попали внутрь существующей области — не начинаем рисовать
+		if (existing) return
+
+		setIsDragging(true)
 		setRectStart({ x, y })
 	}
 
@@ -111,36 +148,21 @@ export default function Editor({ initialLevel, mode, game }) {
 	}
 
 	const handleMouseUp = e => {
-		if (!isDragging || drawMode !== 'rect' || !rectStart) return
-		const { x, y } = getRelativeCoordsPx(e)
-		const width = x - rectStart.x
-		const height = y - rectStart.y
+		if (!isDragging || drawMode !== 'rect') return
 		setIsDragging(false)
+		setRectStart(null)
 
-		// setAreas(prev =>
-		// 	prev.map(a =>
-		// 		a.id === 'temp'
-		// 			? {
-		// 					id: uuid(),
-		// 					x: rectStart.x,
-		// 					y: rectStart.y,
-		// 					type: 'rect',
-		// 					width,
-		// 					height,
-		// 			  }
-		// 			: a
-		// 	)
-		// )
 		setAreas(prev => {
 			const temp = prev.find(a => a.id === 'temp')
 			if (!temp) return prev // ничего не рисовали — выходим
-
+			if (temp.width <= 5 || temp.height <= 5) {
+				return [...prev.filter(a => a.id !== 'temp')]
+			}
 			return [
 				...prev.filter(a => a.id !== 'temp'),
 				{ ...temp, id: uuid() }, // превращаем во "взрослый" rect
 			]
 		})
-		setRectStart(null)
 	}
 	console.log('areas', areas)
 	// Преобразуем координаты мыши в проценты относительно картинки
@@ -159,12 +181,7 @@ export default function Editor({ initialLevel, mode, game }) {
 			{mode === 'create' && (
 				<div>
 					<label>Upload image: </label>
-					<input
-						type='file'
-						accept='image/*'
-						onChange={handleImageUpload}
-						className='bg-gray-200 p-2 w-fit rounded border border-gray-400'
-					/>
+					<input type='file' accept='image/*' onChange={handleImageUpload} className='bg-gray-200 p-2 w-fit rounded border border-gray-400' />
 				</div>
 			)}
 
@@ -186,21 +203,18 @@ export default function Editor({ initialLevel, mode, game }) {
 
 					<div className='w-full flex justify-center'>
 						<ImageWithAreas
-							imageUrl={
-								mode === 'create' ? imageUrl : `/images/${game}/${imageUrl}`
-							}
+							imageUrl={mode === 'create' ? imageUrl : `/images/${game}/${imageUrl}`}
 							areas={areas}
 							imageRef={imageRef}
 							onPointClick={handleImageClick}
 							onMouseDown={handleMouseDown}
 							onMouseMove={handleMouseMove}
 							onMouseUp={handleMouseUp}
+							onContextMenu={handleContextMenu}
 						/>
 					</div>
 
-					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>
-						{JSON.stringify(areas, null, 2)}
-					</pre>
+					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>{JSON.stringify(areas, null, 2)}</pre>
 				</div>
 			)}
 		</div>
