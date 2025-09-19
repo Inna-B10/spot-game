@@ -1,12 +1,13 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ImageWithAreas } from './ImageWithAreas'
 
 export default function PlayGameFind({ level, game }) {
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)
+	const imageRef = useRef(null)
 
 	useEffect(() => {
 		setFound([])
@@ -21,17 +22,31 @@ export default function PlayGameFind({ level, game }) {
 			for (const diff of level.areas) {
 				if (found.includes(diff.id)) continue
 
-				const dx = x - diff.x
-				const dy = y - diff.y
-				const distance = Math.sqrt(dx * dx + dy * dy)
+				if (diff.type === 'circle') {
+					const dx = x - diff.x
+					const dy = y - diff.y
+					const distance = Math.sqrt(dx * dx + dy * dy)
 
-				if (distance <= diff.radius) {
-					const updated = [...found, diff.id]
-					setFound(updated)
-					if (updated.length === level.areas.length) setCompleted(true)
-					setJustFound(diff.id)
-					setTimeout(() => setJustFound(null), 800)
-					break
+					if (distance <= diff.radius) {
+						const updated = [...found, diff.id]
+						setFound(updated)
+						if (updated.length === level.areas.length) setCompleted(true)
+						setJustFound(diff.id)
+						setTimeout(() => setJustFound(null), 800)
+						break
+					}
+				}
+				if (diff.type === 'rect') {
+					const inside = x >= diff.x && x <= diff.x + diff.width && y >= diff.y && y <= diff.y + diff.height
+
+					if (inside) {
+						const updated = [...found, diff.id]
+						setFound(updated)
+						if (updated.length === level.areas.length) setCompleted(true)
+						setJustFound(diff.id)
+						setTimeout(() => setJustFound(null), 800)
+						break
+					}
 				}
 			}
 		},
@@ -43,9 +58,7 @@ export default function PlayGameFind({ level, game }) {
 			<div className='min-h-30'>
 				{game === 'find-pair' ? (
 					<p>
-						Найдено:{' '}
-						{found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2}{' '}
-						из {level.areas.length / 2}
+						Найдено: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} из {level.areas.length / 2}
 					</p>
 				) : (
 					<p>
@@ -61,12 +74,7 @@ export default function PlayGameFind({ level, game }) {
 				)}
 			</div>
 			<div className='w-full flex justify-center'>
-				<ImageWithAreas
-					imageUrl={`/images/${game}/${level.image}`}
-					areas={level.areas.filter(p => found.includes(p.id))}
-					onPointClick={handlePointClick}
-					highlightId={justFound}
-				/>
+				<ImageWithAreas imageUrl={`/images/${game}/${level.image}`} areas={level.areas.filter(p => found.includes(p.id))} onPointClick={handlePointClick} highlightId={justFound} imageRef={imageRef} />
 			</div>
 		</div>
 	)
