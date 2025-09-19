@@ -1,5 +1,4 @@
 export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId, imageRef, onMouseDown, onMouseMove, onMouseUp, onContextMenu }) {
-	console.log('imageRef', imageRef)
 	const handleClick = e => {
 		if (!imageRef?.current) return
 		const rect = imageRef.current.getBoundingClientRect()

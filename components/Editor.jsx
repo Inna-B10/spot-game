@@ -164,7 +164,7 @@ export default function Editor({ initialLevel, mode, game }) {
 			]
 		})
 	}
-	console.log('areas', areas)
+
 	// Преобразуем координаты мыши в проценты относительно картинки
 	const getRelativeCoordsPx = e => {
 		const rect = imageRef.current.getBoundingClientRect()
@@ -195,6 +195,7 @@ export default function Editor({ initialLevel, mode, game }) {
 						areas={areas}
 						game={game}
 						mode={mode}
+						modified={modified}
 						setModified={setModified}
 						id={id}
 						imageUrl={imageUrl}
@@ -213,8 +214,7 @@ export default function Editor({ initialLevel, mode, game }) {
 							onContextMenu={handleContextMenu}
 						/>
 					</div>
-
-					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>{JSON.stringify(areas, null, 2)}</pre>
+					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto text-left'>{JSON.stringify(areas, null, 2)}</pre>
 				</div>
 			)}
 		</div>
