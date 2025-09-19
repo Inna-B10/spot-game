@@ -17,8 +17,7 @@ export default async function EditLevel({ params }) {
 		level = {
 			id: '',
 			imageUrl: '',
-			points: [],
-			radius: 25,
+			areas: [],
 		}
 	} else {
 		const dataPath = path.join(process.cwd(), `data/${game}.json`)

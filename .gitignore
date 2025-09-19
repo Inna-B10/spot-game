@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# vercel
+.vercel/
+
 # production
 /build
 
@@ -42,3 +45,4 @@ next-env.d.ts
 
 editor-draft*
 
+.env*.local
