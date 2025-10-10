@@ -16,8 +16,8 @@ export async function generateMetadata({ params }) {
 	const label = GAMES.find(g => g.game === game)?.label || 'Game'
 
 	return {
-		title: `Уровни игры ${label}`,
-		description: `Список уровней для игры ${label}`,
+		title: `Levels of ${label}`,
+		description: `List of levels for ${label}`,
 	}
 }
 
@@ -46,9 +46,9 @@ export default async function GamePage({ params }) {
 	if (levelsByGame.length === 0) {
 		return (
 			<>
-				<p>Уровней нет</p>
+				<p>There are no levels</p>
 				<LinkButton href='/' role='button' aria-label='Go to main page'>
-					На главную
+					Back to Home
 				</LinkButton>
 			</>
 		)
@@ -59,25 +59,15 @@ export default async function GamePage({ params }) {
 			<div className='flex justify-between items-center gap-2'>
 				<h2 className='text-xl font-semibold'>{label}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
-					Back to Home
+					Home
 				</LinkButton>
 			</div>
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
-					<li
-						key={level.id}
-						className='border p-4 rounded shadow hover:shadow-md'>
-						<Link
-							href={`/${game}/${level.id}`}
-							title={`open level ${level.id}`}>
+					<li key={level.id} className='border p-4 rounded shadow hover:shadow-md'>
+						<Link href={`/${game}/${level.id}`} title={`open level ${level.id}`}>
 							{level.id}
-							<Image
-								src={`/images/${game}/${level.image}`}
-								alt={level.id}
-								width={100}
-								height={100}
-								className='w-fit h-fit object-contain'
-							/>
+							<Image src={`/images/${game}/${level.image}`} alt={level.id} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>
 					</li>
 				))}

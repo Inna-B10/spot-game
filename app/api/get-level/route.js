@@ -11,10 +11,7 @@ export async function GET(request) {
 
 	if (!game || !id) {
 		console.error('Missing game or id param')
-		return NextResponse.json(
-			{ error: 'Missing game or id param' },
-			{ status: 400 }
-		)
+		return NextResponse.json({ error: 'Missing game or id param' }, { status: 400 })
 	}
 
 	try {
@@ -23,7 +20,7 @@ export async function GET(request) {
 		const levels = JSON.parse(file)
 
 		if (id === '_all') {
-			// Возвращаем весь массив уровней
+			// return the entire array of levels
 			return NextResponse.json(levels)
 		}
 

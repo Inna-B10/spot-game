@@ -39,7 +39,7 @@ export async function generateStaticParams() {
 			})
 		} catch (e) {
 			if (process.env.NODE_ENV === 'development') {
-				console.error(`Ошибка чтения ${game}.json:`, e)
+				console.error(`Error reading ${game}.json:`, e)
 			}
 		}
 	}
@@ -78,37 +78,25 @@ export default async function PlayFindPage({ params }) {
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Choose another game
 				</LinkButton>
-				<LinkButton
-					href={`/${game}`}
-					role='button'
-					aria-label='Go to game levels'>
+				<LinkButton href={`/${game}`} role='button' aria-label='Go to game levels'>
 					Choose another level
 				</LinkButton>
 			</div>
-			<div
-				className={clsx(
-					'flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded',
-					isNext ? 'p-2' : 'py-4 px-2'
-				)}>
+			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', isNext ? 'p-2' : 'py-4 px-2')}>
 				<div className='flex gap-8 justify-center'>
 					<p>
 						<span className='font-semibold text-blue-500'>Game:</span> {game}
 					</p>
 					<p>
-						<span className='font-semibold text-blue-500'>Level:</span>{' '}
-						{level.id}
+						<span className='font-semibold text-blue-500'>Level:</span> {level.id}
 					</p>
 				</div>
 				<div>
-					<span className='font-semibold text-blue-500'>Description:</span>{' '}
-					{description}
+					<span className='font-semibold text-blue-500'>Description:</span> {description}
 				</div>
 				<div className='min-w-16 mt-2 lg:mt-0'>
 					{isNext && (
-						<LinkButton
-							href={`/${game}/image_${nextLevel}`}
-							role='button'
-							aria-label='Go to next level'>
+						<LinkButton href={`/${game}/image_${nextLevel}`} role='button' aria-label='Go to next level'>
 							Next
 						</LinkButton>
 					)}

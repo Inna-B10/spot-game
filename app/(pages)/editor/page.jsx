@@ -10,7 +10,7 @@ export default function EditorPage() {
 	return (
 		<>
 			<div className='flex justify-between items-center gap-2 mb-4'>
-				<h1 className='text-2xl font-semibold'>Choose the game</h1>
+				<h1 className='text-2xl font-semibold'>Choose game</h1>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Back to Home
 				</LinkButton>
@@ -18,10 +18,7 @@ export default function EditorPage() {
 			<ul className='inline-flex gap-2'>
 				{GAMES.map(({ game, label }) => (
 					<li key={game}>
-						<LinkButton
-							href={`/editor/${game}`}
-							role='button'
-							aria-label={`Go to ${label} games list`}>
+						<LinkButton href={`/editor/${game}`} role='button' aria-label={`Go to ${label} games list`}>
 							{label}
 						</LinkButton>
 					</li>

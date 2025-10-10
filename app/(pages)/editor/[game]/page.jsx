@@ -28,9 +28,9 @@ export default async function GameIndex({ params }) {
 	if (levelsByGame.length === 0) {
 		return (
 			<div className='flex flex-col items-center gap-8'>
-				<p>Уровней нет</p>
+				<p>There are no levels</p>
 				<LinkButton href='/' role='button' aria-label='Go to main page'>
-					На главную
+					Back to Home
 				</LinkButton>
 			</div>
 		)
@@ -41,10 +41,7 @@ export default async function GameIndex({ params }) {
 			<div className='flex justify-between items-center gap-2'>
 				<h1 className='text-xl font-bold'>Game: {label}</h1>
 				<span className='space-x-4'>
-					<LinkButton
-						href='/editor'
-						role='button'
-						aria-label='Go to main editor page'>
+					<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
 						Back to Editor
 					</LinkButton>
 					<LinkButton href='/' role='button' aria-label='Go to homepage'>
@@ -52,29 +49,17 @@ export default async function GameIndex({ params }) {
 					</LinkButton>
 				</span>
 			</div>
-			<h2 className='text-lg font-semibold inline-block'>choose the level</h2>
+			<h2 className='text-lg font-semibold inline-block'>choose level</h2>
 			&nbsp; &nbsp;or&nbsp;&nbsp;&nbsp;
-			<LinkButton
-				href={`/editor/${game}/new`}
-				className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit w-fit'>
+			<LinkButton href={`/editor/${game}/new`} className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit w-fit'>
 				Create a new
 			</LinkButton>
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
-					<li
-						key={level.id}
-						className='border p-4 rounded shadow hover:shadow-md'>
-						<Link
-							href={`/editor/${game}/${level.id}`}
-							title={`open ${level.id} to edit`}>
+					<li key={level.id} className='border p-4 rounded shadow hover:shadow-md'>
+						<Link href={`/editor/${game}/${level.id}`} title={`open ${level.id} to edit`}>
 							{level.id}
-							<Image
-								src={`/images/${game}/${level.image}`}
-								alt={level.id}
-								width={100}
-								height={100}
-								className='w-fit h-fit object-contain'
-							/>
+							<Image src={`/images/${game}/${level.image}`} alt={level.id} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>
 					</li>
 				))}

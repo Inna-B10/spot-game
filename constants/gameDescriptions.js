@@ -13,6 +13,6 @@ export const GAME_DESC = [
 	},
 	{
 		game: 'find-pair',
-		description: 'Try to find pair',
+		description: 'Try to find pair(s)',
 	},
 ]

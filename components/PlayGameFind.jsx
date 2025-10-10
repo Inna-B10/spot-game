@@ -19,30 +19,43 @@ export default function PlayGameFind({ level, game }) {
 		({ x, y }) => {
 			if (completed) return
 
+			let closest = null
+			let minDist = Infinity
+
 			for (const diff of level.areas) {
 				if (found.includes(diff.id)) continue
 
-				let isInside = false
+				let isHit = false
+				let dist = 0
 
 				if (diff.type === 'circle') {
 					const dx = x - diff.x
 					const dy = y - diff.y
-					const distance = Math.sqrt(dx * dx + dy * dy)
-					isInside = distance <= diff.radius
+					dist = Math.sqrt(dx * dx + dy * dy)
+					isHit = dist <= diff.radius
+				} else if (diff.type === 'rect') {
+					const inside = x >= diff.x && x <= diff.x + diff.width && y >= diff.y && y <= diff.y + diff.height
+					if (inside) {
+						// distance to the center of the rectangle
+						const centerX = diff.x + diff.width / 2
+						const centerY = diff.y + diff.height / 2
+						dist = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2)
+						isHit = true
+					}
 				}
 
-				if (diff.type === 'rect') {
-					isInside = x >= diff.x && x <= diff.x + diff.width && y >= diff.y && y <= diff.y + diff.height
+				if (isHit && dist < minDist) {
+					minDist = dist
+					closest = diff
 				}
+			}
 
-				if (isInside) {
-					const updated = [...found, diff.id]
-					setFound(updated)
-					if (updated.length === level.areas.length) setCompleted(true)
-					setJustFound(diff.id)
-					setTimeout(() => setJustFound(null), 800)
-					break
-				}
+			if (closest) {
+				const updated = [...found, closest.id]
+				setFound(updated)
+				if (updated.length === level.areas.length) setCompleted(true)
+				setJustFound(closest.id)
+				setTimeout(() => setJustFound(null), 800)
 			}
 		},
 		[found, level.areas, completed]
@@ -53,18 +66,18 @@ export default function PlayGameFind({ level, game }) {
 			<div className='min-h-30'>
 				{game === 'find-pair' ? (
 					<p>
-						Найдено: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} из {level.areas.length / 2}
+						Found: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} of {level.areas.length / 2}
 					</p>
 				) : (
 					<p>
-						Найдено: {found.length} из {level.areas.length}
+						Found: {found.length} of {level.areas.length}
 					</p>
 				)}
 
 				{completed && (
 					<div className='text-green-600 font-bold text-xl mt-6'>
-						🎉 Поздравляем! <br />
-						Уровень пройден!
+						🎉 Congratulations! <br />
+						Level completed!
 					</div>
 				)}
 			</div>

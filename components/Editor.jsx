@@ -36,9 +36,9 @@ export default function Editor({ initialLevel, mode, game }) {
 		}
 	}, [])
 
-	// удаление областей по правому клику мыши
+	// deleting areas by right-clicking
 	const handleContextMenu = useCallback(e => {
-		e.preventDefault() // отключаем стандартное меню
+		e.preventDefault()
 
 		if (!imageRef.current) return
 		const rect = imageRef.current.getBoundingClientRect()
@@ -59,6 +59,7 @@ export default function Editor({ initialLevel, mode, game }) {
 			})
 
 			if (existing) {
+				setModified(true)
 				return prev.filter(area => area.id !== existing.id)
 			}
 			return prev
@@ -70,7 +71,7 @@ export default function Editor({ initialLevel, mode, game }) {
 			setModified(true)
 
 			setAreas(prev => {
-				// Проверяем, попал ли клик в какой-то существующий круг или прямоугольник
+				// check whether the click fell into any existing circle or rectangle
 				const existing = prev.find(area => {
 					if (area.type === 'circle') {
 						const dx = x - area.x
@@ -82,12 +83,12 @@ export default function Editor({ initialLevel, mode, game }) {
 					}
 					return false
 				})
-				// если попали в область - ничего не рисуем
+				// if hit the area, don't draw anything
 				if (existing) {
 					return prev
 				}
 
-				// Если drawMode === 'circle', добавляем новый круг
+				// if drawMode === 'circle', add a new circle
 				if (drawMode === 'circle') {
 					return [
 						...prev,
@@ -101,7 +102,7 @@ export default function Editor({ initialLevel, mode, game }) {
 					]
 				}
 
-				// Если drawMode === 'rect', ничего не создаём на клик, только drag
+				// if drawMode === 'rect', don't create anything on click, only on drag
 				return prev
 			})
 		},
@@ -113,7 +114,7 @@ export default function Editor({ initialLevel, mode, game }) {
 		if (drawMode !== 'rect') return
 		const { x, y } = getRelativeCoordsPx(e)
 
-		// Ищем существующую область
+		// searching for an existing area
 		const existing = areas.find(area => {
 			if (area.type === 'circle') {
 				const dx = x - area.x
@@ -126,7 +127,7 @@ export default function Editor({ initialLevel, mode, game }) {
 			return false
 		})
 
-		// Если попали внутрь существующей области — не начинаем рисовать
+		//  if inside an existing area, don't start drawing
 		if (existing) return
 
 		setIsDragging(true)
@@ -154,18 +155,18 @@ export default function Editor({ initialLevel, mode, game }) {
 
 		setAreas(prev => {
 			const temp = prev.find(a => a.id === 'temp')
-			if (!temp) return prev // ничего не рисовали — выходим
+			if (!temp) return prev // didn't draw anything - leaving
 			if (temp.width <= 5 || temp.height <= 5) {
 				return [...prev.filter(a => a.id !== 'temp')]
 			}
 			return [
 				...prev.filter(a => a.id !== 'temp'),
-				{ ...temp, id: uuid() }, // превращаем во "взрослый" rect
+				{ ...temp, id: uuid() }, // transform into a "real" rect
 			]
 		})
 	}
 
-	// Преобразуем координаты мыши в проценты относительно картинки
+	// convert mouse coordinates to percentages relative to the image
 	const getRelativeCoordsPx = e => {
 		const rect = imageRef.current.getBoundingClientRect()
 		const x = e.clientX - rect.left
@@ -174,13 +175,13 @@ export default function Editor({ initialLevel, mode, game }) {
 	}
 
 	return (
-		<div className='space-y-6 w-full'>
+		<div className='space-y-6 w-full border min-h-[90vh]'>
 			<div className='flex justify-end items-center gap-4'>
 				<BackNavLinks game={game} modified={modified} />
 			</div>
 			{mode === 'create' && (
-				<div>
-					<label>Upload image: </label>
+				<div className='flex gap-4 justify-center items-center py-4 border'>
+					<label className='text-lg'>Upload image: </label>
 					<input type='file' accept='image/*' onChange={handleImageUpload} className='bg-gray-200 p-2 w-fit rounded border border-gray-400' />
 				</div>
 			)}
