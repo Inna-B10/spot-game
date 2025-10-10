@@ -1,4 +1,4 @@
-import PlayGameFind from '@/components/PlayGameFind'
+import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { GAME_DESC } from '@/constants/gameDescriptions'
 import { GAMES } from '@/constants/games'
@@ -102,7 +102,7 @@ export default async function PlayFindPage({ params }) {
 					)}
 				</div>
 			</div>
-			<PlayGameFind level={level} game={game} />
+			<PlayGame level={level} game={game} />
 		</>
 	)
 }

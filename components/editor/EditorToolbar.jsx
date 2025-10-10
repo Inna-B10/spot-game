@@ -1,5 +1,5 @@
+import { Button } from '@/components/ui/buttons/Button'
 import { useSaveGame } from '@/hooks/useSaveGame'
-import { Button } from './ui/buttons/Button'
 
 export function EditorToolbar({ radius, setRadius, areas, game, mode, setModified, setDrawMode, drawMode, id, imageUrl, imageFile, modified }) {
 	const saveGame = useSaveGame(game, mode, id, imageUrl, imageFile, areas, setModified)

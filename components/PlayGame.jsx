@@ -1,9 +1,9 @@
 'use client'
 
+import { ImageWithAreas } from '@/components/ImageWithAreas'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ImageWithAreas } from './ImageWithAreas'
 
-export default function PlayGameFind({ level, game }) {
+export default function PlayGame({ level, game }) {
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)

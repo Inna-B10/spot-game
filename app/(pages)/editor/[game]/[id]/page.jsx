@@ -1,4 +1,4 @@
-import Editor from '@/components/Editor'
+import Editor from '@/components/editor/Editor'
 import fs from 'fs/promises'
 import { notFound } from 'next/navigation'
 import path from 'path'

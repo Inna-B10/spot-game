@@ -8,7 +8,7 @@ export default async function Home() {
 			<ul className='mb-8'>
 				<li>
 					<LinkButton href='/editor' role='button' aria-label='Go to editor main page'>
-						Level editor
+						🎨 Editor
 					</LinkButton>
 				</li>
 			</ul>
