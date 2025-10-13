@@ -6,6 +6,7 @@
 	},
 	"version": "0.1.0",
 	"private": true,
+	"type": "module",
 	"scripts": {
 		"dev": "next dev --turbopack",
 		"build": "npm run prisma:generate && next build",
@@ -16,7 +17,8 @@
 		"prisma:migrate:deploy": "prisma migrate deploy --schema=lib/prisma/schema.prisma",
 		"prisma:push": "prisma db push --schema=lib/prisma/schema.prisma",
 		"prisma:studio": "prisma studio --schema=lib/prisma/schema.prisma",
-		"prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma --force"
+		"prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma",
+		"prisma:seed": "node lib/prisma/seed.js"
 	},
 	"dependencies": {
 		"@prisma/client": "^6.17.1",
