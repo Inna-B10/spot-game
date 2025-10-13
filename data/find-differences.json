@@ -1,346 +1,346 @@
 [
-  {
-    "id": "image_1",
-    "image": "image_1_fb6a2d.jpg",
-    "areas": [
-      {
-        "id": "7b73f620-c730-4d10-8908-eb370fbbfdf1",
-        "x": 294,
-        "y": 42,
-        "type": "circle",
-        "radius": 25
-      },
-      {
-        "id": "e49fbf55-2b81-48b4-8a39-d7b895e35255",
-        "x": 36,
-        "y": 72,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "32d4cdaa-e1d8-44b2-9e6d-54a9505c42a3",
-        "x": 306,
-        "y": 273,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "49ba270b-8810-413f-928c-75630c852cc1",
-        "x": 281,
-        "y": 78,
-        "type": "circle",
-        "radius": 15
-      },
-      {
-        "id": "638eabb8-decb-488a-96ce-60821820efae",
-        "x": 84.6771240234375,
-        "y": 150.03646087646484,
-        "type": "rect",
-        "width": 90,
-        "height": 38
-      },
-      {
-        "id": "137d52a3-979b-41c3-b351-25da00abe68f",
-        "x": 15.6771240234375,
-        "y": 96.03646087646484,
-        "type": "rect",
-        "width": 18,
-        "height": 190
-      },
-      {
-        "id": "9c3d1cd6-ba0d-4a80-af0d-b1a4db0cc8e1",
-        "x": 120.6771240234375,
-        "y": 78.03646087646484,
-        "type": "rect",
-        "width": 57,
-        "height": 26
-      },
-      {
-        "id": "0b543279-1aba-4605-a8a8-eae4e269a24e",
-        "x": 202.6771240234375,
-        "y": 118.03646087646484,
-        "type": "rect",
-        "width": 45,
-        "height": 23
-      },
-      {
-        "id": "b4b4a70b-2996-43f4-ba73-f3bb732bb565",
-        "x": 197.6771240234375,
-        "y": 216.03646087646484,
-        "type": "rect",
-        "width": 53,
-        "height": 19
-      },
-      {
-        "id": "5b85f020-51cf-48d9-941c-19de193f8f69",
-        "x": 187.6771240234375,
-        "y": 182.03646087646484,
-        "type": "rect",
-        "width": 74,
-        "height": 23
-      }
-    ]
-  },
-  {
-    "id": "image_2",
-    "image": "image_2_380243.jpg",
-    "areas": [
-      {
-        "id": "5802366e-4efd-461e-9d5a-34fb06d8cf80",
-        "x": 123,
-        "y": 106,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "46ac974b-b836-40e7-b794-26f28bb251f4",
-        "x": 43,
-        "y": 242,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "8d191469-8e26-49e6-b18a-137028afa368",
-        "x": 139,
-        "y": 214,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "1f1a28b0-8a17-4a72-8e8b-2241286119c2",
-        "x": 236,
-        "y": 59,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "acab80fa-fc5b-4bb6-870a-fadb558871fa",
-        "x": 209,
-        "y": 100,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "97f16f17-0c7a-4617-9cc1-28f80ac88aff",
-        "x": 334,
-        "y": 112,
-        "type": "circle",
-        "radius": 15
-      },
-      {
-        "id": "3891f016-152f-4197-962a-ca9f3d7b8f86",
-        "x": 264,
-        "y": 51,
-        "type": "circle",
-        "radius": 15
-      },
-      {
-        "id": "473ec0f6-9b35-4cd3-b4f3-4c274e71ef6e",
-        "x": 145,
-        "y": 147,
-        "type": "circle",
-        "radius": 25
-      },
-      {
-        "id": "4713e7b5-431f-462e-877e-7ccd7a2677cd",
-        "x": 32.671875,
-        "y": 118.03646087646484,
-        "type": "rect",
-        "width": 33,
-        "height": 104
-      },
-      {
-        "id": "5bf67b53-0c7c-45d8-b58d-b2aa2e131758",
-        "x": 90.671875,
-        "y": 131.03646087646484,
-        "type": "rect",
-        "width": 25,
-        "height": 38
-      }
-    ]
-  },
-  {
-    "id": "image_3",
-    "image": "image_3_c9ab65.jpg",
-    "areas": [
-      {
-        "id": "6cef68bb-4c30-4803-9af9-1738f0eeb189",
-        "x": 182,
-        "y": 291,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "21649264-3a85-469c-956d-284c7f5d0ff9",
-        "x": 66,
-        "y": 387,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "18a4cc8c-c1fc-4f3e-8888-f092b27958ea",
-        "x": 205,
-        "y": 141,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "8cfea09f-6305-4072-a838-ca63f4693b6f",
-        "x": 43.671875,
-        "y": 170.03646850585938,
-        "type": "rect",
-        "width": 27,
-        "height": 51
-      },
-      {
-        "id": "0727d456-2e22-4f43-8ab8-90b7895962e3",
-        "x": 54.671875,
-        "y": 299.0364685058594,
-        "type": "rect",
-        "width": 34,
-        "height": 64
-      },
-      {
-        "id": "07789169-781b-4083-afdc-bd78cdd1d0a6",
-        "x": 267.671875,
-        "y": 117.03646850585938,
-        "type": "rect",
-        "width": 38,
-        "height": 114
-      }
-    ]
-  },
-  {
-    "id": "image_4",
-    "image": "image_4_0abc2d.jpg",
-    "areas": [
-      {
-        "id": "744e8efc-0c32-4c78-a676-a81fa1ba987b",
-        "x": 330,
-        "y": 230,
-        "type": "circle",
-        "radius": 25
-      },
-      {
-        "id": "0f0c6d8e-6f5d-4ef5-8d48-0f50d6dde420",
-        "x": 295,
-        "y": 126,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "8013cbd6-de3f-40c6-a852-258e72182ccc",
-        "x": 189,
-        "y": 135,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "30277faf-19a2-4730-8227-84a9936d78d1",
-        "x": 55,
-        "y": 271,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "f8b35077-9692-4bdd-859f-2f0603436050",
-        "x": 178,
-        "y": 241,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "21b08b3b-65c2-43a4-86cb-b887b2fb84dd",
-        "x": 247,
-        "y": 249,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "272e66d0-d134-49e7-8908-5ecb315beb06",
-        "x": 228,
-        "y": 202,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "ff76070e-c9bb-436f-92af-ca5d4b36e2de",
-        "x": 122,
-        "y": 45,
-        "type": "circle",
-        "radius": 35
-      },
-      {
-        "id": "53eb9b7d-e2bf-485e-8675-d5a7513fe008",
-        "x": 107,
-        "y": 121,
-        "type": "circle",
-        "radius": 25
-      },
-      {
-        "id": "03bf3d4f-2121-40a8-8476-54b5d934a00e",
-        "x": 169,
-        "y": 116,
-        "type": "circle",
-        "radius": 10
-      },
-      {
-        "id": "5347fa7b-f33c-4945-b33a-80f0337cab61",
-        "x": 163,
-        "y": 91,
-        "type": "circle",
-        "radius": 15
-      },
-      {
-        "id": "876b4f65-72b0-42ef-ad24-8e462bd9258b",
-        "x": 185.671875,
-        "y": 44.036460876464844,
-        "type": "rect",
-        "width": 79,
-        "height": 23
-      }
-    ]
-  },
-  {
-    "id": "image_5",
-    "image": "image_5_50b54d.jpg",
-    "areas": [
-      {
-        "id": "776a35f3-1405-4c47-ab7e-67d5aebfba3e",
-        "x": 130,
-        "y": 132,
-        "type": "circle",
-        "radius": 25
-      },
-      {
-        "id": "cec2395a-dbee-44d8-8dc1-b63fa04e5279",
-        "x": 169,
-        "y": 188,
-        "type": "circle",
-        "radius": 30
-      },
-      {
-        "id": "99ad1c1f-46b0-49f2-a2da-af64185e0819",
-        "x": 277,
-        "y": 287,
-        "type": "circle",
-        "radius": 30
-      },
-      {
-        "id": "4662852c-26bf-43af-a758-2469fa74845b",
-        "x": 178,
-        "y": 354,
-        "type": "circle",
-        "radius": 20
-      },
-      {
-        "id": "d7b86231-5467-47fe-8ed9-c6a2387341eb",
-        "x": 342.1770935058594,
-        "y": 15.369791984558105,
-        "type": "rect",
-        "width": 174,
-        "height": 48
-      }
-    ]
-  }
+	{
+		"id": "image_1",
+		"image": "image_3_fb6a2d.jpg",
+		"areas": [
+			{
+				"id": "7b73f620-c730-4d10-8908-eb370fbbfdf1",
+				"x": 294,
+				"y": 42,
+				"type": "circle",
+				"radius": 25
+			},
+			{
+				"id": "e49fbf55-2b81-48b4-8a39-d7b895e35255",
+				"x": 36,
+				"y": 72,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "32d4cdaa-e1d8-44b2-9e6d-54a9505c42a3",
+				"x": 306,
+				"y": 273,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "49ba270b-8810-413f-928c-75630c852cc1",
+				"x": 281,
+				"y": 78,
+				"type": "circle",
+				"radius": 15
+			},
+			{
+				"id": "638eabb8-decb-488a-96ce-60821820efae",
+				"x": 84.6771240234375,
+				"y": 150.03646087646484,
+				"type": "rect",
+				"width": 90,
+				"height": 38
+			},
+			{
+				"id": "137d52a3-979b-41c3-b351-25da00abe68f",
+				"x": 15.6771240234375,
+				"y": 96.03646087646484,
+				"type": "rect",
+				"width": 18,
+				"height": 190
+			},
+			{
+				"id": "9c3d1cd6-ba0d-4a80-af0d-b1a4db0cc8e1",
+				"x": 120.6771240234375,
+				"y": 78.03646087646484,
+				"type": "rect",
+				"width": 57,
+				"height": 26
+			},
+			{
+				"id": "0b543279-1aba-4605-a8a8-eae4e269a24e",
+				"x": 202.6771240234375,
+				"y": 118.03646087646484,
+				"type": "rect",
+				"width": 45,
+				"height": 23
+			},
+			{
+				"id": "b4b4a70b-2996-43f4-ba73-f3bb732bb565",
+				"x": 197.6771240234375,
+				"y": 216.03646087646484,
+				"type": "rect",
+				"width": 53,
+				"height": 19
+			},
+			{
+				"id": "5b85f020-51cf-48d9-941c-19de193f8f69",
+				"x": 187.6771240234375,
+				"y": 182.03646087646484,
+				"type": "rect",
+				"width": 74,
+				"height": 23
+			}
+		]
+	},
+	{
+		"id": "image_2",
+		"image": "image_4_380243.jpg",
+		"areas": [
+			{
+				"id": "5802366e-4efd-461e-9d5a-34fb06d8cf80",
+				"x": 123,
+				"y": 106,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "46ac974b-b836-40e7-b794-26f28bb251f4",
+				"x": 43,
+				"y": 242,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "8d191469-8e26-49e6-b18a-137028afa368",
+				"x": 139,
+				"y": 214,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "1f1a28b0-8a17-4a72-8e8b-2241286119c2",
+				"x": 236,
+				"y": 59,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "acab80fa-fc5b-4bb6-870a-fadb558871fa",
+				"x": 209,
+				"y": 100,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "97f16f17-0c7a-4617-9cc1-28f80ac88aff",
+				"x": 334,
+				"y": 112,
+				"type": "circle",
+				"radius": 15
+			},
+			{
+				"id": "3891f016-152f-4197-962a-ca9f3d7b8f86",
+				"x": 264,
+				"y": 51,
+				"type": "circle",
+				"radius": 15
+			},
+			{
+				"id": "473ec0f6-9b35-4cd3-b4f3-4c274e71ef6e",
+				"x": 145,
+				"y": 147,
+				"type": "circle",
+				"radius": 25
+			},
+			{
+				"id": "4713e7b5-431f-462e-877e-7ccd7a2677cd",
+				"x": 32.671875,
+				"y": 118.03646087646484,
+				"type": "rect",
+				"width": 33,
+				"height": 104
+			},
+			{
+				"id": "5bf67b53-0c7c-45d8-b58d-b2aa2e131758",
+				"x": 90.671875,
+				"y": 131.03646087646484,
+				"type": "rect",
+				"width": 25,
+				"height": 38
+			}
+		]
+	},
+	{
+		"id": "image_3",
+		"image": "image_5_c9ab65.jpg",
+		"areas": [
+			{
+				"id": "6cef68bb-4c30-4803-9af9-1738f0eeb189",
+				"x": 182,
+				"y": 291,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "21649264-3a85-469c-956d-284c7f5d0ff9",
+				"x": 66,
+				"y": 387,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "18a4cc8c-c1fc-4f3e-8888-f092b27958ea",
+				"x": 205,
+				"y": 141,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "8cfea09f-6305-4072-a838-ca63f4693b6f",
+				"x": 43.671875,
+				"y": 170.03646850585938,
+				"type": "rect",
+				"width": 27,
+				"height": 51
+			},
+			{
+				"id": "0727d456-2e22-4f43-8ab8-90b7895962e3",
+				"x": 54.671875,
+				"y": 299.0364685058594,
+				"type": "rect",
+				"width": 34,
+				"height": 64
+			},
+			{
+				"id": "07789169-781b-4083-afdc-bd78cdd1d0a6",
+				"x": 267.671875,
+				"y": 117.03646850585938,
+				"type": "rect",
+				"width": 38,
+				"height": 114
+			}
+		]
+	},
+	{
+		"id": "image_4",
+		"image": "image_6_0abc2d.jpg",
+		"areas": [
+			{
+				"id": "744e8efc-0c32-4c78-a676-a81fa1ba987b",
+				"x": 330,
+				"y": 230,
+				"type": "circle",
+				"radius": 25
+			},
+			{
+				"id": "0f0c6d8e-6f5d-4ef5-8d48-0f50d6dde420",
+				"x": 295,
+				"y": 126,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "8013cbd6-de3f-40c6-a852-258e72182ccc",
+				"x": 189,
+				"y": 135,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "30277faf-19a2-4730-8227-84a9936d78d1",
+				"x": 55,
+				"y": 271,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "f8b35077-9692-4bdd-859f-2f0603436050",
+				"x": 178,
+				"y": 241,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "21b08b3b-65c2-43a4-86cb-b887b2fb84dd",
+				"x": 247,
+				"y": 249,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "272e66d0-d134-49e7-8908-5ecb315beb06",
+				"x": 228,
+				"y": 202,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "ff76070e-c9bb-436f-92af-ca5d4b36e2de",
+				"x": 122,
+				"y": 45,
+				"type": "circle",
+				"radius": 35
+			},
+			{
+				"id": "53eb9b7d-e2bf-485e-8675-d5a7513fe008",
+				"x": 107,
+				"y": 121,
+				"type": "circle",
+				"radius": 25
+			},
+			{
+				"id": "03bf3d4f-2121-40a8-8476-54b5d934a00e",
+				"x": 169,
+				"y": 116,
+				"type": "circle",
+				"radius": 10
+			},
+			{
+				"id": "5347fa7b-f33c-4945-b33a-80f0337cab61",
+				"x": 163,
+				"y": 91,
+				"type": "circle",
+				"radius": 15
+			},
+			{
+				"id": "876b4f65-72b0-42ef-ad24-8e462bd9258b",
+				"x": 185.671875,
+				"y": 44.036460876464844,
+				"type": "rect",
+				"width": 79,
+				"height": 23
+			}
+		]
+	},
+	{
+		"id": "image_5",
+		"image": "image_7_50b54d.jpg",
+		"areas": [
+			{
+				"id": "776a35f3-1405-4c47-ab7e-67d5aebfba3e",
+				"x": 130,
+				"y": 132,
+				"type": "circle",
+				"radius": 25
+			},
+			{
+				"id": "cec2395a-dbee-44d8-8dc1-b63fa04e5279",
+				"x": 169,
+				"y": 188,
+				"type": "circle",
+				"radius": 30
+			},
+			{
+				"id": "99ad1c1f-46b0-49f2-a2da-af64185e0819",
+				"x": 277,
+				"y": 287,
+				"type": "circle",
+				"radius": 30
+			},
+			{
+				"id": "4662852c-26bf-43af-a758-2469fa74845b",
+				"x": 178,
+				"y": 354,
+				"type": "circle",
+				"radius": 20
+			},
+			{
+				"id": "d7b86231-5467-47fe-8ed9-c6a2387341eb",
+				"x": 342.1770935058594,
+				"y": 15.369791984558105,
+				"type": "rect",
+				"width": 174,
+				"height": 48
+			}
+		]
+	}
 ]
