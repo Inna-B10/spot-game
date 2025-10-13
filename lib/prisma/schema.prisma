@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB__POSTGRES_PRISMA_URL")
+  directUrl = env("DB__POSTGRES_URL_NON_POOLING")
+}
+
+model Game {
+  game_id     Int      @id @default(autoincrement())
+  game_title  String
+  game_desc   String?
+  createdAt   DateTime @default(now())
+  levels      Level[]
+}
+
+model Level {
+  level_id         Int      @id @default(autoincrement())
+  game       Game     @relation(fields: [gameId], references: [game_id])
+  gameId     Int
+  image_name  String
+  image_path  String
+  difficulty String?
+  areas     Json
+  createdAt  DateTime @default(now())
+}

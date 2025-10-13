@@ -8,11 +8,18 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev --turbopack",
-		"build": "next build",
+		"build": "npm run prisma:generate && next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"prisma:generate": "prisma generate --schema=lib/prisma/schema.prisma",
+		"prisma:migrate": "prisma migrate dev --schema=lib/prisma/schema.prisma",
+		"prisma:migrate:deploy": "prisma migrate deploy --schema=lib/prisma/schema.prisma",
+		"prisma:push": "prisma db push --schema=lib/prisma/schema.prisma",
+		"prisma:studio": "prisma studio --schema=lib/prisma/schema.prisma",
+		"prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma --force"
 	},
 	"dependencies": {
+		"@prisma/client": "^6.17.1",
 		"clsx": "^2.1.1",
 		"next": "15.3.5",
 		"react": "^19.0.0",
@@ -24,6 +31,7 @@
 		"@tailwindcss/postcss": "^4",
 		"eslint": "^9",
 		"eslint-config-next": "15.3.5",
+		"prisma": "^6.17.1",
 		"tailwindcss": "^4"
 	}
 }
