@@ -1,79 +1,78 @@
 import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { GAME_DESC } from '@/constants/gameDescriptions'
-import { GAMES } from '@/constants/games'
+import { BLOB_URL } from '@/config/config'
+import { prisma } from '@/lib/prisma/client'
 import clsx from 'clsx'
-import fs from 'fs/promises'
 import { notFound } from 'next/navigation'
-import path from 'path'
-import { env } from 'process'
 
 export const revalidate = 86400
 
+//* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
 	const { game, id } = await params
-
 	if (!id || !game) return {}
-	const description = GAME_DESC.find(g => g.game === game)?.description
+
+	const dbGame = await prisma.games.findFirst({
+		where: { game_slug: game },
+		select: { game_title: true, game_desc: true },
+	})
+
+	if (!dbGame) return {}
 
 	return {
-		title: `Game ${game} | Level ${id}`,
-		description: `${description} | Level ${id}`,
+		title: `Game ${dbGame.game_title} | Level ${id}`,
+		description: `${dbGame.game_desc || 'Play the level'} | Level ${id}`,
 	}
 }
 
+//* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const paths = []
+	const levels = await prisma.levels.findMany({
+		select: {
+			level_slug: true,
+			games: {
+				select: { game_slug: true },
+			},
+		},
+	})
 
-	for (const { game } of GAMES) {
-		try {
-			const dataPath = path.join(process.cwd(), `data/${game}.json`)
-			const file = await fs.readFile(dataPath, 'utf-8')
-			const levels = JSON.parse(file)
-
-			levels.forEach(level => {
-				paths.push({
-					game,
-					id: level.id,
-				})
-			})
-		} catch (e) {
-			if (process.env.NODE_ENV === 'development') {
-				console.error(`Error reading ${game}.json:`, e)
-			}
-		}
-	}
-	return paths
+	return levels.map(({ level_slug, games }) => ({
+		game: games.game_slug,
+		id: level_slug,
+	}))
 }
 
+//* ---------------------------------- Page ---------------------------------- */
 export default async function PlayFindPage({ params }) {
 	const { game, id } = await params
-
 	if (!id || !game) return notFound()
 
-	const dataPath = path.join(process.cwd(), `data/${game}.json`)
-
-	let levels = []
-
-	try {
-		const file = await fs.readFile(dataPath, 'utf-8')
-		levels = JSON.parse(file)
-	} catch (e) {
-		if (env.NODE_ENV === 'development') {
-			console.error('Error reading data:', e)
-		}
-	}
-
-	const level = levels.find(level => level.id === id)
-
+	//# ------------------------ Find current level
+	const level = await prisma.levels.findFirst({
+		where: {
+			level_slug: id,
+			games: { game_slug: game },
+		},
+		include: {
+			games: true, // to get game_title, game_desc
+		},
+	})
 	if (!level) return notFound()
 
-	const description = GAME_DESC.find(g => g.game === game)?.description
-	const nextLevel = parseInt(level.id.split('_')[1]) + 1
-	const isNext = nextLevel <= levels.length
+	//# ------------------------ Next level
+	const nextLevel = await prisma.levels.findFirst({
+		where: {
+			game_id: level.game_id,
+			level_id: { gt: level.level_id },
+		},
+		orderBy: { level_id: 'asc' },
+		select: { level_slug: true },
+	})
 
+	//* -------------------------------- Rendering ------------------------------- */
 	return (
 		<>
+			{/* //# ------------------------ Menu */}
 			<div className='flex justify-center items-center gap-4 mb-10'>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Choose another game
@@ -82,27 +81,30 @@ export default async function PlayFindPage({ params }) {
 					Choose another level
 				</LinkButton>
 			</div>
-			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', isNext ? 'p-2' : 'py-4 px-2')}>
+
+			{/* //# ------------------------ Game, level info */}
+			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', nextLevel ? 'p-2' : 'py-4 px-2')}>
 				<div className='flex gap-8 justify-center'>
 					<p>
-						<span className='font-semibold text-blue-500'>Game:</span> {game}
+						<span className='font-semibold text-blue-500'>Game:</span> {level.games.game_title}
 					</p>
 					<p>
-						<span className='font-semibold text-blue-500'>Level:</span> {level.id}
+						<span className='font-semibold text-blue-500'>Level:</span> {level.level_slug}
 					</p>
 				</div>
 				<div>
-					<span className='font-semibold text-blue-500'>Description:</span> {description}
+					<span className='font-semibold text-blue-500'>Description:</span> {level.games.game_desc}
 				</div>
+				{/* //# ------------------------ Next level button */}
 				<div className='min-w-16 mt-2 lg:mt-0'>
-					{isNext && (
-						<LinkButton href={`/${game}/image_${nextLevel}`} role='button' aria-label='Go to next level'>
+					{nextLevel && (
+						<LinkButton href={`/${game}/${nextLevel.level_slug}`} role='button' aria-label='Go to next level'>
 							Next
 						</LinkButton>
 					)}
 				</div>
 			</div>
-			<PlayGame level={level} game={game} />
+			<PlayGame level={{ ...level, image_path: `${BLOB_URL}${level.image_path}` }} game={game} />
 		</>
 	)
 }
