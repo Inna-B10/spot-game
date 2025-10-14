@@ -12,6 +12,7 @@ datasource db {
 model Games {
   game_id     Int         @id @default(autoincrement())
   game_title  String
+  game_slug   String      @unique
   game_desc   String?
   levels      Levels[]
   createdAt   DateTime    @default(now())
@@ -19,8 +20,8 @@ model Games {
 
 model Levels {
   level_id    Int         @id @default(autoincrement())
-  game_id      Int
-  image_name  String
+  game_id     Int
+  level_slug  String      @unique
   image_path  String
   difficulty  String?
   areas       Json
