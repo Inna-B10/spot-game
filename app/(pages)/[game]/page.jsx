@@ -1,5 +1,6 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
+import { prisma } from '@/lib/prisma/client'
 import { getLevelsByGameSlug } from '@/services/server/levels'
 import Image from 'next/image'
 import Link from 'next/link'
