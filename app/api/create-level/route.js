@@ -1,69 +1,67 @@
-import fs from 'fs'
-import { writeFile } from 'fs/promises'
-import { NextResponse } from 'next/server'
-import path from 'path'
-import { v4 as uuid } from 'uuid'
+import { prisma } from '@/lib/prisma/client'
+import { put } from '@vercel/blob'
 
 export async function POST(req) {
-	const game = req.nextUrl.searchParams.get('game')
-
 	try {
+		// Parse multipart form
 		const formData = await req.formData()
 
-		let id
 		const file = formData.get('file')
-		const areas = formData.get('areas')
-		const name = formData.get('name')?.trim()
+		const gameId = Number(formData.get('gameId'))
+		const difficulty = formData.get('difficulty') || ''
+		const baseName = formData.get('name') || 'image'
+		const areas = JSON.parse(formData.get('areas') || '[]')
+		const gameSlug = req.nextUrl.searchParams.get('game')
 
-		if (!file || !areas || !name) {
-			return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
+		if (!file || !gameId || !gameSlug || areas.length === 0) {
+			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
 		}
 
-		// Path to JSON with levels
-		const jsonPath = path.join(process.cwd(), `data/${game}.json`)
-
-		let existing = []
-		if (fs.existsSync(jsonPath)) {
-			try {
-				existing = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'))
-				const baseId = name
-					.replace(/\s+/g, '_')
-					.replace(/\.[^.]+$/, '')
-					.toLowerCase()
-				id = `${baseId}_${existing.length + 1}`
-			} catch (e) {
-				id = `${name}_1`
-				existing = []
-			}
-		}
-
-		// Get the file extension
-		const ext = file.name.split('.').pop()
-		const uniqueName = `${id.replace(/\s/g, '_')}_${uuid().slice(0, 6)}.${ext}`
-		const filePath = path.join(
-			process.cwd(),
-			`public/images/${game}`,
-			uniqueName
-		)
-		// Save the image
-		const buffer = Buffer.from(await file.arrayBuffer())
-		await writeFile(filePath, buffer)
-
-		const parsedDiffs = JSON.parse(areas)
-
-		existing.push({
-			id,
-			image: uniqueName,
-			areas: parsedDiffs,
+		// STEP 1: create a record to get level_id
+		const level = await prisma.levels.create({
+			data: {
+				game_id: gameId,
+				difficulty,
+				areas,
+				image_path: '', // will update after upload
+				level_slug: '', // will update after upload
+			},
+			select: { level_id: true },
 		})
 
-		fs.writeFileSync(jsonPath, JSON.stringify(existing, null, 2), 'utf-8')
+		// STEP 2: upload image to Vercel Blob
+		const blobName = `${baseName}-${level.level_id}`
+		const blob = await put(`${gameSlug}/${blobName}`, file, {
+			access: 'public',
+			addRandomSuffix: true,
+			token: process.env.BLOB_READ_WRITE_TOKEN,
+		})
 
-		return NextResponse.json({ success: true, file: uniqueName, id: id })
-	} catch (error) {
-		if (env.NODE_ENV === 'development') {
-			console.error('Save error:', error)
-		}
-		return NextResponse.json({ error: 'Server error' }, { status: 500 })
+		// STEP 3: build final slug and update record
+		const levelSlug = `${baseName}-${level.level_id}` // e.g. image-6
+		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
+		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
+
+		const updated = await prisma.levels.update({
+			where: { level_id: level.level_id },
+			data: {
+				level_slug: levelSlug,
+				image_path: imagePath,
+			},
+			select: {
+				level_slug: true,
+			},
+		})
+
+		return new Response(
+			JSON.stringify({
+				ok: true,
+				levelSlug: updated.level_slug,
+			}),
+			{ status: 200 }
+		)
+	} catch (err) {
+		console.error('❌ create-level error:', err)
+		return new Response(JSON.stringify({ error: err.message }), { status: 500 })
 	}
 }

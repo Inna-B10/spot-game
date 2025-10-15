@@ -1,7 +1,7 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { GAMES } from '@/constants/games'
 
-export function BackNavLinks({ game, modified }) {
+export function BackNavLinks({ gameDB, modified }) {
+	// Prevent navigation if there are unsaved changes
 	const checkIfSaved = e => {
 		if (modified) {
 			const confirmLeave = window.confirm('You have unsaved changes. Are you sure you want to leave?')
@@ -10,11 +10,20 @@ export function BackNavLinks({ game, modified }) {
 			}
 		}
 	}
+
 	return (
 		<>
-			<LinkButton href={`/editor/${game}`} role='button' onClick={checkIfSaved} aria-label={`Go to ${game} index list`} title={`Go to ${game} index list`}>
-				Back to {GAMES.find(g => g.game === game)?.label}
+			{/* //# ------------------------ Back to the list of levels for the current game */}
+			<LinkButton
+				href={`/editor/${gameDB.game_slug}`}
+				role='button'
+				onClick={checkIfSaved}
+				aria-label={`Back to ${gameDB.game_title} index list`}
+				title={`Back to ${gameDB.game_title} index list`}>
+				Back to {gameDB.game_title}
 			</LinkButton>
+
+			{/* //# ------------------------ Back to the main Editor page */}
 			<LinkButton href='/editor' role='button' onClick={checkIfSaved} aria-label='To Editor main page' title='To Editor main page'>
 				Back to Editor
 			</LinkButton>

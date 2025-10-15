@@ -44,10 +44,10 @@ export default async function GamePage({ params }) {
 
 	if (!game) return notFound()
 
-	const gameTitle = await prisma.games.findFirst({
+	const gameDB = await prisma.games.findFirst({
 		where: { game_slug: game },
-		select: { game_title: true },
-	})?.game_title
+		select: { game_title: true, game_desc: true },
+	})
 
 	const levelsByGame = await getLevelsByGameSlug(game)
 
@@ -66,17 +66,18 @@ export default async function GamePage({ params }) {
 	return (
 		<section key={game} className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
-				<h2 className='text-xl font-semibold'>{gameTitle}</h2>
+				<h2 className='text-xl font-semibold'> {gameDB.game_title}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Home
 				</LinkButton>
 			</div>
+			<p className='text-left'>{gameDB.game_desc}</p>
 
 			{/* //# ------------------------ List of levels */}
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
 					<li key={level.level_id} className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/${game}/${level.level_slug}`} title={`open level ${level.level_slug}`}>
+						<Link href={`/${game}/${level.level_slug}`} title={`open ${level.level_slug}`}>
 							{level.level_slug}
 							<Image src={`${BLOB_URL}${level.image_path}`} alt={level.level_slug} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>

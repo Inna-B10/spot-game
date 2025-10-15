@@ -1,19 +1,30 @@
 import { Button } from '@/components/ui/buttons/Button'
 import { useSaveGame } from '@/hooks/useSaveGame'
 
-export function EditorToolbar({ radius, setRadius, areas, game, mode, setModified, setDrawMode, drawMode, id, imageUrl, imageFile, modified }) {
-	const saveGame = useSaveGame(game, mode, id, imageUrl, imageFile, areas, setModified)
+export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSlug, mode, modified, setModified, imageFile, level }) {
+	//* -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert) - */
+	const saveGame = useSaveGame(gameSlug, mode, imageFile, setModified, level)
 
+	//* ----------------------------- Render ----------------------------- */
 	return (
 		<div className='w-full flex gap-4 justify-between items-center rounded bg-blue-300 p-4 my-4'>
+			{/* //# ------------------------ Info about number of created areas */}
 			<div className='flex items-center w-1/4'>
 				Created:&nbsp;
-				{game === 'find-pair' ? (areas?.length % 2 > 0 ? `${(areas?.length - 1) / 2} pairs + 1 point` : `${areas?.length / 2} pairs`) : `${areas?.length} areas`}
+				{gameSlug === 'find-pair'
+					? level.areas?.length % 2 > 0
+						? `${(level.areas?.length - 1) / 2} pairs + 1 point`
+						: `${level.areas?.length / 2} pairs`
+					: `${level.areas?.length} areas`}
 			</div>
+
+			{/* //# ------------------------ Radius control for drawing shapes */}
 			<label className='flex flex-col lg:flex-row lg:items-center gap-2'>
 				Radius:
-				<input type='number' value={radius} onChange={e => setRadius(e.target.value)} className='border p-1 w-15 text-right rounded' />
+				<input type='number' value={radius} onChange={e => setRadius(Number(e.target.value))} className='border p-1 w-15 text-right rounded' />
 			</label>
+
+			{/* //# ------------------------ Toggle between circle and rectangle drawing modes */}
 			<span>
 				Drawing mode: &nbsp;
 				<div className='flex items-center space-x-2'>
@@ -29,6 +40,7 @@ export function EditorToolbar({ radius, setRadius, areas, game, mode, setModifie
 				</div>
 			</span>
 
+			{/* //# ------------------------ Save button (disabled until modifications occur) */}
 			<Button onClick={saveGame} variant='primary' aria-label='Save level' disabled={!modified}>
 				Save level
 			</Button>
