@@ -23,6 +23,7 @@ model Levels {
   game_id     Int
   level_slug  String      @unique
   image_path  String
+  level_task  String?
   difficulty  String?
   areas       Json
   games       Games       @relation(fields: [game_id], references: [game_id])
