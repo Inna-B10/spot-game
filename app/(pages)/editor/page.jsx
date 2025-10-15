@@ -1,5 +1,6 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
+import { prisma } from '@/lib/prisma/client'
 
 export const metadata = {
 	title: 'Editor | Home',
