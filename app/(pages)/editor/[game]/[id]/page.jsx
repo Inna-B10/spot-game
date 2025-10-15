@@ -1,41 +1,44 @@
 import Editor from '@/components/editor/Editor'
-import fs from 'fs/promises'
+import { prisma } from '@/lib/prisma/client'
 import { notFound } from 'next/navigation'
-import path from 'path'
-import { env } from 'process'
 
 export default async function EditLevel({ params }) {
 	const { game, id } = await params
+	if (!game || !id) return notFound()
 
-	if (!id || !game) return notFound()
+	//# ------------------------ Get Game Info
+	const gameDB = await prisma.games.findFirst({
+		where: { game_slug: game },
+		select: { game_id: true, game_title: true, game_slug: true },
+	})
 
+	if (!gameDB) return notFound()
+
+	//# ------------------------ Determine Mode
 	const mode = id === 'new' ? 'create' : 'edit'
 	let level
 
 	if (mode === 'create') {
-		// For creating a new level, we can initialize an empty level object
+		// Initialize an empty level object for "create" mode
 		level = {
-			id: '',
-			imageUrl: '',
+			game_id: gameDB.game_id,
+			level_slug: '',
+			image_path: '',
+			difficulty: '', //[TODO] optional for now, can be set later in the Editor
 			areas: [],
 		}
 	} else {
-		const dataPath = path.join(process.cwd(), `data/${game}.json`)
+		//# ------------------------ Find Level in DB
 
-		let levels = []
-		try {
-			const file = await fs.readFile(dataPath, 'utf-8')
-			levels = JSON.parse(file)
-		} catch (e) {
-			if (env.NODE_ENV === 'development') {
-				console.error('Error reading data:', e)
-			}
-		}
-
-		level = levels.find(level => level.id === id)
-
+		level = await prisma.levels.findFirst({
+			where: {
+				level_slug: id,
+				games: { game_slug: game },
+			},
+		})
 		if (!level) return notFound()
 	}
 
-	return <Editor initialLevel={level} mode={mode} game={game} />
+	//* ------------------------------- Rendering ------------------------------ */
+	return <Editor initialLevel={level} mode={mode} gameDB={gameDB} />
 }

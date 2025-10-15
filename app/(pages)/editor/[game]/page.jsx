@@ -1,34 +1,31 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { GAMES } from '@/constants/games'
-import fs from 'fs/promises'
+import { BLOB_URL } from '@/config/config'
+import { prisma } from '@/lib/prisma/client'
+import { getLevelsByGameSlug } from '@/services/server/levels'
 import Image from 'next/image'
 import Link from 'next/link'
-import path from 'path'
-import { env } from 'process'
 
 export default async function GameIndex({ params }) {
 	const { game } = await params
 
 	if (!game) return notFound()
 
-	const label = GAMES.find(g => g.game === game)?.label || 'Game'
-	let levelsByGame = []
+	//# ------------------------ Fetch game info (title and description)
+	const gameDB = await prisma.games.findFirst({
+		where: { game_slug: game },
+		select: { game_title: true, game_desc: true },
+	})
 
-	const dataPath = path.join(process.cwd(), `data/${game}.json`)
+	//# ------------------------ If game not found — return 404
+	if (!gameDB) return notFound()
 
-	try {
-		const file = await fs.readFile(dataPath, 'utf-8')
-		levelsByGame = JSON.parse(file)
-	} catch (e) {
-		if (env.NODE_ENV === 'development') {
-			console.error(`Error reading ${game}.json:`, e)
-		}
-	}
+	//# ------------------------ Fetch all levels for this game
+	const levelsByGame = await getLevelsByGameSlug(game)
 
-	if (levelsByGame.length === 0) {
+	if (!levelsByGame || levelsByGame.length === 0) {
 		return (
 			<div className='flex flex-col items-center gap-8'>
-				<p>There are no levels</p>
+				<p>There are no levels for this game yet.</p>
 				<LinkButton href='/' role='button' aria-label='Go to main page'>
 					Back to Home
 				</LinkButton>
@@ -36,10 +33,12 @@ export default async function GameIndex({ params }) {
 		)
 	}
 
+	//* -------------------------------- Rendering ------------------------------- */
 	return (
 		<section className='space-y-8 w-full'>
+			{/* //# ------------------------ Game title and navigation */}
 			<div className='flex justify-between items-center gap-2'>
-				<h1 className='text-xl font-bold'>Game: {label}</h1>
+				<h1 className='text-xl font-bold'>Game: {gameDB.game_title}</h1>
 				<span className='space-x-4'>
 					<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
 						Back to Editor
@@ -49,17 +48,24 @@ export default async function GameIndex({ params }) {
 					</LinkButton>
 				</span>
 			</div>
-			<h2 className='text-lg font-semibold inline-block'>choose level</h2>
+			{/* //# ------------------------ Game description */}
+			<p className='text-left'>
+				<span className='font-semibold'>Description:</span> {gameDB.game_desc || 'No description provided.'}
+			</p>
+			{/* //# ------------------------ Add new level button */}
+			<h2 className='text-lg font-semibold inline-block'>Choose level</h2>
 			&nbsp; &nbsp;or&nbsp;&nbsp;&nbsp;
 			<LinkButton href={`/editor/${game}/new`} className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit w-fit'>
 				Create a new
 			</LinkButton>
+			{/* //# ------------------------ List of levels */}
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
-					<li key={level.id} className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/editor/${game}/${level.id}`} title={`open ${level.id} to edit`}>
-							{level.id}
-							<Image src={`/images/${game}/${level.image}`} alt={level.id} width={100} height={100} className='w-fit h-fit object-contain' />
+					<li key={level.level_id} className='border p-4 rounded shadow hover:shadow-md'>
+						<Link href={`/editor/${game}/${level.level_slug}`} title={`open ${level.level_slug} to edit`}>
+							{level.level_slug}
+							{/* //# ------------------------ Show preview image from Blob storage */}
+							<Image src={`${BLOB_URL}${level.image_path}`} alt={level.level_slug} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>
 					</li>
 				))}

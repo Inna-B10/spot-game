@@ -1,49 +1,57 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { GAMES } from '@/constants/games'
-import fs from 'fs/promises'
+import { BLOB_URL } from '@/config/config'
+import { getLevelsByGameSlug } from '@/services/server/levels'
 import Image from 'next/image'
 import Link from 'next/link'
-import path from 'path'
-import { env } from 'process'
 
 export const revalidate = 86400
 
+//* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
 	const { game } = await params
 
 	if (!game) return {}
 
-	const label = GAMES.find(g => g.game === game)?.label || 'Game'
+	const dbGame = await prisma.games.findFirst({
+		where: { game_slug: game },
+	})
+
+	if (!dbGame) {
+		return {
+			title: 'Game not found',
+			description: 'This game does not exist',
+		}
+	}
 
 	return {
-		title: `Levels of ${label}`,
-		description: `List of levels for ${label}`,
+		title: `Levels of ${dbGame.game_title}`,
+		description: dbGame.game_desc || `List of levels for ${dbGame.game_title}`,
 	}
 }
 
+//* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	return GAMES.map(game => ({ game: game.game }))
+	const games = await prisma.games.findMany({
+		select: { game_slug: true },
+	})
+
+	return games.map(game => ({ game: game.game_slug }))
 }
+
+//* ---------------------------------- Page ---------------------------------- */
 export default async function GamePage({ params }) {
 	const { game } = await params
 
 	if (!game) return notFound()
 
-	const label = GAMES.find(g => g.game === game)?.label || 'Game'
-	let levelsByGame = []
+	const gameDB = await prisma.games.findFirst({
+		where: { game_slug: game },
+		select: { game_title: true, game_desc: true },
+	})
 
-	const dataPath = path.join(process.cwd(), `data/${game}.json`)
+	const levelsByGame = await getLevelsByGameSlug(game)
 
-	try {
-		const file = await fs.readFile(dataPath, 'utf-8')
-		levelsByGame = JSON.parse(file)
-	} catch (e) {
-		if (env.NODE_ENV === 'development') {
-			console.error(`Error reading ${game}.json:`, e)
-		}
-	}
-
-	if (levelsByGame.length === 0) {
+	if (!levelsByGame || levelsByGame.length === 0) {
 		return (
 			<>
 				<p>There are no levels</p>
@@ -54,20 +62,24 @@ export default async function GamePage({ params }) {
 		)
 	}
 
+	//* -------------------------------- Rendering ------------------------------- */
 	return (
 		<section key={game} className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
-				<h2 className='text-xl font-semibold'>{label}</h2>
+				<h2 className='text-xl font-semibold'> {gameDB.game_title}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Home
 				</LinkButton>
 			</div>
+			<p className='text-left'>{gameDB.game_desc}</p>
+
+			{/* //# ------------------------ List of levels */}
 			<ul className='flex flex-wrap gap-4'>
 				{levelsByGame?.map(level => (
-					<li key={level.id} className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/${game}/${level.id}`} title={`open level ${level.id}`}>
-							{level.id}
-							<Image src={`/images/${game}/${level.image}`} alt={level.id} width={100} height={100} className='w-fit h-fit object-contain' />
+					<li key={level.level_id} className='border p-4 rounded shadow hover:shadow-md'>
+						<Link href={`/${game}/${level.level_slug}`} title={`open ${level.level_slug}`}>
+							{level.level_slug}
+							<Image src={`${BLOB_URL}${level.image_path}`} alt={level.level_slug} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>
 					</li>
 				))}
