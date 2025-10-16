@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma/client'
 export async function PUT(req) {
 	try {
 		const body = await req.json()
-		const { game, payload } = body
+		const { payload } = body
 		if (!payload || !payload.stageSlug) {
 			return new Response(JSON.stringify({ error: 'Missing payload' }), { status: 400 })
 		}

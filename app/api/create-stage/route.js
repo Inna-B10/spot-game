@@ -11,7 +11,7 @@ export async function POST(req) {
 		const difficulty = formData.get('difficulty') || ''
 		const baseName = formData.get('name') || 'image'
 		const areas = JSON.parse(formData.get('areas') || '[]')
-		const gameSlug = req.nextUrl.searchParams.get('game')
+		const gameSlug = req.nextUrl.searchParams.get('gameSlag')
 
 		if (!file || !gameId || !gameSlug || areas.length === 0) {
 			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })

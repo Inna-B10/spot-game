@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/buttons/Button'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 import { prisma } from '@/lib/prisma/client'
@@ -49,6 +50,9 @@ export default async function EditorPage() {
 						</LinkButton>
 					</li>
 				))}
+				<Button onClick={handleCreateNewGame} variant='primary' aria-label='Create new game'>
+					Create New
+				</Button>
 			</ul>
 		</>
 	)

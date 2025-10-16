@@ -1,27 +1,27 @@
+import NotFoundPage from '@/app/not-found'
 import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { prisma } from '@/lib/prisma/client'
 import clsx from 'clsx'
-import { notFound } from 'next/navigation'
 
 export const revalidate = 86400
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
-	const { game, id } = await params
-	if (!id || !game) return {}
+	const { gameSlag, stageSlug } = await params
+	if (!stageSlug || !gameSlag) return {}
 
 	const dbGame = await prisma.games.findFirst({
-		where: { game_slug: game },
+		where: { game_slug: gameSlag },
 		select: { game_title: true, game_desc: true },
 	})
 
 	if (!dbGame) return {}
 
 	return {
-		title: `Game ${dbGame.game_title} | Stage ${id}`,
-		description: `${dbGame.game_desc || 'Open the stage'} | Stage ${id}`,
+		title: `Game ${dbGame.game_title} | Stage ${stageSlug}`,
+		description: `${dbGame.game_desc || 'Open the stage'} | Stage ${stageSlug}`,
 	}
 }
 
@@ -37,27 +37,27 @@ export async function generateStaticParams() {
 	})
 
 	return stages.map(({ stage_slug, games }) => ({
-		game: games.game_slug,
-		id: stage_slug,
+		gameSlag: games.game_slug,
+		stageSlug: stage_slug,
 	}))
 }
 
 //* ---------------------------------- Page ---------------------------------- */
 export default async function PlayFindPage({ params }) {
-	const { game, id } = await params
-	if (!id || !game) return notFound()
+	const { gameSlag, stageSlug } = await params
+	if (!stageSlug || !gameSlag) return NotFoundPage()
 
 	//# ------------------------ Find current stage
 	const stage = await prisma.stages.findFirst({
 		where: {
-			stage_slug: id,
-			games: { game_slug: game },
+			stage_slug: stageSlug,
+			games: { game_slug: gameSlag },
 		},
 		include: {
 			games: true, // to get game_title, game_desc
 		},
 	})
-	if (!stage) return notFound()
+	if (!stage) return NotFoundPage()
 
 	//# ------------------------ Next stage
 	const nextStage = await prisma.stages.findFirst({
@@ -111,7 +111,7 @@ export default async function PlayFindPage({ params }) {
 				<span className='font-semibold text-blue-500 mr-1'>Stage task:</span>
 				{stage.stage_task ? stage.stage_task : stage.games.game_desc}
 			</div>
-			<PlayGame stage={{ ...stage, image_path: `${BLOB_URL}${stage.image_path}` }} game={game} />
+			<PlayGame stage={{ ...stage, image_path: `${BLOB_URL}${stage.image_path}` }} gameSlag={gameSlag} />
 		</>
 	)
 }

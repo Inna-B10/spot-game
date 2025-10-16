@@ -1,21 +1,21 @@
+import NotFoundPage from '@/app/not-found'
 import Editor from '@/components/editor/Editor'
 import { prisma } from '@/lib/prisma/client'
-import { notFound } from 'next/navigation'
 
 export default async function EditStage({ params }) {
-	const { game, id } = await params
-	if (!game || !id) return notFound()
+	const { gameSlag, stageSlug } = await params
+	if (!gameSlag || !stageSlug) return NotFoundPage()
 
 	//# ------------------------ Get Game Info
 	const gameDB = await prisma.games.findFirst({
-		where: { game_slug: game },
+		where: { game_slug: gameSlag },
 		select: { game_id: true, game_title: true, game_slug: true },
 	})
 
-	if (!gameDB) return notFound()
+	if (!gameDB) return NotFoundPage()
 
 	//# ------------------------ Determine Mode
-	const mode = id === 'new' ? 'create' : 'edit'
+	const mode = stageSlug === 'new' ? 'create' : 'edit'
 	let stage
 
 	if (mode === 'create') {
@@ -32,11 +32,11 @@ export default async function EditStage({ params }) {
 
 		stage = await prisma.stages.findFirst({
 			where: {
-				stage_slug: id,
-				games: { game_slug: game },
+				stage_slug: stageSlug,
+				games: { game_slug: gameSlag },
 			},
 		})
-		if (!stage) return notFound()
+		if (!stage) return NotFoundPage()
 	}
 
 	//* ------------------------------- Rendering ------------------------------ */
