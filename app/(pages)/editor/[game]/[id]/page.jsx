@@ -2,7 +2,7 @@ import Editor from '@/components/editor/Editor'
 import { prisma } from '@/lib/prisma/client'
 import { notFound } from 'next/navigation'
 
-export default async function EditLevel({ params }) {
+export default async function EditStage({ params }) {
 	const { game, id } = await params
 	if (!game || !id) return notFound()
 
@@ -16,29 +16,29 @@ export default async function EditLevel({ params }) {
 
 	//# ------------------------ Determine Mode
 	const mode = id === 'new' ? 'create' : 'edit'
-	let level
+	let stage
 
 	if (mode === 'create') {
-		// Initialize an empty level object for "create" mode
-		level = {
+		// Initialize an empty stage object for "create" mode
+		stage = {
 			game_id: gameDB.game_id,
-			level_slug: '',
+			stage_slug: '',
 			image_path: '',
 			difficulty: '', //[TODO] optional for now, can be set later in the Editor
 			areas: [],
 		}
 	} else {
-		//# ------------------------ Find Level in DB
+		//# ------------------------ Find Stage in DB
 
-		level = await prisma.levels.findFirst({
+		stage = await prisma.stages.findFirst({
 			where: {
-				level_slug: id,
+				stage_slug: id,
 				games: { game_slug: game },
 			},
 		})
-		if (!level) return notFound()
+		if (!stage) return notFound()
 	}
 
 	//* ------------------------------- Rendering ------------------------------ */
-	return <Editor initialLevel={level} mode={mode} gameDB={gameDB} />
+	return <Editor initialStage={stage} mode={mode} gameDB={gameDB} />
 }

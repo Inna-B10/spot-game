@@ -2,7 +2,7 @@ import { BASE_IMG_NAME } from '@/constants/constants'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
-export function useSaveGame(gameSlug, mode, imageFile, setModified, level) {
+export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 	const router = useRouter()
 
 	const save = useCallback(async () => {
@@ -13,11 +13,11 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, level) {
 				alert('Please upload an image file before saving.')
 				return
 			}
-			if (!level.gameId) {
+			if (!stage.gameId) {
 				alert('Internal error: missing gameId.')
 				return
 			}
-			if (!Array.isArray(level.areas) || level.areas.length === 0) {
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) {
 				alert('Please draw at least one area.')
 				return
 			}
@@ -25,23 +25,23 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, level) {
 			try {
 				const formData = new FormData()
 				formData.append('file', imageFile)
-				formData.append('gameId', String(level.gameId)) //String() makes code explicit and safe
-				formData.append('difficulty', level.difficulty || '')
+				formData.append('gameId', String(stage.gameId)) //String() makes code explicit and safe
+				formData.append('difficulty', stage.difficulty || '')
 				formData.append('name', BASE_IMG_NAME) // server will add random suffix
-				formData.append('areas', JSON.stringify(level.areas))
+				formData.append('areas', JSON.stringify(stage.areas))
 
-				const res = await fetch(`/api/create-level?game=${encodeURIComponent(gameSlug)}`, {
+				const res = await fetch(`/api/create-stage?game=${encodeURIComponent(gameSlug)}`, {
 					method: 'POST',
 					body: formData,
 				})
 				const data = await res.json().catch(() => ({}))
 
 				if (res.ok) {
-					alert('✅ Level saved!')
+					alert('✅ Stage saved!')
 					setModified(false)
-					// server returns created levelSlug for redirect
-					if (data.levelSlug) {
-						router.replace(`/editor/${gameSlug}/${data.levelSlug}`)
+					// server returns created stageSlug for redirect
+					if (data.stageSlug) {
+						router.replace(`/editor/${gameSlug}/${data.stageSlug}`)
 					} else {
 						router.replace(`/editor/${gameSlug}`)
 					}
@@ -55,23 +55,23 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, level) {
 		} else {
 			//* ----------------------------- Mode === 'edit' */
 			//# ------------------------ basic validation
-			if (!level.levelSlug) {
-				alert('Missing levelSlug for update.')
+			if (!stage.stageSlug) {
+				alert('Missing stageSlug for update.')
 				return
 			}
-			if (!level.imageUrl) {
+			if (!stage.imageUrl) {
 				alert('Missing image URL for update.')
 				return
 			}
-			if (!Array.isArray(level.areas) || level.areas.length === 0) {
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) {
 				alert('Please draw at least one area before saving.')
 				return
 			}
 
 			try {
-				const payload = { levelSlug: level.levelSlug, imageUrl: level.imageUrl, areas: level.areas, difficulty: level.difficulty || null }
+				const payload = { stageSlug: stage.stageSlug, imageUrl: stage.imageUrl, areas: stage.areas, difficulty: stage.difficulty || null }
 
-				const res = await fetch('/api/update-level', {
+				const res = await fetch('/api/update-stage', {
 					method: 'PUT',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ game: gameSlug, payload }),
@@ -80,16 +80,16 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, level) {
 				const data = await res.json().catch(() => ({}))
 
 				if (res.ok) {
-					alert('✅ Level updated!')
+					alert('✅ Stage updated!')
 					setModified(false)
 				} else {
-					alert('❌ Error updating level: ' + (data.error || 'Unknown'))
+					alert('❌ Error updating stage: ' + (data.error || 'Unknown'))
 					setModified(true)
 				}
 			} catch (e) {
 				alert('❌ Failed to update: ' + e.message)
 			}
 		}
-	}, [gameSlug, mode, imageFile, setModified, level?.gameId, level?.levelSlug, level?.imageUrl, level?.difficulty, level?.areas, router])
+	}, [gameSlug, mode, imageFile, setModified, stage?.gameId, stage?.stageSlug, stage?.imageUrl, stage?.difficulty, stage?.areas, router])
 	return save
 }

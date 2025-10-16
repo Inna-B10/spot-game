@@ -17,20 +17,20 @@ export async function POST(req) {
 			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
 		}
 
-		// STEP 1: create a record to get level_id
-		const level = await prisma.levels.create({
+		// STEP 1: create a record to get stage_id
+		const stage = await prisma.stages.create({
 			data: {
 				game_id: gameId,
 				difficulty,
 				areas,
 				image_path: '', // will update after upload
-				level_slug: '', // will update after upload
+				stage_slug: '', // will update after upload
 			},
-			select: { level_id: true },
+			select: { stage_id: true },
 		})
 
 		// STEP 2: upload image to Vercel Blob
-		const blobName = `${baseName}-${level.level_id}`
+		const blobName = `${baseName}-${stage.stage_id}`
 		const blob = await put(`${gameSlug}/${blobName}`, file, {
 			access: 'public',
 			addRandomSuffix: true,
@@ -38,30 +38,30 @@ export async function POST(req) {
 		})
 
 		// STEP 3: build final slug and update record
-		const levelSlug = `${baseName}-${level.level_id}` // e.g. image-6
+		const stageSlug = `${baseName}-${stage.stage_id}` // e.g. image-6
 		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
 		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
 
-		const updated = await prisma.levels.update({
-			where: { level_id: level.level_id },
+		const updated = await prisma.stages.update({
+			where: { stage_id: stage.stage_id },
 			data: {
-				level_slug: levelSlug,
+				stage_slug: stageSlug,
 				image_path: imagePath,
 			},
 			select: {
-				level_slug: true,
+				stage_slug: true,
 			},
 		})
 
 		return new Response(
 			JSON.stringify({
 				ok: true,
-				levelSlug: updated.level_slug,
+				stageSlug: updated.stage_slug,
 			}),
 			{ status: 200 }
 		)
 	} catch (err) {
-		console.error('❌ create-level error:', err)
+		console.error('❌ create-stage error:', err)
 		return new Response(JSON.stringify({ error: err.message }), { status: 500 })
 	}
 }

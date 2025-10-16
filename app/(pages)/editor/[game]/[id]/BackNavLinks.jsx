@@ -13,7 +13,7 @@ export function BackNavLinks({ gameDB, modified }) {
 
 	return (
 		<>
-			{/* //# ------------------------ Back to the list of levels for the current game */}
+			{/* //# ------------------------ Back to the list of stages for the current game */}
 			<LinkButton
 				href={`/editor/${gameDB.game_slug}`}
 				role='button'

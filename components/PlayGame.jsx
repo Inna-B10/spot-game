@@ -3,18 +3,18 @@
 import { ImageWithAreas } from '@/components/ImageWithAreas'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function PlayGame({ level, game }) {
+export default function PlayGame({ stage, game }) {
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)
 	const imageRef = useRef(null)
 
-	//# ------------------------ Reset when a new level is loaded
+	//# ------------------------ Reset when a new stage is loaded
 	useEffect(() => {
 		setFound([])
 		setCompleted(false)
 		setJustFound(null)
-	}, [level.level_slug])
+	}, [stage.stage_slug])
 
 	//# ------------------------ Handle user click on the image
 	const handlePointClick = useCallback(
@@ -25,7 +25,7 @@ export default function PlayGame({ level, game }) {
 			let minDist = Infinity
 
 			//# ------------------------ Iterate over all areas
-			for (const area of level.areas) {
+			for (const area of stage.areas) {
 				if (found.includes(area.id)) continue //skip already found areas
 
 				let isHit = false
@@ -65,15 +65,15 @@ export default function PlayGame({ level, game }) {
 				const updated = [...found, closest.id]
 				setFound(updated)
 
-				// if all areas are found — mark the level as completed
-				if (updated.length === level.areas.length) setCompleted(true)
+				// if all areas are found — mark the stage as completed
+				if (updated.length === stage.areas.length) setCompleted(true)
 
 				// briefly highlight the just-found area
 				setJustFound(closest.id)
 				setTimeout(() => setJustFound(null), 800)
 			}
 		},
-		[found, level.areas, completed]
+		[found, stage.areas, completed]
 	)
 
 	//* -------------------------------- Rendering ------------------------------- */
@@ -83,19 +83,19 @@ export default function PlayGame({ level, game }) {
 			<div className='min-h-30'>
 				{game === 'find-pair' ? (
 					<p>
-						Found: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} of {level.areas.length / 2}
+						Found: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} of {stage.areas.length / 2}
 					</p>
 				) : (
 					<p>
-						Found: {found.length} of {level.areas.length}
+						Found: {found.length} of {stage.areas.length}
 					</p>
 				)}
 
-				{/* //# ------------------------ Level completed message */}
+				{/* //# ------------------------ Stage completed message */}
 				{completed && (
 					<div className='text-green-600 font-bold text-xl mt-6'>
 						🎉 Congratulations! <br />
-						Level completed!
+						Task completed!
 					</div>
 				)}
 			</div>
@@ -103,8 +103,8 @@ export default function PlayGame({ level, game }) {
 			{/* //# ------------------------ Main game image with clickable areas */}
 			<div className='w-full flex justify-center'>
 				<ImageWithAreas
-					imageUrl={level.image_path}
-					areas={level.areas.filter(p => found.includes(p.id))} // show only found areas
+					imageUrl={stage.image_path}
+					areas={stage.areas.filter(p => found.includes(p.id))} // show only found areas
 					onPointClick={handlePointClick}
 					highlightId={justFound}
 					imageRef={imageRef}

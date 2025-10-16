@@ -8,8 +8,8 @@ import { EditorToolbar } from '@/components/editor/EditorToolbar'
 import { BLOB_URL } from '@/config/config'
 import { useEditorAreas } from '@/hooks/useEditorAreas'
 
-export default function Editor({ initialLevel, mode, gameDB }) {
-	const [levelSlug, setLevelSlug] = useState('')
+export default function Editor({ initialStage, mode, gameDB }) {
+	const [stageSlug, setStageSlug] = useState('')
 	const [gameId, setGameId] = useState(gameDB.game_id)
 	const [difficulty, setDifficulty] = useState('')
 	const [imageUrl, setImageUrl] = useState(null)
@@ -27,17 +27,17 @@ export default function Editor({ initialLevel, mode, gameDB }) {
 		setModified
 	)
 
-	//* ----------------------------- Load initial level ----------------------------- */
+	//* ----------------------------- Load initial stage ----------------------------- */
 	useEffect(() => {
-		if (initialLevel) {
-			// Set data for editing existing level or creating new one
-			setGameId(initialLevel.game_id || gameId)
-			setLevelSlug(initialLevel.level_slug || '')
-			setImageUrl(initialLevel.image_path || '')
-			setDifficulty(initialLevel.difficulty || '')
-			setAreas(initialLevel.areas || [])
+		if (initialStage) {
+			// Set data for editing existing stage or creating new one
+			setGameId(initialStage.game_id || gameId)
+			setStageSlug(initialStage.stage_slug || '')
+			setImageUrl(initialStage.image_path || '')
+			setDifficulty(initialStage.difficulty || '')
+			setAreas(initialStage.areas || [])
 		}
-	}, [gameId, initialLevel, setAreas])
+	}, [gameId, initialStage, setAreas])
 
 	//* ---------------------------- Upload New Image ---------------------------- */
 	const handleImageUpload = useCallback(
@@ -53,10 +53,10 @@ export default function Editor({ initialLevel, mode, gameDB }) {
 		[setAreas]
 	)
 
-	//* ------------ Prepared Object For Saving Or Updating The Level ------------ */
-	const updatedNewLevel = {
+	//* ------------ Prepared Object For Saving Or Updating The Stage ------------ */
+	const updatedNewStage = {
 		gameId,
-		levelSlug,
+		stageSlug,
 		imageUrl,
 		difficulty,
 		areas,
@@ -90,7 +90,7 @@ export default function Editor({ initialLevel, mode, gameDB }) {
 						modified={modified}
 						setModified={setModified}
 						imageFile={imageFile}
-						level={updatedNewLevel}
+						stage={updatedNewStage}
 					/>
 
 					{/* //# ------------------------ Image preview + clickable areas */}

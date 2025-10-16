@@ -20,7 +20,7 @@ npm i @vercel/blob
 
 - Full transition from JSON seed system → Prisma DB with export/import workflow
 - Image areas support (circle or rectangular)
-- Level editor with “save” button active only when changes are detected
+- Stage editor with “save” button active only when changes are detected
 - Game pages use ISR and optimized image loading
 
 ---
@@ -29,12 +29,13 @@ npm i @vercel/blob
 
 #### Functional:
 
-- [ ] Add `difficulty` and `level_task` inputs when creating a new level
+- [ ] Add `difficulty` and `stage_task` inputs when creating a new stage
+- [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
-  - [ ] edit `level_task`
+  - [ ] edit `stage_task`
   - [ ] add a new game(category)
   - [ ] add/edit game description
-  - [ ] Optional: delete game/level
+  - [ ] Optional: delete game/stage
   - [ ] Optional: change image
 - [ ] Drag & drop image upload
 - [ ] Authorization (via Clerk)
@@ -45,7 +46,7 @@ npm i @vercel/blob
 #### Design/UI:
 
 - [ ] Replace alerts with toast messages
-- [ ] Toast when level is completed (with “Next” and “Menu” buttons)
+- [ ] Toast when stage is completed (with “Next” and “Menu” buttons)
 - [ ] Improve Editor and game menus
 - [ ] Design
 

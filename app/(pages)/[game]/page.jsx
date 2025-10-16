@@ -1,7 +1,7 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { prisma } from '@/lib/prisma/client'
-import { getLevelsByGameSlug } from '@/services/server/levels'
+import { getStagesByGameSlug } from '@/services/server/stages'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -25,8 +25,8 @@ export async function generateMetadata({ params }) {
 	}
 
 	return {
-		title: `Levels of ${dbGame.game_title}`,
-		description: dbGame.game_desc || `List of levels for ${dbGame.game_title}`,
+		title: `Stages of ${dbGame.game_title}`,
+		description: dbGame.game_desc || `List of stages for ${dbGame.game_title}`,
 	}
 }
 
@@ -50,12 +50,12 @@ export default async function GamePage({ params }) {
 		select: { game_title: true, game_desc: true },
 	})
 
-	const levelsByGame = await getLevelsByGameSlug(game)
+	const stagesByGame = await getStagesByGameSlug(game)
 
-	if (!levelsByGame || levelsByGame.length === 0) {
+	if (!stagesByGame || stagesByGame.length === 0) {
 		return (
 			<>
-				<p>There are no levels</p>
+				<p>There are no stages</p>
 				<LinkButton href='/' role='button' aria-label='Go to main page'>
 					Back to Home
 				</LinkButton>
@@ -74,13 +74,13 @@ export default async function GamePage({ params }) {
 			</div>
 			<p className='text-left'>{gameDB.game_desc}</p>
 
-			{/* //# ------------------------ List of levels */}
+			{/* //# ------------------------ List of stages */}
 			<ul className='flex flex-wrap gap-4'>
-				{levelsByGame?.map(level => (
-					<li key={level.level_id} className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/${game}/${level.level_slug}`} title={`open ${level.level_slug}`}>
-							{level.level_slug}
-							<Image src={`${BLOB_URL}${level.image_path}`} alt={level.level_slug} width={100} height={100} className='w-fit h-fit object-contain' />
+				{stagesByGame?.map(stage => (
+					<li key={stage.stage_id} className='border p-4 rounded shadow hover:shadow-md'>
+						<Link href={`/${game}/${stage.stage_slug}`} title={`open ${stage.stage_slug}`}>
+							{stage.stage_slug}
+							<Image src={`${BLOB_URL}${stage.image_path}`} alt={stage.stage_slug} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>
 					</li>
 				))}

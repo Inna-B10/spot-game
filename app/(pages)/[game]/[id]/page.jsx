@@ -20,25 +20,25 @@ export async function generateMetadata({ params }) {
 	if (!dbGame) return {}
 
 	return {
-		title: `Game ${dbGame.game_title} | Level ${id}`,
-		description: `${dbGame.game_desc || 'Play the level'} | Level ${id}`,
+		title: `Game ${dbGame.game_title} | Stage ${id}`,
+		description: `${dbGame.game_desc || 'Open the stage'} | Stage ${id}`,
 	}
 }
 
 //* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const levels = await prisma.levels.findMany({
+	const stages = await prisma.stages.findMany({
 		select: {
-			level_slug: true,
+			stage_slug: true,
 			games: {
 				select: { game_slug: true },
 			},
 		},
 	})
 
-	return levels.map(({ level_slug, games }) => ({
+	return stages.map(({ stage_slug, games }) => ({
 		game: games.game_slug,
-		id: level_slug,
+		id: stage_slug,
 	}))
 }
 
@@ -47,26 +47,26 @@ export default async function PlayFindPage({ params }) {
 	const { game, id } = await params
 	if (!id || !game) return notFound()
 
-	//# ------------------------ Find current level
-	const level = await prisma.levels.findFirst({
+	//# ------------------------ Find current stage
+	const stage = await prisma.stages.findFirst({
 		where: {
-			level_slug: id,
+			stage_slug: id,
 			games: { game_slug: game },
 		},
 		include: {
 			games: true, // to get game_title, game_desc
 		},
 	})
-	if (!level) return notFound()
+	if (!stage) return notFound()
 
-	//# ------------------------ Next level
-	const nextLevel = await prisma.levels.findFirst({
+	//# ------------------------ Next stage
+	const nextStage = await prisma.stages.findFirst({
 		where: {
-			game_id: level.game_id,
-			level_id: { gt: level.level_id },
+			game_id: stage.game_id,
+			stage_id: { gt: stage.stage_id },
 		},
-		orderBy: { level_id: 'asc' },
-		select: { level_slug: true },
+		orderBy: { stage_id: 'asc' },
+		select: { stage_slug: true },
 	})
 
 	//* -------------------------------- Rendering ------------------------------- */
@@ -77,34 +77,41 @@ export default async function PlayFindPage({ params }) {
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Choose another game
 				</LinkButton>
-				<LinkButton href={`/${game}`} role='button' aria-label='Go to game levels'>
-					Choose another level
+				<LinkButton href={`/${game}`} role='button' aria-label='Go to game stages'>
+					Choose another stage
 				</LinkButton>
 			</div>
 
-			{/* //# ------------------------ Game, level info */}
-			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', nextLevel ? 'p-2' : 'py-4 px-2')}>
+			{/* //# ------------------------ Game, stage info */}
+			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', nextStage ? 'p-2' : 'py-4 px-2')}>
 				<div className='flex gap-8 justify-center'>
 					<p>
-						<span className='font-semibold text-blue-500'>Game:</span> {level.games.game_title}
+						<span className='font-semibold text-blue-500 mr-1'>Game:</span>
+						{stage.games.game_title}
 					</p>
 					<p>
-						<span className='font-semibold text-blue-500'>Level:</span> {level.level_slug}
+						<span className='font-semibold text-blue-500 mr-1'>Stage:</span>
+						{stage.stage_slug}
 					</p>
+					<div>
+						<span className='font-semibold text-blue-500 mr-1'>Difficulty:</span>
+						{stage.difficulty}
+					</div>
 				</div>
-				<div>
-					<span className='font-semibold text-blue-500'>Description:</span> {level.games.game_desc}
-				</div>
-				{/* //# ------------------------ Next level button */}
+				{/* //# ------------------------ Next stage button */}
 				<div className='min-w-16 mt-2 lg:mt-0'>
-					{nextLevel && (
-						<LinkButton href={`/${game}/${nextLevel.level_slug}`} role='button' aria-label='Go to next level'>
+					{nextStage && (
+						<LinkButton href={`/${game}/${nextStage.stage_slug}`} role='button' aria-label='Go to next stage'>
 							Next
 						</LinkButton>
 					)}
 				</div>
 			</div>
-			<PlayGame level={{ ...level, image_path: `${BLOB_URL}${level.image_path}` }} game={game} />
+			<div className='w-full text-left'>
+				<span className='font-semibold text-blue-500 mr-1'>Stage task:</span>
+				{stage.stage_task ? stage.stage_task : stage.games.game_desc}
+			</div>
+			<PlayGame stage={{ ...stage, image_path: `${BLOB_URL}${stage.image_path}` }} game={game} />
 		</>
 	)
 }

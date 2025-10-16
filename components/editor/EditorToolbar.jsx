@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/buttons/Button'
 import { useSaveGame } from '@/hooks/useSaveGame'
 
-export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSlug, mode, modified, setModified, imageFile, level }) {
+export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSlug, mode, modified, setModified, imageFile, stage }) {
 	//* -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert) - */
-	const saveGame = useSaveGame(gameSlug, mode, imageFile, setModified, level)
+	const saveGame = useSaveGame(gameSlug, mode, imageFile, setModified, stage)
 
 	//* ----------------------------- Render ----------------------------- */
 	return (
@@ -12,10 +12,10 @@ export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSl
 			<div className='flex items-center w-1/4'>
 				Created:&nbsp;
 				{gameSlug === 'find-pair'
-					? level.areas?.length % 2 > 0
-						? `${(level.areas?.length - 1) / 2} pairs + 1 point`
-						: `${level.areas?.length / 2} pairs`
-					: `${level.areas?.length} areas`}
+					? stage.areas?.length % 2 > 0
+						? `${(stage.areas?.length - 1) / 2} pairs + 1 point`
+						: `${stage.areas?.length / 2} pairs`
+					: `${stage.areas?.length} areas`}
 			</div>
 
 			{/* //# ------------------------ Radius control for drawing shapes */}
@@ -41,8 +41,8 @@ export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSl
 			</span>
 
 			{/* //# ------------------------ Save button (disabled until modifications occur) */}
-			<Button onClick={saveGame} variant='primary' aria-label='Save level' disabled={!modified}>
-				Save level
+			<Button onClick={saveGame} variant='primary' aria-label='Save stage' disabled={!modified}>
+				Save stage
 			</Button>
 		</div>
 	)

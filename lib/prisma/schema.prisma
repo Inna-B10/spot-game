@@ -14,16 +14,16 @@ model Games {
   game_title  String
   game_slug   String      @unique
   game_desc   String?
-  levels      Levels[]
+  stages      Stages[]
   createdAt   DateTime    @default(now())
 }
 
-model Levels {
-  level_id    Int         @id @default(autoincrement())
+model Stages {
+  stage_id    Int         @id @default(autoincrement())
   game_id     Int
-  level_slug  String      @unique
+  stage_slug  String      @unique
   image_path  String
-  level_task  String?
+  stage_task  String?
   difficulty  String?
   areas       Json
   games       Games       @relation(fields: [game_id], references: [game_id])

@@ -18,7 +18,6 @@
 		"prisma:push": "prisma db push --schema=lib/prisma/schema.prisma",
 		"prisma:studio": "prisma studio --schema=lib/prisma/schema.prisma",
 		"prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma",
-		"prisma:seed": "node lib/prisma/seed.js",
 		"prisma:export": "node lib/prisma/exportData.js",
 		"prisma:import": "node lib/prisma/importData.js"
 	},
