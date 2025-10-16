@@ -9,11 +9,11 @@ export const revalidate = 86400
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
-	const { gameSlag, stageSlug } = await params
-	if (!stageSlug || !gameSlag) return {}
+	const { gameSlug, stageSlug } = await params
+	if (!stageSlug || !gameSlug) return {}
 
 	const dbGame = await prisma.games.findFirst({
-		where: { game_slug: gameSlag },
+		where: { game_slug: gameSlug },
 		select: { game_title: true, game_desc: true },
 	})
 
@@ -37,21 +37,21 @@ export async function generateStaticParams() {
 	})
 
 	return stages.map(({ stage_slug, games }) => ({
-		gameSlag: games.game_slug,
+		gameSlug: games.game_slug,
 		stageSlug: stage_slug,
 	}))
 }
 
 //* ---------------------------------- Page ---------------------------------- */
 export default async function PlayFindPage({ params }) {
-	const { gameSlag, stageSlug } = await params
-	if (!stageSlug || !gameSlag) return NotFoundPage()
+	const { gameSlug, stageSlug } = await params
+	if (!stageSlug || !gameSlug) return NotFoundPage()
 
 	//# ------------------------ Find current stage
 	const stage = await prisma.stages.findFirst({
 		where: {
 			stage_slug: stageSlug,
-			games: { game_slug: gameSlag },
+			games: { game_slug: gameSlug },
 		},
 		include: {
 			games: true, // to get game_title, game_desc
@@ -77,7 +77,7 @@ export default async function PlayFindPage({ params }) {
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Choose another game
 				</LinkButton>
-				<LinkButton href={`/${game}`} role='button' aria-label='Go to game stages'>
+				<LinkButton href={`/${gameSlug}`} role='button' aria-label='Go to game index'>
 					Choose another stage
 				</LinkButton>
 			</div>
@@ -101,7 +101,7 @@ export default async function PlayFindPage({ params }) {
 				{/* //# ------------------------ Next stage button */}
 				<div className='min-w-16 mt-2 lg:mt-0'>
 					{nextStage && (
-						<LinkButton href={`/${game}/${nextStage.stage_slug}`} role='button' aria-label='Go to next stage'>
+						<LinkButton href={`/${gameSlug}/${nextStage.stage_slug}`} role='button' aria-label='Go to next stage'>
 							Next
 						</LinkButton>
 					)}
@@ -111,7 +111,7 @@ export default async function PlayFindPage({ params }) {
 				<span className='font-semibold text-blue-500 mr-1'>Stage task:</span>
 				{stage.stage_task ? stage.stage_task : stage.games.game_desc}
 			</div>
-			<PlayGame stage={{ ...stage, image_path: `${BLOB_URL}${stage.image_path}` }} gameSlag={gameSlag} />
+			<PlayGame stage={{ ...stage, image_path: `${BLOB_URL}${stage.image_path}` }} gameSlug={gameSlug} />
 		</>
 	)
 }

@@ -3,7 +3,7 @@
 import { ImageWithAreas } from '@/components/ImageWithAreas'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function PlayGame({ stage, gameSlag }) {
+export default function PlayGame({ stage, gameSlug }) {
 	const [found, setFound] = useState([])
 	const [completed, setCompleted] = useState(false)
 	const [justFound, setJustFound] = useState(null)
@@ -81,7 +81,7 @@ export default function PlayGame({ stage, gameSlag }) {
 		<div className='space-y-6 text-center w-full'>
 			{/* //# ------------------------ Progress info */}
 			<div className='min-h-30'>
-				{gameSlag === 'find-pair' ? (
+				{gameSlug === 'find-pair' ? (
 					<p>
 						Found: {found.length % 2 > 0 ? (found.length - 1) / 2 : found.length / 2} of {stage.areas.length / 2}
 					</p>

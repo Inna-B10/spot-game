@@ -10,12 +10,12 @@ export const revalidate = 86400
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
-	const { gameSlag } = await params
+	const { gameSlug } = await params
 
-	if (!gameSlag) return {}
+	if (!gameSlug) return {}
 
 	const dbGame = await prisma.games.findFirst({
-		where: { game_slug: gameSlag },
+		where: { game_slug: gameSlug },
 	})
 
 	if (!dbGame) {
@@ -37,21 +37,23 @@ export async function generateStaticParams() {
 		select: { game_slug: true },
 	})
 
-	return games.map(game => ({ gameSlag: game.game_slug }))
+	return games.map(game => ({ gameSlug: game.game_slug }))
 }
 
 //* ---------------------------------- Page ---------------------------------- */
 export default async function GamePage({ params }) {
-	const { gameSlag } = await params
+	const { gameSlug } = await params
 
-	if (!gameSlag) return NotFoundPage()
+	console.log(await params)
+
+	if (!gameSlug) return NotFoundPage()
 
 	const gameDB = await prisma.games.findFirst({
-		where: { game_slug: gameSlag },
+		where: { game_slug: gameSlug },
 		select: { game_title: true, game_desc: true },
 	})
 
-	const stagesByGame = await getStagesByGameSlug(gameSlag)
+	const stagesByGame = await getStagesByGameSlug(gameSlug)
 
 	if (!stagesByGame || stagesByGame.length === 0) {
 		return (
@@ -66,7 +68,7 @@ export default async function GamePage({ params }) {
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (
-		<section key={gameSlag} className='space-y-8 w-full'>
+		<section key={gameSlug} className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
 				<h2 className='text-xl font-semibold'> {gameDB.game_title}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
@@ -79,7 +81,7 @@ export default async function GamePage({ params }) {
 			<ul className='flex flex-wrap gap-4'>
 				{stagesByGame?.map(stage => (
 					<li key={stage.stage_id} className='border p-4 rounded shadow hover:shadow-md'>
-						<Link href={`/${gameSlag}/${stage.stage_slug}`} title={`open ${stage.stage_slug}`}>
+						<Link href={`/${gameSlug}/${stage.stage_slug}`} title={`open ${stage.stage_slug}`}>
 							{stage.stage_slug}
 							<Image src={`${BLOB_URL}${stage.image_path}`} alt={stage.stage_slug} width={100} height={100} className='w-fit h-fit object-contain' />
 						</Link>

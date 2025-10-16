@@ -30,7 +30,7 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 				formData.append('name', BASE_IMG_NAME) // server will add random suffix
 				formData.append('areas', JSON.stringify(stage.areas))
 
-				const res = await fetch(`/api/create-stage?gameSlag=${encodeURIComponent(gameSlug)}`, {
+				const res = await fetch(`/api/create-stage?gameSlug=${encodeURIComponent(gameSlug)}`, {
 					method: 'POST',
 					body: formData,
 				})

@@ -1,6 +1,6 @@
 'use client'
 
-import { BackNavLinks } from '@/app/(pages)/editor/[gamelug]/[stageSlag]/BackNavLinks'
+import { BackNavLinks } from '@/app/(pages)/editor/[gameSlug]/[stageSlug]/BackNavLinks'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { ImageWithAreas } from '@/components/ImageWithAreas'

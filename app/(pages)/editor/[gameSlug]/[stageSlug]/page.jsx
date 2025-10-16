@@ -3,12 +3,12 @@ import Editor from '@/components/editor/Editor'
 import { prisma } from '@/lib/prisma/client'
 
 export default async function EditStage({ params }) {
-	const { gameSlag, stageSlug } = await params
-	if (!gameSlag || !stageSlug) return NotFoundPage()
+	const { gameSlug, stageSlug } = await params
+	if (!gameSlug || !stageSlug) return NotFoundPage()
 
 	//# ------------------------ Get Game Info
 	const gameDB = await prisma.games.findFirst({
-		where: { game_slug: gameSlag },
+		where: { game_slug: gameSlug },
 		select: { game_id: true, game_title: true, game_slug: true },
 	})
 
@@ -33,7 +33,7 @@ export default async function EditStage({ params }) {
 		stage = await prisma.stages.findFirst({
 			where: {
 				stage_slug: stageSlug,
-				games: { game_slug: gameSlag },
+				games: { game_slug: gameSlug },
 			},
 		})
 		if (!stage) return NotFoundPage()
