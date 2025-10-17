@@ -5,7 +5,7 @@ import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInpu
 import { apiCreateGame } from '@/services/client/games.service'
 import { useState } from 'react'
 
-export function NewCategory() {
+export function NewCategory({ setIsAddedNew }) {
 	const [name, setName] = useState('')
 	const [desc, setDesc] = useState('')
 	const [preview, setPreview] = useState(null)
@@ -66,8 +66,9 @@ export function NewCategory() {
 			setPreview(null)
 			setName('')
 			setDesc('')
+			setIsAddedNew(true)
 		} else {
-			alert(`Error: ${res.error}`)
+			alert(`Error: ${res.error}\n\n*Name must be unique!\nCheck name and try again.`)
 		}
 	}
 
