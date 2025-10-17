@@ -21,7 +21,7 @@ export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSl
 			{/* //# ------------------------ Radius control for drawing shapes */}
 			<label className='flex flex-col lg:flex-row lg:items-center gap-2'>
 				Radius:
-				<input type='number' value={radius} onChange={e => setRadius(Number(e.target.value))} className='border p-1 w-15 text-right rounded' />
+				<input type='number' value={radius} onChange={e => setRadius(Number(e.target.value))} className='w-15 text-right' />
 			</label>
 
 			{/* //# ------------------------ Toggle between circle and rectangle drawing modes */}

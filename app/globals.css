@@ -51,7 +51,6 @@ html {
   min-width: 768px;
   max-width: 1024px;
   margin: 0 auto;
-  text-align: center;
 }
 
 body {
@@ -64,4 +63,20 @@ body {
 ::after,
 ::before {
   box-sizing: border-box;
+}
+
+h2 {
+  margin-bottom: 0.5rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  border: 1px solid #99a1af;
+  padding: 0.5rem;
 }

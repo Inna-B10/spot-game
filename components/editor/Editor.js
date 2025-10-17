@@ -73,7 +73,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 			{mode === 'create' && (
 				<div className='flex gap-4 justify-center items-center py-4 border'>
 					<label className='text-lg'>Upload image: </label>
-					<input type='file' accept='image/*' onChange={handleImageUpload} className='bg-gray-200 p-2 rounded border border-gray-400' />
+					<input type='file' accept='image/*' onChange={handleImageUpload} />
 				</div>
 			)}
 
@@ -109,7 +109,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 					</div>
 
 					{/* //# ------------------------ Output of all drawn areas */}
-					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto text-left'>{JSON.stringify(areas, null, 2)}</pre>
+					<pre className='bg-gray-100 p-4 text-xs max-h-[50vh] overflow-auto'>{JSON.stringify(areas, null, 2)}</pre>
 				</div>
 			)}
 		</div>

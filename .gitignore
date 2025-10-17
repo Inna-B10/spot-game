@@ -51,3 +51,4 @@ next-env.d.ts
 
 # user folders/files
 backup/*.json
+.vscode/

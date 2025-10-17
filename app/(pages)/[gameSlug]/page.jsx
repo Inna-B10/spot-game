@@ -44,8 +44,6 @@ export async function generateStaticParams() {
 export default async function GamePage({ params }) {
 	const { gameSlug } = await params
 
-	console.log(await params)
-
 	if (!gameSlug) return NotFoundPage()
 
 	const gameDB = await prisma.games.findFirst({
@@ -68,14 +66,14 @@ export default async function GamePage({ params }) {
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (
-		<section key={gameSlug} className='space-y-8 w-full'>
+		<section className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
 				<h2 className='text-xl font-semibold'> {gameDB.game_title}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Home
 				</LinkButton>
 			</div>
-			<p className='text-left'>{gameDB.game_desc}</p>
+			<p>{gameDB.game_desc}</p>
 
 			{/* //# ------------------------ List of stages */}
 			<ul className='flex flex-wrap gap-4'>

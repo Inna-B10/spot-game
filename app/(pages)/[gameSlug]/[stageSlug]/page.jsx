@@ -107,7 +107,7 @@ export default async function PlayFindPage({ params }) {
 					)}
 				</div>
 			</div>
-			<div className='w-full text-left'>
+			<div className='w-full'>
 				<span className='font-semibold text-blue-500 mr-1'>Stage task:</span>
 				{stage.stage_task ? stage.stage_task : stage.games.game_desc}
 			</div>

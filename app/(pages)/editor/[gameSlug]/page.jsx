@@ -39,7 +39,7 @@ export default async function GameIndex({ params }) {
 		<section className='space-y-8 w-full'>
 			{/* //# ------------------------ Game title and navigation */}
 			<div className='flex justify-between items-center gap-2'>
-				<h1 className='text-xl font-bold'>Game: {gameDB.game_title}</h1>
+				<h1 className='text-xl font-bold'>Category: {gameDB.game_title}</h1>
 				<span className='space-x-4'>
 					<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
 						Back to Editor
@@ -50,14 +50,14 @@ export default async function GameIndex({ params }) {
 				</span>
 			</div>
 			{/* //# ------------------------ Game description */}
-			<p className='text-left'>
+			<p>
 				<span className='font-semibold'>Description:</span> {gameDB.game_desc || 'No description provided.'}
 			</p>
 			{/* //# ------------------------ Add new stage button */}
 			<h2 className='text-lg font-semibold inline-block'>Choose stage</h2>
 			&nbsp; &nbsp;or&nbsp;&nbsp;&nbsp;
 			<LinkButton href={`/editor/${gameSlug}/new`} className='inline-block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded h-fit w-fit'>
-				Create a new
+				Create new
 			</LinkButton>
 			{/* //# ------------------------ List of stages */}
 			<ul className='flex flex-wrap gap-4'>
