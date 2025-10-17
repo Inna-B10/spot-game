@@ -14,6 +14,7 @@ npm i uuid
 npm i clsx
 npm i @prisma/client
 npm i @vercel/blob
+npm i axios
 ```
 
 ### ⚙️ Current Features
@@ -32,11 +33,15 @@ npm i @vercel/blob
 - [ ] Add `difficulty` and `stage_task` inputs when creating a new stage
 - [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
-  - [ ] edit `stage_task`
-  - [ ] add a new game(category)
-  - [ ] add/edit game description
+  - [ ] add task description
+  - [ ] edit task description
+  - [ ] edit difficulty
+  - [x] add a new game(category)
+  - [x] add game description
+  - [ ] edit game description
   - [ ] Optional: delete game/stage
   - [ ] Optional: change image
+  - [ ] Add button Next
 - [ ] Drag & drop image upload
 - [ ] Authorization (via Clerk)
 - [ ] Admin access & protection for Editor
