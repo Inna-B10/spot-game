@@ -1,5 +1,5 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { getGames } from '@/services/server/games'
+import { getGames } from '@/services/server/gamesDB.service'
 
 export default async function Home() {
 	const games = await getGames()

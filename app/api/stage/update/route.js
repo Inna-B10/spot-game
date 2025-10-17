@@ -19,7 +19,7 @@ export async function PUT(req) {
 
 		return new Response(JSON.stringify({ ok: true, updated }), { status: 200 })
 	} catch (e) {
-		console.error('update-stage error', e)
+		console.error('stage-update error', e)
 		return new Response(JSON.stringify({ error: e.message }), { status: 500 })
 	}
 }

@@ -2,7 +2,7 @@ import NotFoundPage from '@/app/not-found'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { prisma } from '@/lib/prisma/client'
-import { getStagesByGameSlug } from '@/services/server/stages'
+import { getStagesByGameSlug } from '@/services/server/stagesDB.service'
 import Image from 'next/image'
 import Link from 'next/link'
 

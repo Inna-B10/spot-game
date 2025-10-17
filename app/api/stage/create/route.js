@@ -61,7 +61,7 @@ export async function POST(req) {
 			{ status: 200 }
 		)
 	} catch (err) {
-		console.error('❌ create-stage error:', err)
+		console.error('stage-create error:', err)
 		return new Response(JSON.stringify({ error: err.message }), { status: 500 })
 	}
 }
