@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma/client'
+import { updateExistStage } from '@/services/server/stagesDB.service'
 
 export async function PUT(req) {
 	try {
@@ -8,16 +8,9 @@ export async function PUT(req) {
 			return new Response(JSON.stringify({ error: 'Missing payload' }), { status: 400 })
 		}
 
-		const updated = await prisma.stages.update({
-			where: { stage_slug: payload.stageSlug },
-			data: {
-				image_path: payload.imageUrl,
-				areas: payload.areas,
-				difficulty: payload.difficulty ?? null,
-			},
-		})
+		const success = await updateExistStage(payload.stageSlug, payload.imageUrl, payload.areas, payload.difficulty)
 
-		return new Response(JSON.stringify({ ok: true, updated }), { status: 200 })
+		return new Response(JSON.stringify(success), { status: 200 })
 	} catch (e) {
 		console.error('stage-update error', e)
 		return new Response(JSON.stringify({ error: e.message }), { status: 500 })

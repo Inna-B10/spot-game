@@ -2,7 +2,7 @@ import NotFoundPage from '@/app/not-found'
 import { Button } from '@/components/ui/buttons/Button'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
-import { prisma } from '@/lib/prisma/client'
+import { getGameBySlug } from '@/services/server/gamesDB.service'
 import { getStagesByGameSlug } from '@/services/server/stagesDB.service'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -13,16 +13,14 @@ export default async function GameIndex({ params }) {
 	if (!gameSlug) return NotFoundPage()
 
 	//# ------------------------ Fetch game info (title and description)
-	const gameDB = await prisma.games.findFirst({
-		where: { game_slug: gameSlug },
-		select: { game_title: true, game_desc: true },
-	})
+	const data = await getGameBySlug(gameSlug)
+	const gameDB = data.data
 
 	//# ------------------------ If game not found — return 404
 	if (!gameDB) return NotFoundPage()
 
 	//# ------------------------ Fetch all stages for this game
-	const stagesByGame = await getStagesByGameSlug(gameSlug)
+	const { data: stagesByGame } = await getStagesByGameSlug(gameSlug)
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (
@@ -54,7 +52,7 @@ export default async function GameIndex({ params }) {
 			</div>
 
 			{/* //# ------------------------ List of stages */}
-			{stagesByGame.length > 0 ? (
+			{stagesByGame?.length > 0 ? (
 				<>
 					<h2 className='text-lg font-semibold inline-block'>Choose stage to edit</h2>
 					<ul className='flex flex-wrap gap-4'>

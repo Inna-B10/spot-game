@@ -2,8 +2,9 @@ import NotFoundPage from '@/app/not-found'
 import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
-import { prisma } from '@/lib/prisma/client'
-import clsx from 'clsx'
+import { getGameBySlug } from '@/services/server/gamesDB.service'
+import { getAllStages, getNextStage, getStageByStageSlug } from '@/services/server/stagesDB.service'
+import cn from 'clsx'
 
 export const revalidate = 86400
 
@@ -12,10 +13,7 @@ export async function generateMetadata({ params }) {
 	const { gameSlug, stageSlug } = await params
 	if (!stageSlug || !gameSlug) return {}
 
-	const dbGame = await prisma.games.findFirst({
-		where: { game_slug: gameSlug },
-		select: { game_title: true, game_desc: true },
-	})
+	const dbGame = await getGameBySlug(gameSlug)
 
 	if (!dbGame) return {}
 
@@ -27,14 +25,8 @@ export async function generateMetadata({ params }) {
 
 //* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const stages = await prisma.stages.findMany({
-		select: {
-			stage_slug: true,
-			games: {
-				select: { game_slug: true },
-			},
-		},
-	})
+	const { success, data: stages } = await getAllStages()
+	if (!success) return []
 
 	return stages.map(({ stage_slug, games }) => ({
 		gameSlug: games.game_slug,
@@ -48,26 +40,11 @@ export default async function PlayFindPage({ params }) {
 	if (!stageSlug || !gameSlug) return NotFoundPage()
 
 	//# ------------------------ Find current stage
-	const stage = await prisma.stages.findFirst({
-		where: {
-			stage_slug: stageSlug,
-			games: { game_slug: gameSlug },
-		},
-		include: {
-			games: true, // to get game_title, game_desc
-		},
-	})
+	const { data: stage } = await getStageByStageSlug(stageSlug, gameSlug)
 	if (!stage) return NotFoundPage()
 
 	//# ------------------------ Next stage
-	const nextStage = await prisma.stages.findFirst({
-		where: {
-			game_id: stage.game_id,
-			stage_id: { gt: stage.stage_id },
-		},
-		orderBy: { stage_id: 'asc' },
-		select: { stage_slug: true },
-	})
+	const { data: nextStage } = await getNextStage(stage.game_id, stage.stage_id)
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (
@@ -83,7 +60,7 @@ export default async function PlayFindPage({ params }) {
 			</div>
 
 			{/* //# ------------------------ Game, stage info */}
-			<div className={clsx('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', nextStage ? 'p-2' : 'py-4 px-2')}>
+			<div className={cn('flex flex-col justify-between items-center gap-2 mb-6 lg:flex-row bg-bg rounded', nextStage ? 'p-2' : 'py-4 px-2')}>
 				<div className='flex gap-8 justify-center'>
 					<p>
 						<span className='font-semibold text-blue-500 mr-1'>Game:</span>

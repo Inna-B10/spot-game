@@ -1,4 +1,5 @@
-import { prisma } from '@/lib/prisma/client'
+import { isDev } from '@/lib/utils/isDev'
+import { createNewStage, updateNewStage } from '@/services/server/stagesDB.service'
 import { put } from '@vercel/blob'
 
 export async function POST(req) {
@@ -18,17 +19,11 @@ export async function POST(req) {
 		}
 
 		// STEP 1: create a record to get stage_id
-		const stage = await prisma.stages.create({
-			data: {
-				game_id: gameId,
-				difficulty,
-				areas,
-				image_path: '', // will update after upload
-				stage_slug: '', // will update after upload
-			},
-			select: { stage_id: true },
-		})
-
+		const { error, success, data: stage } = await createNewStage(gameId, difficulty, areas)
+		if (!success) {
+			isDev && console.error('stage-create error:', error)
+			return new Response(JSON.stringify({ error: message }), { status: 500 })
+		}
 		// STEP 2: upload image to Vercel Blob
 		const blobName = `${baseName}-${stage.stage_id}`
 		const blob = await put(`${gameSlug}/${blobName}`, file, {
@@ -42,26 +37,20 @@ export async function POST(req) {
 		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
 		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
 
-		const updated = await prisma.stages.update({
-			where: { stage_id: stage.stage_id },
-			data: {
-				stage_slug: stageSlug,
-				image_path: imagePath,
-			},
-			select: {
-				stage_slug: true,
-			},
-		})
-
+		const updated = await updateNewStage(stage.stage_id, stageSlug, imagePath)
+		if (!success) {
+			isDev && console.error('stage-update error:', error)
+			return new Response(JSON.stringify({ error: message }), { status: 500 })
+		}
 		return new Response(
 			JSON.stringify({
-				ok: true,
+				success: true,
 				stageSlug: updated.stage_slug,
 			}),
 			{ status: 200 }
 		)
 	} catch (err) {
-		console.error('stage-create error:', err)
+		isDev && console.error('API stage-create error:', err)
 		return new Response(JSON.stringify({ error: err.message }), { status: 500 })
 	}
 }

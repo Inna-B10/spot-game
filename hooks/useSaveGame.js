@@ -1,4 +1,5 @@
 import { BASE_IMG_NAME } from '@/constants/constants'
+import { createStageClient, updateStageClient } from '@/services/client/stagesClient.service'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
@@ -9,85 +10,63 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 		//* ----------------------------- Mode === 'create' */
 		if (mode === 'create') {
 			//# ------------------------ basic validation
-			if (!imageFile) {
-				alert('Please upload an image file before saving.')
-				return
-			}
-			if (!stage.gameId) {
-				alert('Internal error: missing gameId.')
-				return
-			}
-			if (!Array.isArray(stage.areas) || stage.areas.length === 0) {
-				alert('Please draw at least one area.')
-				return
-			}
+			if (!imageFile) return alert('Please upload an image file before saving.')
+			if (!stage.gameId) return alert('Internal error: missing gameId.')
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area.')
 
-			try {
-				const formData = new FormData()
-				formData.append('file', imageFile)
-				formData.append('gameId', String(stage.gameId)) //String() makes code explicit and safe
-				formData.append('difficulty', stage.difficulty || '')
-				formData.append('name', BASE_IMG_NAME) // server will add random suffix
-				formData.append('areas', JSON.stringify(stage.areas))
+			const formData = new FormData()
+			formData.append('file', imageFile)
+			formData.append('gameId', String(stage.gameId)) //String() makes code explicit and safe
+			formData.append('difficulty', stage.difficulty || '')
+			formData.append('name', BASE_IMG_NAME) // server will add random suffix
+			formData.append('areas', JSON.stringify(stage.areas))
 
-				const res = await fetch(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, {
-					method: 'POST',
-					body: formData,
-				})
-				const data = await res.json().catch(() => ({}))
+			// const res = await fetch(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, {
+			// 	method: 'POST',
+			// 	body: formData,
+			// })
+			// const data = await res.json().catch(() => ({}))
 
-				if (res.ok) {
-					alert('✅ Stage saved!')
-					setModified(false)
-					// server returns created stageSlug for redirect
-					if (data.stageSlug) {
-						router.replace(`/editor/${gameSlug}/${data.stageSlug}`)
-					} else {
-						router.replace(`/editor/${gameSlug}`)
-					}
+			const { success, data, error } = await createStageClient(gameSlug, formData)
+
+			if (success) {
+				alert('✅ Stage saved!')
+				setModified(false)
+				// server returns created stageSlug for redirect
+				if (data.stageSlug) {
+					router.replace(`/editor/${gameSlug}/${data.stageSlug}`)
 				} else {
-					alert('❌ Error: ' + data.error || 'Unknown error')
-					setModified(true)
+					router.replace(`/editor/${gameSlug}`)
 				}
-			} catch (e) {
-				alert('❌ Error: ' + e.message)
+			} else {
+				alert('❌ Error: ' + (error || data?.error || 'Unknown'))
+				setModified(true)
 			}
 		} else {
 			//* ----------------------------- Mode === 'edit' */
 			//# ------------------------ basic validation
-			if (!stage.stageSlug) {
-				alert('Missing stageSlug for update.')
-				return
-			}
-			if (!stage.imageUrl) {
-				alert('Missing image URL for update.')
-				return
-			}
-			if (!Array.isArray(stage.areas) || stage.areas.length === 0) {
-				alert('Please draw at least one area before saving.')
-				return
-			}
+			if (!stage.stageSlug) return alert('Missing stageSlug for update.')
+			if (!stage.imageUrl) return alert('Missing image URL for update.')
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area before saving.')
 
-			try {
-				const payload = { stageSlug: stage.stageSlug, imageUrl: stage.imageUrl, areas: stage.areas, difficulty: stage.difficulty || null }
+			const payload = { stageSlug: stage.stageSlug, imageUrl: stage.imageUrl, areas: stage.areas, difficulty: stage.difficulty || null }
+			//
+			// 				const res = await fetch('/api/stage/update', {
+			// 					method: 'PUT',
+			// 					headers: { 'Content-Type': 'application/json' },
+			// 					body: JSON.stringify({ payload }),
+			// 				})
+			//
+			// 				const data = await res.json().catch(() => ({}))
 
-				const res = await fetch('/api/stage/update', {
-					method: 'PUT',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ payload }),
-				})
+			const { success, error } = await updateStageClient(payload)
 
-				const data = await res.json().catch(() => ({}))
-
-				if (res.ok) {
-					alert('✅ Stage updated!')
-					setModified(false)
-				} else {
-					alert('❌ Error updating stage: ' + (data.error || 'Unknown'))
-					setModified(true)
-				}
-			} catch (e) {
-				alert('❌ Failed to update: ' + e.message)
+			if (success) {
+				alert('✅ Stage updated!')
+				setModified(false)
+			} else {
+				alert('❌ Update stage error: ' + (error || 'Unknown'))
+				setModified(true)
 			}
 		}
 	}, [gameSlug, mode, imageFile, setModified, stage?.gameId, stage?.stageSlug, stage?.imageUrl, stage?.difficulty, stage?.areas, router])

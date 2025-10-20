@@ -1,7 +1,7 @@
 import NotFoundPage from '@/app/not-found'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
-import { prisma } from '@/lib/prisma/client'
+import { getAllGames, getGameBySlug } from '@/services/server/gamesDB.service'
 import { getStagesByGameSlug } from '@/services/server/stagesDB.service'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,11 +14,9 @@ export async function generateMetadata({ params }) {
 
 	if (!gameSlug) return {}
 
-	const dbGame = await prisma.games.findFirst({
-		where: { game_slug: gameSlug },
-	})
+	const { data: gameDB } = await getGameBySlug(gameSlug)
 
-	if (!dbGame) {
+	if (!gameDB) {
 		return {
 			title: 'Game not found',
 			description: 'This game does not exist',
@@ -26,16 +24,15 @@ export async function generateMetadata({ params }) {
 	}
 
 	return {
-		title: `Stages of ${dbGame.game_title}`,
-		description: dbGame.game_desc || `List of stages for ${dbGame.game_title}`,
+		title: `Stages of ${gameDB.game_title}`,
+		description: gameDB.game_desc || `List of stages for ${gameDB.game_title}`,
 	}
 }
 
 //* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const games = await prisma.games.findMany({
-		select: { game_slug: true },
-	})
+	const { success, data: games } = await getAllGames()
+	if (!success || !games?.length) return []
 
 	return games.map(game => ({ gameSlug: game.game_slug }))
 }
@@ -46,12 +43,10 @@ export default async function GamePage({ params }) {
 
 	if (!gameSlug) return NotFoundPage()
 
-	const gameDB = await prisma.games.findFirst({
-		where: { game_slug: gameSlug },
-		select: { game_title: true, game_desc: true },
-	})
+	const { data: gameDB } = await getGameBySlug(gameSlug)
+	if (!gameDB) return NotFoundPage()
 
-	const stagesByGame = await getStagesByGameSlug(gameSlug)
+	const { data: stagesByGame } = await getStagesByGameSlug(gameSlug)
 
 	if (!stagesByGame || stagesByGame.length === 0) {
 		return (

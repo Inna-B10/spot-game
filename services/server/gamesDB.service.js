@@ -37,3 +37,16 @@ export async function createNewGame({ title, slug, desc }) {
 		return { success: false, error: err.message }
 	}
 }
+
+//* ---------------------------- Get Game By Slug ---------------------------- */
+export async function getGameBySlug(gameSlug) {
+	try {
+		const data = await prisma.games.findFirst({
+			where: { game_slug: gameSlug },
+		})
+		return { success: true, data }
+	} catch (err) {
+		isDev && console.error('Error get game name:', err)
+		return { success: false, error: err.message }
+	}
+}

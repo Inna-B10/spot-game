@@ -1,8 +1,15 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { getAllGames } from '@/services/server/gamesDB.service'
+import cn from 'clsx'
 
 export default async function Home() {
-	const { data } = await getAllGames()
+	const { success, data } = await getAllGames()
+	let msg = ''
+	if (!success) {
+		msg = 'DB Error: Failed to fetch games from the database.'
+	} else if (data?.length === 0) {
+		msg = 'No games found. Try adding a new one!'
+	}
 
 	return (
 		<div className='space-y-6'>
@@ -17,15 +24,19 @@ export default async function Home() {
 			<h2 className='text-xl font-bold'>🎮 Choose game</h2>
 
 			{/* //# ------------------------ List of games */}
-			<ul className='inline-flex gap-2'>
-				{data.map(({ game_id, game_title, game_slug }) => (
-					<li key={game_id}>
-						<LinkButton href={`/${game_slug}`} role='button' aria-label={`Go to ${game_title} index`}>
-							{game_title}
-						</LinkButton>
-					</li>
-				))}
-			</ul>
+			{data && data?.length > 0 ? (
+				<ul className='inline-flex gap-2'>
+					{data.map(({ game_id, game_title, game_slug }) => (
+						<li key={game_id}>
+							<LinkButton href={`/${game_slug}`} role='button' aria-label={`Go to ${game_title} index`}>
+								{game_title}
+							</LinkButton>
+						</li>
+					))}
+				</ul>
+			) : (
+				<div className={cn(!success && 'text-red-500')}>{msg}</div>
+			)}
 		</div>
 	)
 }
