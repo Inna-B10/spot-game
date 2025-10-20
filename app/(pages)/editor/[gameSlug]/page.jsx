@@ -2,8 +2,8 @@ import NotFoundPage from '@/app/not-found'
 import { Button } from '@/components/ui/buttons/Button'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
-import { getGameBySlug } from '@/services/server/gamesDB.service'
-import { getStagesByGameSlug } from '@/services/server/stagesDB.service'
+import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
+import { dbGetStagesByGameSlug } from '@/services/server/stagesServer.service'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -13,14 +13,14 @@ export default async function GameIndex({ params }) {
 	if (!gameSlug) return NotFoundPage()
 
 	//# ------------------------ Fetch game info (title and description)
-	const data = await getGameBySlug(gameSlug)
+	const data = await dbGetGameBySlug(gameSlug)
 	const gameDB = data.data
 
 	//# ------------------------ If game not found — return 404
 	if (!gameDB) return NotFoundPage()
 
 	//# ------------------------ Fetch all stages for this game
-	const { data: stagesByGame } = await getStagesByGameSlug(gameSlug)
+	const { data: stagesByGame } = await dbGetStagesByGameSlug(gameSlug)
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (

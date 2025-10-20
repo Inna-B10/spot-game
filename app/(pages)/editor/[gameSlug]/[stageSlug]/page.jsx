@@ -1,14 +1,14 @@
 import NotFoundPage from '@/app/not-found'
 import Editor from '@/components/editor/Editor'
-import { getGameBySlug } from '@/services/server/gamesDB.service'
-import { getStageByStageSlug } from '@/services/server/stagesDB.service'
+import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
+import { dbGetStageByStageSlug } from '@/services/server/stagesServer.service'
 
 export default async function EditStage({ params }) {
 	const { gameSlug, stageSlug } = await params
 	if (!gameSlug || !stageSlug) return NotFoundPage()
 
 	//# ------------------------ Get Game Info
-	const { data: gameDB } = await getGameBySlug(gameSlug)
+	const { data: gameDB } = await dbGetGameBySlug(gameSlug)
 
 	if (!gameDB) return NotFoundPage()
 
@@ -28,7 +28,7 @@ export default async function EditStage({ params }) {
 	} else {
 		//# ------------------------ Find Stage in DB
 
-		const { data } = await getStageByStageSlug(stageSlug, gameSlug)
+		const { data } = await dbGetStageByStageSlug(stageSlug, gameSlug)
 		if (!data) return NotFoundPage()
 		stage = data
 	}

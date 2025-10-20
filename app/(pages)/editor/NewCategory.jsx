@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/buttons/Button'
 import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInput'
-import { apiCreateGame } from '@/services/client/games.service'
+import { apiCreateNewGame } from '@/services/client/gamesClient.service'
 import { useState } from 'react'
 
 export function NewCategory({ setIsAddedNew }) {
@@ -27,7 +27,6 @@ export function NewCategory({ setIsAddedNew }) {
 
 		//# ----------- sanitize input
 		const newGameName = sanitizeName(name)
-
 		const newGameDesc = sanitizeDesc(desc)
 
 		//# ----------- create slug
@@ -56,7 +55,7 @@ export function NewCategory({ setIsAddedNew }) {
 		}
 
 		//# ----------- update DB
-		const res = await apiCreateGame({
+		const res = await apiCreateNewGame({
 			title: preview.name,
 			slug: preview.slug,
 			desc: preview.desc,

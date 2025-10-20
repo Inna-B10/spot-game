@@ -1,19 +1,19 @@
 import NotFoundPage from '@/app/not-found'
 import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { BLOB_URL } from '@/config/config'
-import { getGameBySlug } from '@/services/server/gamesDB.service'
-import { getAllStages, getNextStage, getStageByStageSlug } from '@/services/server/stagesDB.service'
+import { BLOB_URL, REVALIDATE } from '@/config/config'
+import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
+import { dbGetAllStages, dbGetNextStage, dbGetStageByStageSlug } from '@/services/server/stagesServer.service'
 import cn from 'clsx'
 
-export const revalidate = 86400
+export const revalidate = REVALIDATE
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
 	const { gameSlug, stageSlug } = await params
 	if (!stageSlug || !gameSlug) return {}
 
-	const dbGame = await getGameBySlug(gameSlug)
+	const dbGame = await dbGetGameBySlug(gameSlug)
 
 	if (!dbGame) return {}
 
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }) {
 
 //* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const { success, data: stages } = await getAllStages()
+	const { success, data: stages } = await dbGetAllStages()
 	if (!success) return []
 
 	return stages.map(({ stage_slug, games }) => ({
@@ -40,11 +40,11 @@ export default async function PlayFindPage({ params }) {
 	if (!stageSlug || !gameSlug) return NotFoundPage()
 
 	//# ------------------------ Find current stage
-	const { data: stage } = await getStageByStageSlug(stageSlug, gameSlug)
+	const { data: stage } = await dbGetStageByStageSlug(stageSlug, gameSlug)
 	if (!stage) return NotFoundPage()
 
 	//# ------------------------ Next stage
-	const { data: nextStage } = await getNextStage(stage.game_id, stage.stage_id)
+	const { data: nextStage } = await dbGetNextStage(stage.game_id, stage.stage_id)
 
 	//* -------------------------------- Rendering ------------------------------- */
 	return (

@@ -1,5 +1,5 @@
 import { isDev } from '@/lib/utils/isDev'
-import { createNewGame } from '@/services/server/gamesDB.service'
+import { dbCreateNewGame } from '@/services/server/gamesServer.service'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
@@ -7,7 +7,11 @@ export async function POST(req) {
 		const body = await req.json()
 		const { title, slug, desc } = body
 
-		const result = await createNewGame({ title, slug, desc })
+		if (!title || !slug) {
+			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
+		}
+
+		const result = await dbCreateNewGame({ title, slug, desc })
 
 		if (!result.success) {
 			return NextResponse.json(result, { status: 400 })

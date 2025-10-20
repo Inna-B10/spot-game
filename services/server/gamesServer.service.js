@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma/client'
 import { isDev } from '@/lib/utils/isDev'
 
 //* ---------------------------- Get List Of Games --------------------------- */
-export async function getAllGames() {
+export async function dbGetAllGames() {
 	try {
 		const data = await prisma.games.findMany({
 			orderBy: { game_id: 'asc' },
@@ -21,8 +21,8 @@ export async function getAllGames() {
 	}
 }
 
-//* ------------------------------- Create New ------------------------------- */
-export async function createNewGame({ title, slug, desc }) {
+//* ----------------------------- Create New Game ---------------------------- */
+export async function dbCreateNewGame({ title, slug, desc }) {
 	try {
 		await prisma.games.create({
 			data: {
@@ -38,8 +38,8 @@ export async function createNewGame({ title, slug, desc }) {
 	}
 }
 
-//* ---------------------------- Get Game By Slug ---------------------------- */
-export async function getGameBySlug(gameSlug) {
+//* ------------------------- Get Single Game By Slug ------------------------ */
+export async function dbGetGameBySlug(gameSlug) {
 	try {
 		const data = await prisma.games.findFirst({
 			where: { game_slug: gameSlug },

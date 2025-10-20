@@ -1,29 +1,28 @@
+import { axiosClient } from '@/lib/utils/axiosClient'
+import { isDev } from '@/lib/utils/isDev'
+import axios from 'axios'
+
 //* ---------------------------- Create New Stage ---------------------------- */
-export async function createStageClient(gameSlug, formData) {
+export async function apiCreateStage(gameSlug, formData) {
 	try {
-		const res = await fetch(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, {
-			method: 'POST',
-			body: formData,
+		const { data } = await axios.post(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
 		})
-		const data = await res.json()
-		return { success: res.ok, data }
+
+		return { success: true, data }
 	} catch (err) {
-		console.error('Client create stage error:', err)
-		return { success: false, error: err.message }
+		isDev && console.error('Client create stage error:', err)
+		return { success: false, error: err.response?.data?.error || err.message }
 	}
 }
 
 //* ---------------------------- Update Existing Stage ---------------------------- */
-export async function updateStageClient(payload) {
+export async function apiUpdateStage(payload) {
 	try {
-		const res = await fetch('/api/stage/update', {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ payload }),
-		})
-		return { success: res.ok }
+		await axiosClient.put('/api/stage/update', { payload })
+		return { success: true }
 	} catch (err) {
-		console.error('Client update stage error:', err)
-		return { success: false, error: err.message }
+		isDev && console.error('Client update stage error:', err)
+		return { success: false, error: err.response?.data?.error || err.message }
 	}
 }

@@ -1,9 +1,9 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { getAllGames } from '@/services/server/gamesDB.service'
+import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
 
 export default async function Home() {
-	const { success, data } = await getAllGames()
+	const { success, data } = await dbGetAllGames()
 	let msg = ''
 	if (!success) {
 		msg = 'DB Error: Failed to fetch games from the database.'
@@ -11,6 +11,7 @@ export default async function Home() {
 		msg = 'No games found. Try adding a new one!'
 	}
 
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div className='space-y-6'>
 			<h1 className='text-2xl font-bold'>🏠 Home</h1>

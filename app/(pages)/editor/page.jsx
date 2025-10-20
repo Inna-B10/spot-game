@@ -1,5 +1,5 @@
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
-import { getAllGames } from '@/services/server/gamesDB.service'
+import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import { EditorClient } from './EditorClient'
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
 //* ------------------------------- Editor Home Page ------------------------------ */
 export default async function EditorPage() {
 	//# ------------------------ Fetch all games from DB
-	const { data } = await getAllGames()
+	const { data } = await dbGetAllGames()
 
 	return <EditorClient initialGames={data} />
 }

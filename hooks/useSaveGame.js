@@ -1,5 +1,5 @@
-import { BASE_IMG_NAME } from '@/constants/constants'
-import { createStageClient, updateStageClient } from '@/services/client/stagesClient.service'
+import { BASE_IMG_NAME } from '@/config/config'
+import { apiCreateStage, apiUpdateStage } from '@/services/client/stagesClient.service'
 import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 
@@ -21,13 +21,7 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 			formData.append('name', BASE_IMG_NAME) // server will add random suffix
 			formData.append('areas', JSON.stringify(stage.areas))
 
-			// const res = await fetch(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, {
-			// 	method: 'POST',
-			// 	body: formData,
-			// })
-			// const data = await res.json().catch(() => ({}))
-
-			const { success, data, error } = await createStageClient(gameSlug, formData)
+			const { success, data, error } = await apiCreateStage(gameSlug, formData)
 
 			if (success) {
 				alert('✅ Stage saved!')
@@ -50,16 +44,8 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area before saving.')
 
 			const payload = { stageSlug: stage.stageSlug, imageUrl: stage.imageUrl, areas: stage.areas, difficulty: stage.difficulty || null }
-			//
-			// 				const res = await fetch('/api/stage/update', {
-			// 					method: 'PUT',
-			// 					headers: { 'Content-Type': 'application/json' },
-			// 					body: JSON.stringify({ payload }),
-			// 				})
-			//
-			// 				const data = await res.json().catch(() => ({}))
 
-			const { success, error } = await updateStageClient(payload)
+			const { success, error } = await apiUpdateStage(payload)
 
 			if (success) {
 				alert('✅ Stage updated!')

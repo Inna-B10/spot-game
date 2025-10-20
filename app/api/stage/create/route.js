@@ -1,5 +1,5 @@
 import { isDev } from '@/lib/utils/isDev'
-import { createNewStage, updateNewStage } from '@/services/server/stagesDB.service'
+import { dbCreateNewStage, dbUpdateNewStage } from '@/services/server/stagesServer.service'
 import { put } from '@vercel/blob'
 
 export async function POST(req) {
@@ -19,7 +19,7 @@ export async function POST(req) {
 		}
 
 		// STEP 1: create a record to get stage_id
-		const { error, success, data: stage } = await createNewStage(gameId, difficulty, areas)
+		const { error, success, data: stage } = await dbCreateNewStage(gameId, difficulty, areas)
 		if (!success) {
 			isDev && console.error('stage-create error:', error)
 			return new Response(JSON.stringify({ error: message }), { status: 500 })
@@ -37,7 +37,7 @@ export async function POST(req) {
 		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
 		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
 
-		const updated = await updateNewStage(stage.stage_id, stageSlug, imagePath)
+		const updated = await dbUpdateNewStage(stage.stage_id, stageSlug, imagePath)
 		if (!success) {
 			isDev && console.error('stage-update error:', error)
 			return new Response(JSON.stringify({ error: message }), { status: 500 })

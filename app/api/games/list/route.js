@@ -1,10 +1,10 @@
 import { isDev } from '@/lib/utils/isDev'
-import { getAllGames } from '@/services/server/gamesDB.service'
+import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
 	try {
-		const result = await getAllGames()
+		const result = await dbGetAllGames()
 
 		if (!result.success) {
 			return NextResponse.json(result, { status: 400 })

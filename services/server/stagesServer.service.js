@@ -1,9 +1,9 @@
 import { prisma } from '@/lib/prisma/client'
 import { isDev } from '@/lib/utils/isDev'
-import { getGameBySlug } from './gamesDB.service'
+import { dbGetGameBySlug } from './gamesServer.service'
 
 //* ----------------------------- Get All Stages ----------------------------- */
-export async function getAllStages() {
+export async function dbGetAllStages() {
 	try {
 		const data = await prisma.stages.findMany({
 			select: {
@@ -20,10 +20,10 @@ export async function getAllStages() {
 	}
 }
 
-//* -------------------------- Get Stages By Game-Slug ---------------------- */
-export async function getStagesByGameSlug(gameSlug) {
+//* ----------------------- Get All Stages By Game-Slug ---------------------- */
+export async function dbGetStagesByGameSlug(gameSlug) {
 	try {
-		const { data: game } = await getGameBySlug(gameSlug)
+		const { data: game } = await dbGetGameBySlug(gameSlug)
 		if (!game) return []
 
 		const data = await prisma.stages.findMany({
@@ -38,8 +38,8 @@ export async function getStagesByGameSlug(gameSlug) {
 	}
 }
 
-//* ------------------------- Get Stage By Stage-slug ------------------------ */
-export async function getStageByStageSlug(stageSlug, gameSlug) {
+//* ---------------------- Get Single Stage By Stage-slug --------------------- */
+export async function dbGetStageByStageSlug(stageSlug, gameSlug) {
 	try {
 		const data = await prisma.stages.findFirst({
 			where: {
@@ -58,7 +58,7 @@ export async function getStageByStageSlug(stageSlug, gameSlug) {
 }
 
 //* ----------------------------- Get Next Stage ----------------------------- */
-export async function getNextStage(gameId, stageId) {
+export async function dbGetNextStage(gameId, stageId) {
 	try {
 		const data = await prisma.stages.findFirst({
 			where: {
@@ -76,15 +76,15 @@ export async function getNextStage(gameId, stageId) {
 }
 
 //* ---------------------------- Create New Stage ---------------------------- */
-export async function createNewStage(gameId, difficulty, areas) {
+export async function dbCreateNewStage(gameId, difficulty, areas) {
 	try {
 		const data = await prisma.stages.create({
 			data: {
 				game_id: gameId,
 				difficulty,
 				areas,
-				image_path: '', // will update after upload
-				stage_slug: '', // will update after upload
+				image_path: '', // will update after upload image
+				stage_slug: '', // will update after upload image
 			},
 			select: { stage_id: true },
 		})
@@ -96,7 +96,7 @@ export async function createNewStage(gameId, difficulty, areas) {
 }
 
 //* ---------------------------- Update New Stage ---------------------------- */
-export async function updateNewStage(stageId, stageSlug, imagePath) {
+export async function dbUpdateNewStage(stageId, stageSlug, imagePath) {
 	try {
 		const data = await prisma.stages.update({
 			where: { stage_id: stageId },
@@ -115,8 +115,8 @@ export async function updateNewStage(stageId, stageSlug, imagePath) {
 	}
 }
 
-//* --------------------------- Update Exist Stage --------------------------- */
-export async function updateExistStage(stageSlug, imageUrl, areas, difficulty = null) {
+//* -------------------------- Update Existing Stage ------------------------- */
+export async function dbUpdateExistingStage(stageSlug, imageUrl, areas, difficulty = null) {
 	try {
 		const data = await prisma.stages.update({
 			where: { stage_slug: stageSlug },

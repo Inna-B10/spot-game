@@ -1,12 +1,12 @@
 import NotFoundPage from '@/app/not-found'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { BLOB_URL } from '@/config/config'
-import { getAllGames, getGameBySlug } from '@/services/server/gamesDB.service'
-import { getStagesByGameSlug } from '@/services/server/stagesDB.service'
+import { BLOB_URL, REVALIDATE } from '@/config/config'
+import { dbGetAllGames, dbGetGameBySlug } from '@/services/server/gamesServer.service'
+import { dbGetStagesByGameSlug } from '@/services/server/stagesServer.service'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export const revalidate = 86400
+export const revalidate = REVALIDATE
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
 
 	if (!gameSlug) return {}
 
-	const { data: gameDB } = await getGameBySlug(gameSlug)
+	const { data: gameDB } = await dbGetGameBySlug(gameSlug)
 
 	if (!gameDB) {
 		return {
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }) {
 
 //* -------------------------- Generate StaticParams ------------------------- */
 export async function generateStaticParams() {
-	const { success, data: games } = await getAllGames()
+	const { success, data: games } = await dbGetAllGames()
 	if (!success || !games?.length) return []
 
 	return games.map(game => ({ gameSlug: game.game_slug }))
@@ -43,10 +43,10 @@ export default async function GamePage({ params }) {
 
 	if (!gameSlug) return NotFoundPage()
 
-	const { data: gameDB } = await getGameBySlug(gameSlug)
+	const { data: gameDB } = await dbGetGameBySlug(gameSlug)
 	if (!gameDB) return NotFoundPage()
 
-	const { data: stagesByGame } = await getStagesByGameSlug(gameSlug)
+	const { data: stagesByGame } = await dbGetStagesByGameSlug(gameSlug)
 
 	if (!stagesByGame || stagesByGame.length === 0) {
 		return (

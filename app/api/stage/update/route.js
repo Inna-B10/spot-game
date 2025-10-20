@@ -1,4 +1,4 @@
-import { updateExistStage } from '@/services/server/stagesDB.service'
+import { dbUpdateExistingStage } from '@/services/server/stagesServer.service'
 
 export async function PUT(req) {
 	try {
@@ -8,7 +8,7 @@ export async function PUT(req) {
 			return new Response(JSON.stringify({ error: 'Missing payload' }), { status: 400 })
 		}
 
-		const success = await updateExistStage(payload.stageSlug, payload.imageUrl, payload.areas, payload.difficulty)
+		const success = await dbUpdateExistingStage(payload.stageSlug, payload.imageUrl, payload.areas, payload.difficulty)
 
 		return new Response(JSON.stringify(success), { status: 200 })
 	} catch (e) {

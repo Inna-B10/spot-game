@@ -1,7 +1,7 @@
 'use client'
 
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { apiGetAllGames } from '@/services/client/games.service'
+import { apiGetAllGames } from '@/services/client/gamesClient.service'
 import { useEffect, useState } from 'react'
 import { NewCategory } from './NewCategory'
 
