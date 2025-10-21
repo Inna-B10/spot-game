@@ -1,12 +1,12 @@
 import NotFoundPage from '@/app/not-found'
 import PlayGame from '@/components/PlayGame'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { BLOB_URL, REVALIDATE } from '@/config/config'
+import { BLOB_URL } from '@/config/config'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
 import { dbGetAllStages, dbGetNextStage, dbGetStageByStageSlug } from '@/services/server/stagesServer.service'
 import cn from 'clsx'
 
-export const revalidate = REVALIDATE
+export const revalidate = 86400 //1 day
 
 //* ---------------------------- Generate Metadata --------------------------- */
 export async function generateMetadata({ params }) {
