@@ -38,8 +38,9 @@ npm i axios
   - [ ] edit difficulty
   - [x] add a new game(category)
   - [x] add game description
-  - [ ] edit game description
-  - [ ] Optional: delete game/stage
+  - [x] edit game description
+  - [ ] delete game
+  - [ ] delete stage
   - [ ] Optional: change image
   - [ ] Add button Next
 - [ ] Drag & drop image upload
@@ -47,6 +48,7 @@ npm i axios
 - [ ] Admin access & protection for Editor
 - [ ] Editor menu
 - [ ] Optional: save user progress
+- [ ] move from State to Tanstack Query
 
 #### Design/UI:
 

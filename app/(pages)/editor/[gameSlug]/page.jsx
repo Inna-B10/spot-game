@@ -1,5 +1,5 @@
 import NotFoundPage from '@/app/not-found'
-import { Button } from '@/components/ui/buttons/Button'
+import { EditableDescriptionDyn } from '@/components/editor/EditableDescriptionDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
@@ -13,8 +13,7 @@ export default async function GameIndex({ params }) {
 	if (!gameSlug) return NotFoundPage()
 
 	//# ------------------------ Fetch game info (title and description)
-	const data = await dbGetGameBySlug(gameSlug)
-	const gameDB = data.data
+	const { data: gameDB } = await dbGetGameBySlug(gameSlug)
 
 	//# ------------------------ If game not found — return 404
 	if (!gameDB) return NotFoundPage()
@@ -37,13 +36,8 @@ export default async function GameIndex({ params }) {
 					</LinkButton>
 				</span>
 			</div>
-			{/* //# ------------------------ Game description */}
-			<div className='flex gap-4 justify-between items-center'>
-				<p>
-					<span className='font-semibold'>Description:</span> {gameDB.game_desc || 'No description provided.'}
-				</p>
-				<Button>Edit desc</Button> {/*//[TODO] implement editing */}
-			</div>
+			{/* //# ------------------------ Game description (client-side) */}
+			<EditableDescriptionDyn initialDesc={gameDB.game_desc} gameSlug={gameSlug} />
 			{/* //# ------------------------ Add new stage button */}
 			<div className='text-center w-full my-16'>
 				<LinkButton href={`/editor/${gameSlug}/new`} role='button' aria-label='Create new stage' style={{ fontSize: '22px' }}>

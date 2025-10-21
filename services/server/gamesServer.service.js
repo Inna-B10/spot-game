@@ -16,7 +16,7 @@ export async function dbGetAllGames() {
 
 		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('Error fetching games:', err)
+		isDev && console.error('DB Error fetching games:', err)
 		return { success: false, error: err.message }
 	}
 }
@@ -33,7 +33,7 @@ export async function dbCreateNewGame({ title, slug, desc }) {
 		})
 		return { success: true }
 	} catch (err) {
-		isDev && console.error('Error creating game:', err)
+		isDev && console.error('DB Error creating game:', err)
 		return { success: false, error: err.message }
 	}
 }
@@ -46,7 +46,22 @@ export async function dbGetGameBySlug(gameSlug) {
 		})
 		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('Error get game name:', err)
+		isDev && console.error('DB Error get game name:', err)
+		return { success: false, error: err.message }
+	}
+}
+
+//* --------------------------- Update Description --------------------------- */
+export async function dbUpdateGameDesc(slug, desc) {
+	try {
+		const updated = await prisma.games.update({
+			where: { game_slug: slug },
+			data: { game_desc: desc },
+		})
+
+		return { success: true, data: updated }
+	} catch (err) {
+		isDev && console.error('DB Error update game description:', err)
 		return { success: false, error: err.message }
 	}
 }

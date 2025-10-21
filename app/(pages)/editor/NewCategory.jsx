@@ -56,9 +56,9 @@ export function NewCategory({ setIsAddedNew }) {
 
 		//# ----------- update DB
 		const res = await apiCreateNewGame({
-			title: preview.name,
-			slug: preview.slug,
-			desc: preview.desc,
+			title: preview.name.trim(),
+			slug: preview.slug.trim(),
+			desc: preview.desc.trim(),
 		})
 		if (res.success) {
 			alert('Game created successfully!')
