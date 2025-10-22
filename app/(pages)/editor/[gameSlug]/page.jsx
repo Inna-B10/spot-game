@@ -1,5 +1,5 @@
 import NotFoundPage from '@/app/not-found'
-import { EditableDescriptionDyn } from '@/components/editor/EditableDescriptionDyn'
+import { EditableDescriptionDyn } from '@/components/editor/editableDescription/EditableDescriptionDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'

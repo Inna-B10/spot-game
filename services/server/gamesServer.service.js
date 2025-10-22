@@ -22,18 +22,23 @@ export async function dbGetAllGames() {
 }
 
 //* ----------------------------- Create New Game ---------------------------- */
-export async function dbCreateNewGame({ title, slug, desc }) {
+export async function dbCreateNewGame({ title, gameSlug, desc }) {
 	try {
-		await prisma.games.create({
+		const data = await prisma.games.create({
 			data: {
-				game_title: title,
-				game_slug: slug,
+				game_title: title?.trim(),
+				game_slug: gameSlug?.trim(),
 				game_desc: desc?.trim() || null,
 			},
 		})
-		return { success: true }
+		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, create new game:', err)
+
+		if (err.code === 'P2002') {
+			return { success: false, error: 'Unique constraint failed' }
+		}
+
 		return { success: false, error: err.message }
 	}
 }
@@ -54,9 +59,9 @@ export async function dbGetGameBySlug(gameSlug) {
 //* --------------------------- Update Description --------------------------- */
 export async function dbUpdateGameDesc(gameSlug, desc) {
 	try {
-		const updated = await prisma.games.update({
+		const updated = await prisma.game.update({
 			where: { game_slug: gameSlug },
-			data: { game_desc: desc },
+			data: { game_desc: desc?.trim() },
 		})
 
 		return { success: true, data: updated }

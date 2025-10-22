@@ -14,12 +14,17 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 
 	/*//# --------------------- Mutation To Update Description --------------------- */
 	const { mutate, isPending } = useMutation({
-		mutationKey: ['update-game-desc'],
+		mutationKey: ['update-game-desc', gameSlug],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
 		onSuccess: () => {
 			setLastSavedDesc(desc.trim())
 			setIsEdited(false)
 			queryClient.invalidateQueries(['gameSlug', gameSlug]) // refresh cached data
+		},
+		onError: error => {
+			alert(error.message)
+			setDesc(lastSavedDesc)
+			setIsEdited(false)
 		},
 	})
 
@@ -43,7 +48,7 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 			<div className='w-3/4'>
 				<h2 className='font-semibold mr-2 w-full'>Description:</h2>
 				{isEdited ? (
-					<textarea value={sanitizeDesc(desc)} onChange={e => setDesc(e.target.value)} className='w-full' rows={2} />
+					<textarea value={sanitizeDesc(desc)} onChange={e => setDesc(e.target.value)} disabled={isPending} className='w-full' rows={2} />
 				) : (
 					lastSavedDesc || 'No description provided.'
 				)}

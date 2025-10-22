@@ -7,13 +7,13 @@ export async function GET() {
 		const result = await dbGetAllGames()
 
 		if (!result.success) {
-			return NextResponse.json(result, { status: 400 })
+			return NextResponse.json(result.error, { status: 400 })
 		}
 
-		return NextResponse.json(result, { status: 200 })
+		return NextResponse.json(result.data, { status: 200 })
 	} catch (err) {
 		isDev && console.error('API error in /game-get-all:', err)
 
-		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+		return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
 	}
 }

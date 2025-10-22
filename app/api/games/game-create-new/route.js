@@ -5,19 +5,19 @@ import { NextResponse } from 'next/server'
 export async function POST(req) {
 	try {
 		const body = await req.json()
-		const { title, slug, desc } = body
+		const { title, gameSlug, desc } = body
 
-		if (!title || !slug) {
+		if (!title || !gameSlug) {
 			return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
 		}
 
-		const result = await dbCreateNewGame({ title, slug, desc })
+		const result = await dbCreateNewGame({ title, gameSlug, desc })
 
 		if (!result.success) {
-			return NextResponse.json(result, { status: 400 })
+			return NextResponse.json({ success: false, error: result.error }, { status: 400 })
 		}
 
-		return NextResponse.json(result, { status: 201 })
+		return NextResponse.json({ success: true, data: result.data }, { status: 201 })
 	} catch (error) {
 		isDev && console.error('API error in /game-create-new:', error)
 

@@ -3,15 +3,37 @@
 import { Button } from '@/components/ui/buttons/Button'
 import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInput'
 import { apiCreateNewGame } from '@/services/client/gamesClient.service'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function NewCategory({ setIsAddedNew }) {
+//* ---------------------------------- Page ---------------------------------- */
+export function NewCategory() {
 	const [name, setName] = useState('')
 	const [desc, setDesc] = useState('')
 	const [preview, setPreview] = useState(null)
 	const [isUpdated, setIsUpdated] = useState(false)
+	const queryClient = useQueryClient()
 
-	//# ----------- change input
+	//# ----------------------- Mutation To Create New Game
+	const { mutate, isPending } = useMutation({
+		mutationKey: ['create-new-game'],
+		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
+		onSuccess: () => {
+			queryClient.invalidateQueries(['get-all-games'])
+			alert('Game created successfully!')
+			setPreview(null)
+			setName('')
+			setDesc('')
+		},
+		onError: error => {
+			alert(error.message)
+		},
+		onSettled: () => {
+			setIsUpdated(false)
+		},
+	})
+
+	//# ----------------------- change input
 	const handleChange = e => {
 		setIsUpdated(true)
 		const { id, value } = e.target
@@ -27,19 +49,19 @@ export function NewCategory({ setIsAddedNew }) {
 		setName(name.trim())
 		setDesc(desc.trim())
 
-		//# ----------- create slug
+		//# ----------------------- create slug
 		const gameSlug = createSlug(sanitizeName(name).trim())
 
-		//# ----------- show preview instead of immediate save
+		//# ----------------------- show preview instead of immediate save
 		setPreview({
-			name: name,
-			slug: gameSlug,
-			desc: desc,
+			name,
+			gameSlug,
+			desc,
 		})
 		setIsUpdated(false)
 	}
 
-	//# ----------- submit
+	//# ----------------------- submit
 	async function handleSubmit(e) {
 		e.preventDefault()
 
@@ -47,26 +69,14 @@ export function NewCategory({ setIsAddedNew }) {
 			alert('Click Create Preview and check that name and description look correct before saving.')
 			return
 		}
-		if (!preview?.name.trim() || !preview?.slug.trim()) {
+
+		if (!preview?.name.trim() || !preview?.gameSlug.trim()) {
 			alert('Missing required parameters!')
 			return
 		}
 
-		//# ----------- update DB
-		const res = await apiCreateNewGame({
-			title: preview.name.trim(),
-			slug: preview.slug.trim(),
-			desc: preview.desc.trim(),
-		})
-		if (res.success) {
-			alert('Game created successfully!')
-			setPreview(null)
-			setName('')
-			setDesc('')
-			setIsAddedNew(true)
-		} else {
-			alert(`Error: ${res.error}`)
-		}
+		//# ----------------------- update DB
+		mutate({ title: preview.name.trim(), gameSlug: preview.gameSlug.trim(), desc: preview.desc.trim() })
 	}
 
 	//* --------------------------------- Render --------------------------------- */
@@ -78,10 +88,10 @@ export function NewCategory({ setIsAddedNew }) {
 				<div className='w-full flex justify-between gap-8'>
 					<div className='w-1/2 flex flex-col gap-4'>
 						<label htmlFor='gameName'>
-							<input type='text' id='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} />
+							<input type='text' id='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} disabled={isPending} />
 						</label>
 						<label htmlFor='gameDesc'>
-							<textarea id='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' />
+							<textarea id='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' disabled={isPending} />
 						</label>
 					</div>
 					<div className='w-1/2 flex flex-col gap-4 justify-between'>
@@ -104,7 +114,7 @@ export function NewCategory({ setIsAddedNew }) {
 							<strong>game_title:</strong> {preview?.name}
 						</span>
 						<span>
-							<strong>game_slug:</strong> {preview?.slug}
+							<strong>game_slug:</strong> {preview?.gameSlug}
 						</span>
 						<span>
 							<strong>game_desc:</strong> {preview?.desc}
@@ -113,7 +123,7 @@ export function NewCategory({ setIsAddedNew }) {
 				)}
 				{/* //# ---------------------------------- Save */}
 				<div className='w-full flex gap-2 justify-center mt-8'>
-					<Button type='submit' disabled={!preview || isUpdated}>
+					<Button type='submit' disabled={!preview || isUpdated || isPending}>
 						Confirm & Save
 					</Button>
 				</div>

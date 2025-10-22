@@ -13,10 +13,10 @@ export async function PUT(req, { params }) {
 		const result = await dbUpdateGameDesc(gameSlug, desc)
 
 		if (!result.success) {
-			return NextResponse.json(result, { status: 400 })
+			return NextResponse.json({ success: false, error: result.error }, { status: 400 })
 		}
 
-		return NextResponse.json(result, { status: 200 })
+		return NextResponse.json({ success: true, data: result.data }, { status: 200 })
 	} catch (err) {
 		isDev && console.error('API error in /game-update-desc:', err)
 
