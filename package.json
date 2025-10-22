@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"@prisma/client": "^6.17.1",
+		"@tanstack/react-query": "^5.90.5",
 		"@vercel/blob": "^2.0.0",
 		"axios": "^1.12.2",
 		"clsx": "^2.1.1",

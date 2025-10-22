@@ -22,6 +22,21 @@ export async function apiGetAllGames() {
 		return { success: false, error: err.message }
 	}
 }
+
+//* ---------------------------- Get Game By Slug ---------------------------- */
+export async function apiGetGameBySlug(gameSlug) {
+	if (!gameSlug) {
+		alert('Missing gameSlug')
+		return
+	}
+	try {
+		const res = await axiosClient.get(`/api/games/${gameSlug}/get/by-slug`)
+		return res.data
+	} catch (err) {
+		isDev && console.error('Request get game by slug failed:', err)
+		return { success: false, error: err.message }
+	}
+}
 //* --------------------------- Update Description --------------------------- */
 export async function apiUpdateGameDesc(gameSlug, desc) {
 	if (!gameSlug) {
