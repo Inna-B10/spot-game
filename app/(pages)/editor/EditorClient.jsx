@@ -14,8 +14,9 @@ export function EditorClient({ initialGames }) {
 		if (!isAddedNew) return
 
 		async function fetchGames() {
-			const data = await apiGetAllGames()
+			const { data } = await apiGetAllGames()
 			if (data && data.length > 0) setGames(data)
+
 			setIsAddedNew(false)
 		}
 

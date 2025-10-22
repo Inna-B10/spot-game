@@ -45,7 +45,7 @@ export function useSaveGame(gameSlug, mode, imageFile, setModified, stage) {
 
 			const payload = { stageSlug: stage.stageSlug, imageUrl: stage.imageUrl, areas: stage.areas, difficulty: stage.difficulty || null }
 
-			const { success, error } = await apiUpdateStage(payload)
+			const { success, error } = await apiUpdateStage(gameSlug, payload)
 
 			if (success) {
 				alert('✅ Stage updated!')

@@ -5,7 +5,7 @@ import axios from 'axios'
 //* ---------------------------- Create New Stage ---------------------------- */
 export async function apiCreateStage(gameSlug, formData) {
 	try {
-		const { data } = await axios.post(`/api/stage/create?gameSlug=${encodeURIComponent(gameSlug)}`, formData, {
+		const { data } = await axios.post(`/api/games/${gameSlug}/stages/stage-create-new`, formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
 		})
 
@@ -17,9 +17,9 @@ export async function apiCreateStage(gameSlug, formData) {
 }
 
 //* ---------------------------- Update Existing Stage ---------------------------- */
-export async function apiUpdateStage(payload) {
+export async function apiUpdateStage(gameSlug, payload) {
 	try {
-		await axiosClient.put('/api/stage/update', { payload })
+		await axiosClient.put(`/api/games/${gameSlug}/stages/${payload.stageSlug}/stage-update`, { payload })
 		return { success: true }
 	} catch (err) {
 		isDev && console.error('Client update stage error:', err)

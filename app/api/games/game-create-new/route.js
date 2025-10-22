@@ -8,7 +8,7 @@ export async function POST(req) {
 		const { title, slug, desc } = body
 
 		if (!title || !slug) {
-			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
+			return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
 		}
 
 		const result = await dbCreateNewGame({ title, slug, desc })
@@ -19,7 +19,8 @@ export async function POST(req) {
 
 		return NextResponse.json(result, { status: 201 })
 	} catch (error) {
-		isDev && console.error('Unhandled error in /api/games/create:', error)
+		isDev && console.error('API error in /game-create-new:', error)
+
 		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
 	}
 }

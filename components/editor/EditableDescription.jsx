@@ -26,6 +26,7 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 	/*//# -------------------------------- Handlers -------------------------------- */
 	const handleSave = () => {
 		if (desc.trim() === lastSavedDesc.trim()) {
+			setDesc(desc.trim())
 			setIsEdited(false)
 			return
 		}

@@ -14,9 +14,9 @@ export function NewCategory({ setIsAddedNew }) {
 	//# ----------- change input
 	const handleChange = e => {
 		setIsUpdated(true)
-		const { name, value } = e.target
-		if (name === 'gameName') setName(value)
-		if (name === 'gameDesc') setDesc(value)
+		const { id, value } = e.target
+		if (id === 'gameName') setName(sanitizeName(value))
+		if (id === 'gameDesc') setDesc(sanitizeDesc(value))
 	}
 
 	const handleCreatePreview = () => {
@@ -24,19 +24,17 @@ export function NewCategory({ setIsAddedNew }) {
 			alert('Game name cannot be empty!')
 			return
 		}
-
-		//# ----------- sanitize input
-		const newGameName = sanitizeName(name)
-		const newGameDesc = sanitizeDesc(desc)
+		setName(name.trim())
+		setDesc(desc.trim())
 
 		//# ----------- create slug
-		const gameSlug = createSlug(newGameName)
+		const gameSlug = createSlug(sanitizeName(name).trim())
 
 		//# ----------- show preview instead of immediate save
 		setPreview({
-			name: newGameName,
+			name: name,
 			slug: gameSlug,
-			desc: newGameDesc,
+			desc: desc,
 		})
 		setIsUpdated(false)
 	}
@@ -67,7 +65,7 @@ export function NewCategory({ setIsAddedNew }) {
 			setDesc('')
 			setIsAddedNew(true)
 		} else {
-			alert(`Error: ${res.error}\n\n*Name must be unique!\nCheck name and try again.`)
+			alert(`Error: ${res.error}`)
 		}
 	}
 
@@ -79,8 +77,12 @@ export function NewCategory({ setIsAddedNew }) {
 			<form onSubmit={handleSubmit}>
 				<div className='w-full flex justify-between gap-8'>
 					<div className='w-1/2 flex flex-col gap-4'>
-						<input type='text' name='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} />
-						<textarea name='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' />
+						<label htmlFor='gameName'>
+							<input type='text' id='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} />
+						</label>
+						<label htmlFor='gameDesc'>
+							<textarea id='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' />
+						</label>
 					</div>
 					<div className='w-1/2 flex flex-col gap-4 justify-between'>
 						<p>
@@ -88,7 +90,7 @@ export function NewCategory({ setIsAddedNew }) {
 							<br />
 							You can add individual task instructions later during stage creation.
 						</p>
-						<Button type='button' onClick={handleCreatePreview} variant='primary' aria-label='Create new category'>
+						<Button type='button' disabled={!isUpdated} onClick={handleCreatePreview} variant='primary' aria-label='Create new category'>
 							Create preview
 						</Button>
 					</div>
@@ -96,7 +98,7 @@ export function NewCategory({ setIsAddedNew }) {
 
 				{/* //# --------------------------------- Preview */}
 				{preview && (
-					<div className='w-full flex flex-col'>
+					<div className='w-full flex flex-col mt-8'>
 						<h2 className='text-2xl font-semibold'>Preview</h2>
 						<span>
 							<strong>game_title:</strong> {preview?.name}

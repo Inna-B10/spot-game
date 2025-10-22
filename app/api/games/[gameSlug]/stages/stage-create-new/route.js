@@ -1,8 +1,9 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbCreateNewStage, dbUpdateNewStage } from '@/services/server/stagesServer.service'
 import { put } from '@vercel/blob'
+import { NextResponse } from 'next/server'
 
-export async function POST(req) {
+export async function POST(req, { params }) {
 	try {
 		// Parse multipart form
 		const formData = await req.formData()
@@ -12,18 +13,22 @@ export async function POST(req) {
 		const difficulty = formData.get('difficulty') || ''
 		const baseName = formData.get('name') || 'image'
 		const areas = JSON.parse(formData.get('areas') || '[]')
-		const gameSlug = req.nextUrl.searchParams.get('gameSlug')
+
+		const searchParams = await params
+		const gameSlug = searchParams?.gameSlug
 
 		if (!file || !gameId || !gameSlug || areas.length === 0) {
-			return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 })
+			return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
 		}
 
 		// STEP 1: create a record to get stage_id
-		const { error, success, data: stage } = await dbCreateNewStage(gameId, difficulty, areas)
-		if (!success) {
-			isDev && console.error('stage-create error:', error)
-			return new Response(JSON.stringify({ error: message }), { status: 500 })
+		const newStage = await dbCreateNewStage(gameId, difficulty, areas)
+		if (!newStage.success) {
+			isDev && console.error('API error in /stage-create-new, newStage:', newStage.error)
+			return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
 		}
+		const stage = newStage.data
+
 		// STEP 2: upload image to Vercel Blob
 		const blobName = `${baseName}-${stage.stage_id}`
 		const blob = await put(`${gameSlug}/${blobName}`, file, {
@@ -38,19 +43,20 @@ export async function POST(req) {
 		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
 
 		const updated = await dbUpdateNewStage(stage.stage_id, stageSlug, imagePath)
-		if (!success) {
-			isDev && console.error('stage-update error:', error)
-			return new Response(JSON.stringify({ error: message }), { status: 500 })
+
+		if (!updated.success) {
+			isDev && console.error('update new stage error in API /stage-create-new:', updated.error)
+			return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
 		}
-		return new Response(
-			JSON.stringify({
+		return NextResponse.json(
+			{
 				success: true,
-				stageSlug: updated.stage_slug,
-			}),
-			{ status: 200 }
+				stageSlug: updated.data?.stage_slug,
+			},
+			{ status: 201 }
 		)
 	} catch (err) {
-		isDev && console.error('API stage-create error:', err)
-		return new Response(JSON.stringify({ error: err.message }), { status: 500 })
+		isDev && console.error('API error in /stage-create-new:', err)
+		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
 	}
 }
