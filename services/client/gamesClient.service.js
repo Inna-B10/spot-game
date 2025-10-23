@@ -2,12 +2,12 @@ import { axiosClient } from '@/lib/utils/axiosClient'
 import { isDev } from '@/lib/utils/isDev'
 
 //* ------------------------------- Create Game ------------------------------ */
-export async function apiCreateNewGame({ title, gameSlug, desc }) {
-	if (typeof title !== 'string') throw new Error('Invalid game name format')
-	if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
-	if (typeof desc !== 'string') throw new Error('Invalid description format')
-
+export async function apiCreateNewGame({ title, gameSlug, desc = null }) {
 	try {
+		if (typeof title !== 'string') throw new Error('Invalid game name format')
+		if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
+		if (desc && typeof desc !== 'string') throw new Error('Invalid description format')
+
 		const { data } = await axiosClient.post('/api/games/game-create-new', { title, gameSlug, desc })
 		return data
 	} catch (err) {
@@ -20,7 +20,7 @@ export async function apiCreateNewGame({ title, gameSlug, desc }) {
 			errorMsg = 'Failed to create a new game'
 		}
 
-		throw new Error(errorMsg)
+		return { success: false, error: errorMsg || err.message || 'Failed to create new game' }
 	}
 }
 
@@ -47,16 +47,15 @@ export async function apiGetAllGames() {
 // 	}
 // }
 //* --------------------------- Update Description --------------------------- */
-export async function apiUpdateGameDesc(gameSlug, desc) {
-	if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
-	if (typeof desc !== 'string') throw new Error('Invalid description format')
-
+export async function apiUpdateGameDesc(gameSlug, desc = null) {
 	try {
+		if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
+		if (desc !== null && typeof desc !== 'string') throw new Error('Invalid description format')
 		const { data } = await axiosClient.put(`/api/games/${gameSlug}/game-update-desc`, { desc })
+
 		return data
 	} catch (err) {
 		isDev && console.error('Request update game desc failed:', err)
-
-		throw new Error('Failed to edit description.')
+		return { success: false, error: 'Failed to edit description.' || err.message }
 	}
 }

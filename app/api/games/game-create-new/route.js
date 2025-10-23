@@ -7,20 +7,45 @@ export async function POST(req) {
 		const body = await req.json()
 		const { title, gameSlug, desc } = body
 
-		if (!title || !gameSlug) {
-			return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
-		}
+		if (!title || !gameSlug)
+			throw {
+				message: 'Missing required fields.',
+				details: { title, gameSlug },
+				code: 400,
+			}
 
 		const result = await dbCreateNewGame({ title, gameSlug, desc })
 
 		if (!result.success) {
-			return NextResponse.json({ success: false, error: result.error }, { status: 400 })
+			const msg = result.error === 'Unique constraint failed' ? 'Unique constraint failed' : 'Failed to create new game'
+			throw {
+				message: msg,
+				details: result.error,
+				code: 500,
+			}
 		}
 
-		return NextResponse.json({ success: true, data: result.data }, { status: 201 })
-	} catch (error) {
-		isDev && console.error('API error in /game-create-new:', error)
+		//# ---------------------------- Return success ----------------------------
+		return NextResponse.json(
+			{
+				success: true,
+				data: result.data,
+			},
+			{ status: 201 }
+		)
+	} catch (err) {
+		isDev &&
+			console.error('API error in /game-create-new:', {
+				message: err.message,
+				details: err.details,
+			})
 
-		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+		return NextResponse.json(
+			{
+				success: false,
+				error: err.message || 'Internal server error',
+			},
+			{ status: err.code || 500 }
+		)
 	}
 }

@@ -1,34 +1,43 @@
 import { Button } from '@/components/ui/buttons/Button'
 import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
 import { apiUpdateGameDesc } from '@/services/client/gamesClient.service'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import cn from 'clsx'
 import { useState } from 'react'
 
+//* ---------------------------------- Page ---------------------------------- */
 export default function EditableDescription({ initialDesc, gameSlug }) {
 	const [desc, setDesc] = useState(initialDesc || '')
 	const [lastSavedDesc, setLastSavedDesc] = useState(initialDesc || '')
 	const [isEdited, setIsEdited] = useState(false)
 
-	const queryClient = useQueryClient()
-
-	/*//# --------------------- Mutation To Update Description --------------------- */
+	//# --------------------- Mutation To Update Description
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['update-game-desc', gameSlug],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
-		onSuccess: () => {
-			setLastSavedDesc(desc.trim())
-			setIsEdited(false)
-			queryClient.invalidateQueries(['gameSlug', gameSlug]) // refresh cached data
+		onSuccess: data => {
+			console.log(data)
+			if (data?.success) {
+				alert('Description saved!')
+				setLastSavedDesc(data.data.game_desc.trim())
+				setIsEdited(false)
+			} else {
+				alert('❌ Error: ' + (data?.error || 'Failed to update game description'))
+
+				setDesc(lastSavedDesc)
+				setIsEdited(false)
+			}
 		},
-		onError: error => {
-			alert(error.message)
+		onError: err => {
+			isDev && console.error('Create stage mutation error:', err)
+			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
+
 			setDesc(lastSavedDesc)
 			setIsEdited(false)
 		},
 	})
 
-	/*//# -------------------------------- Handlers -------------------------------- */
+	//# -------------------------------- Handlers
 	const handleSave = () => {
 		if (desc.trim() === lastSavedDesc.trim()) {
 			setDesc(desc.trim())

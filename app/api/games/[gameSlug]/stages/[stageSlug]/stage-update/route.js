@@ -10,32 +10,31 @@ export async function PUT(req, { params }) {
 		const { payload } = body || {}
 
 		//# ---------------------------- Validate payload ----------------------------
-		if (!payload) {
-			throw { message: 'Missing payload in request body.', code: 400 }
-		}
-		if (stageSlug !== payload.stageSlug) {
-			throw { message: 'Mismatching stageSlug in URL and payload.', code: 400 }
-		}
-		if (!payload.imageUrl || typeof payload.imageUrl !== 'string') {
-			throw { message: 'Missing or invalid imageUrl.', code: 400 }
-		}
-		if (!Array.isArray(payload.areas) || payload.areas.length === 0) {
-			throw { message: 'Missing or invalid areas data.', code: 400 }
-		}
+		if (!payload) throw { message: 'Missing payload in request body.', code: 400 }
+
+		if (stageSlug !== payload.stageSlug) throw { message: 'Mismatching stageSlug in URL and payload.', code: 400 }
+
+		if (!payload.imageUrl || typeof payload.imageUrl !== 'string') throw { message: 'Missing or invalid imageUrl.', code: 400 }
+
+		if (!Array.isArray(payload.areas) || payload.areas.length === 0) throw { message: 'Missing or invalid areas data.', code: 400 }
 
 		//# ---------------------------- Update stage in DB ----------------------------
 		const result = await dbUpdateExistingStage(payload.stageSlug, payload.imageUrl, payload.areas, payload.difficulty || null)
 
-		if (!result?.success) {
+		if (!result?.success)
 			throw {
 				message: 'Failed to update stage in database.',
 				details: result?.error,
 				code: 500,
 			}
-		}
 
 		//# ---------------------------- Return success ----------------------------
-		return NextResponse.json({ success: true }, { status: 200 })
+		return NextResponse.json(
+			{
+				success: true,
+			},
+			{ status: 200 }
+		)
 	} catch (err) {
 		isDev &&
 			console.error('API error in /stage-update: ', {
@@ -43,6 +42,12 @@ export async function PUT(req, { params }) {
 				details: err.details,
 			})
 
-		return NextResponse.json({ success: false, error: err.message || 'Internal server error while updating stage.' }, { status: 500 })
+		return NextResponse.json(
+			{
+				success: false,
+				error: err.message || 'Internal server error while updating stage.',
+			},
+			{ status: 500 }
+		)
 	}
 }

@@ -4,6 +4,7 @@ import { put } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 
 export async function POST(req, { params }) {
+	let stageId
 	try {
 		//# Parse multipart form
 		const formData = await req.formData()
@@ -17,27 +18,26 @@ export async function POST(req, { params }) {
 		const searchParams = await params
 		const gameSlug = searchParams?.gameSlug
 
-		if (!file || !gameId || !gameSlug || areas.length === 0) {
+		if (!file || !gameId || !gameSlug || areas.length === 0)
 			throw {
 				message: 'Missing required fields.',
 				details: { file, gameId, gameSlug, areas },
 				code: 400,
 			}
-		}
 
 		//# STEP 1: create a record to get stage_id
 		const newStage = await dbCreateNewStage(gameId, difficulty, areas)
-		if (!newStage.success) {
+		if (!newStage.success)
 			throw {
-				message: 'Could not create new stage and get new stage_id.',
+				message: 'Failed to create stage and get new stage_id.',
 				details: { newStage },
 				code: 500,
 			}
-		}
-		const stage = newStage.data
 
-		//# STEP 2 + 3: upload image to Vercel Blob + build final slug
-		const blobName = `${baseName}-${stage.stage_id}`
+		stageId = newStage.data.stage_id
+
+		//# STEP 2: upload image to Vercel Blob
+		const blobName = `${baseName}-${stageId}`
 
 		// Upload to Vercel Blob
 		const blob = await put(`${gameSlug}/${blobName}`, file, {
@@ -47,45 +47,42 @@ export async function POST(req, { params }) {
 		})
 
 		// Validate blob object
-		if (!blob?.pathname || !blob?.url) {
+		if (!blob?.pathname || !blob?.url)
 			throw {
 				message: 'Invalid blob response from Vercel Blob.',
 				details: blob,
 				code: 502,
 			}
-		}
 
-		// Build and validate resulting fields
-		const stageSlug = `${baseName}-${stage.stage_id}`
+		//# STEP 3: Build and validate resulting fields
+		const stageSlug = `${baseName}-${stageId}`
 		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
 
-		if (!imagePath || typeof imagePath !== 'string') {
+		if (!imagePath || typeof imagePath !== 'string')
 			throw {
 				message: 'Missing or invalid imagePath.',
 				details: { blob, imagePath },
 				code: 400,
 			}
-		}
 
-		if (!stageSlug || typeof stageSlug !== 'string') {
+		if (!stageSlug || typeof stageSlug !== 'string')
 			throw {
 				message: 'Missing or invalid stageSlug.',
 				details: { stageSlug },
 				code: 400,
 			}
-		}
 
 		//# STEP 4: insert stageSlug and imagePath to just created stage
-		const updated = await dbUpdateNewStage(stage.stage_id, stageSlug, imagePath)
+		const updated = await dbUpdateNewStage(stageId, stageSlug, imagePath)
 
-		if (!updated.success) {
+		if (!updated.success)
 			throw {
 				message: 'Failed to update stage record after upload.',
 				details: updated.error,
 				code: 500,
 			}
-		}
 
+		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
 			{
 				success: true,
@@ -94,6 +91,10 @@ export async function POST(req, { params }) {
 			{ status: 201 }
 		)
 	} catch (err) {
+		// Soft rollback: delete the incomplete record
+		await prisma.stages.delete({ where: { stage_id: stageId } }).catch(e => {
+			isDev && console.error('Rollback failed:', e.message)
+		})
 		isDev &&
 			console.error('API error in /stage-create-new:', {
 				message: err.message,

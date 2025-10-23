@@ -19,8 +19,8 @@ export async function apiCreateStage(gameSlug, formData) {
 //* ---------------------------- Update Existing Stage ---------------------------- */
 export async function apiUpdateStage(gameSlug, payload) {
 	try {
-		await axiosClient.put(`/api/games/${gameSlug}/stages/${payload.stageSlug}/stage-update`, { payload })
-		return { success: true }
+		const data = await axiosClient.put(`/api/games/${gameSlug}/stages/${payload.stageSlug}/stage-update`, { payload })
+		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('Client update stage error:', err)
 		return { success: false, error: err.response?.data?.error || err.message }

@@ -21,7 +21,7 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 					router.replace(`/editor/${gameSlug}`)
 				}
 			} else {
-				alert('❌ Error: ' + (data?.error || 'Unknown'))
+				alert('❌ Error: ' + (data?.error || 'Failed to create new stage'))
 				setModified(true)
 			}
 		},

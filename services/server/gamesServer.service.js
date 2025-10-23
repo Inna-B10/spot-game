@@ -59,7 +59,7 @@ export async function dbGetGameBySlug(gameSlug) {
 //* --------------------------- Update Description --------------------------- */
 export async function dbUpdateGameDesc(gameSlug, desc) {
 	try {
-		const updated = await prisma.game.update({
+		const updated = await prisma.games.update({
 			where: { game_slug: gameSlug },
 			data: { game_desc: desc?.trim() },
 		})
