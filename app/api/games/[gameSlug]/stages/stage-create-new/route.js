@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 
 export async function POST(req, { params }) {
 	try {
-		// Parse multipart form
+		//# Parse multipart form
 		const formData = await req.formData()
 
 		const file = formData.get('file')
@@ -18,36 +18,74 @@ export async function POST(req, { params }) {
 		const gameSlug = searchParams?.gameSlug
 
 		if (!file || !gameId || !gameSlug || areas.length === 0) {
-			return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 })
+			throw {
+				message: 'Missing required fields.',
+				details: { file, gameId, gameSlug, areas },
+				code: 400,
+			}
 		}
 
-		// STEP 1: create a record to get stage_id
+		//# STEP 1: create a record to get stage_id
 		const newStage = await dbCreateNewStage(gameId, difficulty, areas)
 		if (!newStage.success) {
-			isDev && console.error('API error in /stage-create-new, newStage:', newStage.error)
-			return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+			throw {
+				message: 'Could not create new stage and get new stage_id.',
+				details: { newStage },
+				code: 500,
+			}
 		}
 		const stage = newStage.data
 
-		// STEP 2: upload image to Vercel Blob
+		//# STEP 2 + 3: upload image to Vercel Blob + build final slug
 		const blobName = `${baseName}-${stage.stage_id}`
+
+		// Upload to Vercel Blob
 		const blob = await put(`${gameSlug}/${blobName}`, file, {
 			access: 'public',
 			addRandomSuffix: true,
 			token: process.env.BLOB_READ_WRITE_TOKEN,
 		})
 
-		// STEP 3: build final slug and update record
-		const stageSlug = `${baseName}-${stage.stage_id}` // e.g. image-6
-		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
-		// e.g. /find-differences/image-6-dkUKnEVyFq2RgaoTUFFqVgNP6E8Q8C.jpg
+		// Validate blob object
+		if (!blob?.pathname || !blob?.url) {
+			throw {
+				message: 'Invalid blob response from Vercel Blob.',
+				details: blob,
+				code: 502,
+			}
+		}
 
+		// Build and validate resulting fields
+		const stageSlug = `${baseName}-${stage.stage_id}`
+		const imagePath = `/${gameSlug}/${blob.pathname.split('/').pop()}`
+
+		if (!imagePath || typeof imagePath !== 'string') {
+			throw {
+				message: 'Missing or invalid imagePath.',
+				details: { blob, imagePath },
+				code: 400,
+			}
+		}
+
+		if (!stageSlug || typeof stageSlug !== 'string') {
+			throw {
+				message: 'Missing or invalid stageSlug.',
+				details: { stageSlug },
+				code: 400,
+			}
+		}
+
+		//# STEP 4: insert stageSlug and imagePath to just created stage
 		const updated = await dbUpdateNewStage(stage.stage_id, stageSlug, imagePath)
 
 		if (!updated.success) {
-			isDev && console.error('update new stage error in API /stage-create-new:', updated.error)
-			return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+			throw {
+				message: 'Failed to update stage record after upload.',
+				details: updated.error,
+				code: 500,
+			}
 		}
+
 		return NextResponse.json(
 			{
 				success: true,
@@ -56,7 +94,18 @@ export async function POST(req, { params }) {
 			{ status: 201 }
 		)
 	} catch (err) {
-		isDev && console.error('API error in /stage-create-new:', err)
-		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+		isDev &&
+			console.error('API error in /stage-create-new:', {
+				message: err.message,
+				details: err.details,
+			})
+
+		return NextResponse.json(
+			{
+				success: false,
+				error: err.message || 'Internal server error during image upload.',
+			},
+			{ status: err.code || 500 }
+		)
 	}
 }

@@ -72,8 +72,10 @@ export default function Editor({ initialStage, mode, gameDB }) {
 			{/* //# ------------------------ Image uploader (only visible in create mode) */}
 			{mode === 'create' && (
 				<div className='flex gap-4 justify-center items-center py-4 border'>
-					<label className='text-lg'>Upload image: </label>
-					<input type='file' accept='image/*' onChange={handleImageUpload} />
+					<label className='text-lg'>
+						Upload image:
+						<input type='file' accept='image/*' onChange={handleImageUpload} />
+					</label>
 				</div>
 			)}
 

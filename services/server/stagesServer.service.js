@@ -101,8 +101,8 @@ export async function dbUpdateNewStage(stageId, stageSlug, imagePath) {
 		const data = await prisma.stages.update({
 			where: { stage_id: stageId },
 			data: {
-				stage_slug: stageSlug,
-				image_path: imagePath,
+				stage_slug: stageSlug?.trim(),
+				image_path: imagePath?.trim(),
 			},
 			select: {
 				stage_slug: true,
@@ -121,13 +121,13 @@ export async function dbUpdateExistingStage(stageSlug, imageUrl, areas, difficul
 		const data = await prisma.stages.update({
 			where: { stage_slug: stageSlug },
 			data: {
-				image_path: imageUrl,
+				image_path: imageUrl?.trim(),
 				areas,
-				difficulty,
+				difficulty: difficulty?.trim(),
 			},
 		})
 
-		return { success: true }
+		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, update stage by stageSlug:', err)
 		return { success: false, error: err.message }
