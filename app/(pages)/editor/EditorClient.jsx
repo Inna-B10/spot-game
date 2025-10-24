@@ -2,25 +2,36 @@
 
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { apiGetAllGames } from '@/services/client/gamesClient.service'
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { NewCategory } from './NewCategory'
 
 export function EditorClient({ initialGames }) {
-	const [games, setGames] = useState(initialGames)
-	const [isAddedNew, setIsAddedNew] = useState(false)
+	//# --------------------------------- fetch all games
+	const {
+		data: games,
+		isLoading,
+		isError,
+	} = useQuery({
+		queryKey: ['get-all-games'],
+		queryFn: apiGetAllGames,
+		initialData: initialGames,
+	})
 
-	// Reload list after a new game is added
-	useEffect(() => {
-		if (!isAddedNew) return
+	if (isLoading) return <div>Loading...</div>
 
-		async function fetchGames() {
-			const data = await apiGetAllGames()
-			if (data && data.length > 0) setGames(data)
-			setIsAddedNew(false)
-		}
-
-		fetchGames()
-	}, [isAddedNew])
+	//# --------------------------------- if error fetching
+	if (isError)
+		return (
+			<>
+				<div className='flex justify-between items-center gap-2'>
+					<h1 className='text-3xl font-semibold'>Editor</h1>
+					<LinkButton href='/' role='button' aria-label='Go to homepage'>
+						Back to Home
+					</LinkButton>
+				</div>
+				<p className='text-center mt-[20%] text-red-500'>DB Error: Failed to fetch games from the database</p>
+			</>
+		)
 
 	//* --------------------------------- Render --------------------------------- */
 	return (
@@ -35,7 +46,7 @@ export function EditorClient({ initialGames }) {
 			<div>
 				<h2 className='text-2xl font-semibold'>Choose category</h2>
 				<div className='flex flex-wrap gap-2'>
-					{games.length > 0 ? (
+					{games?.length > 0 ? (
 						games.map(({ game_slug, game_title }) => (
 							<LinkButton key={game_slug} href={`/editor/${game_slug}`} role='button' aria-label={`Go to ${game_title} editor`}>
 								{game_title}
@@ -46,8 +57,8 @@ export function EditorClient({ initialGames }) {
 					)}
 				</div>
 			</div>
-			{/* //# --------------------------- Create New Category -------------------------- */}
-			<NewCategory setIsAddedNew={setIsAddedNew} />
+			{/* //# --------------------------- Create New Category */}
+			<NewCategory />
 		</div>
 	)
 }

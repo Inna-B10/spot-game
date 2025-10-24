@@ -16,24 +16,29 @@ export async function dbGetAllGames() {
 
 		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('DB Error fetching games:', err)
+		isDev && console.error('DB Error, fetching all games:', err)
 		return { success: false, error: err.message }
 	}
 }
 
 //* ----------------------------- Create New Game ---------------------------- */
-export async function dbCreateNewGame({ title, slug, desc }) {
+export async function dbCreateNewGame({ title, gameSlug, desc }) {
 	try {
-		await prisma.games.create({
+		const data = await prisma.games.create({
 			data: {
-				game_title: title,
-				game_slug: slug,
+				game_title: title?.trim(),
+				game_slug: gameSlug?.trim(),
 				game_desc: desc?.trim() || null,
 			},
 		})
-		return { success: true }
+		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('DB Error creating game:', err)
+		isDev && console.error('DB Error, create new game:', err)
+
+		if (err.code === 'P2002') {
+			return { success: false, error: 'Unique constraint failed' }
+		}
+
 		return { success: false, error: err.message }
 	}
 }
@@ -46,22 +51,22 @@ export async function dbGetGameBySlug(gameSlug) {
 		})
 		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('DB Error get game name:', err)
+		isDev && console.error('DB Error, game name by slug:', err)
 		return { success: false, error: err.message }
 	}
 }
 
 //* --------------------------- Update Description --------------------------- */
-export async function dbUpdateGameDesc(slug, desc) {
+export async function dbUpdateGameDesc(gameSlug, desc) {
 	try {
 		const updated = await prisma.games.update({
-			where: { game_slug: slug },
-			data: { game_desc: desc },
+			where: { game_slug: gameSlug },
+			data: { game_desc: desc?.trim() },
 		})
 
 		return { success: true, data: updated }
 	} catch (err) {
-		isDev && console.error('DB Error update game description:', err)
+		isDev && console.error('DB Error, update game description:', err)
 		return { success: false, error: err.message }
 	}
 }

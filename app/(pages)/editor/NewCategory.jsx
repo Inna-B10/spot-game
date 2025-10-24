@@ -3,20 +3,52 @@
 import { Button } from '@/components/ui/buttons/Button'
 import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInput'
 import { apiCreateNewGame } from '@/services/client/gamesClient.service'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-export function NewCategory({ setIsAddedNew }) {
+/**
+ * Client-side React component that provides a form UI to create a new game/category.
+ * It maintains local form state, shows a preview step, and submits the sanitized data
+ * to an API via a React Query mutation.
+ */
+
+export function NewCategory() {
 	const [name, setName] = useState('')
 	const [desc, setDesc] = useState('')
 	const [preview, setPreview] = useState(null)
 	const [isUpdated, setIsUpdated] = useState(false)
+	const queryClient = useQueryClient()
 
-	//# ----------- change input
+	//# ----------------------- mutation to create new game
+	const { mutate, isPending } = useMutation({
+		mutationKey: ['create-new-game'],
+		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
+		onSuccess: data => {
+			if (data?.success) {
+				queryClient.invalidateQueries(['get-all-games'])
+				alert('Game created successfully!')
+				setPreview(null)
+				setName('')
+				setDesc('')
+			} else {
+				alert('❌ Error: ' + (data?.error || 'Failed to create new game'))
+			}
+		},
+		onError: err => {
+			isDev && console.error('Create stage mutation error:', err)
+			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
+		},
+		onSettled: () => {
+			setIsUpdated(false)
+		},
+	})
+
+	//# ----------------------- change input
 	const handleChange = e => {
 		setIsUpdated(true)
-		const { name, value } = e.target
-		if (name === 'gameName') setName(value)
-		if (name === 'gameDesc') setDesc(value)
+		const { id, value } = e.target
+		if (id === 'gameName') setName(sanitizeName(value))
+		if (id === 'gameDesc') setDesc(sanitizeDesc(value))
 	}
 
 	const handleCreatePreview = () => {
@@ -24,24 +56,18 @@ export function NewCategory({ setIsAddedNew }) {
 			alert('Game name cannot be empty!')
 			return
 		}
+		setName(name.trim())
+		setDesc(desc.trim())
 
-		//# ----------- sanitize input
-		const newGameName = sanitizeName(name)
-		const newGameDesc = sanitizeDesc(desc)
+		//# ----------------------- create slug
+		const gameSlug = createSlug(sanitizeName(name).trim())
 
-		//# ----------- create slug
-		const gameSlug = createSlug(newGameName)
-
-		//# ----------- show preview instead of immediate save
-		setPreview({
-			name: newGameName,
-			slug: gameSlug,
-			desc: newGameDesc,
-		})
+		//# ----------------------- show preview instead of immediate save
+		setPreview({ name, gameSlug, desc })
 		setIsUpdated(false)
 	}
 
-	//# ----------- submit
+	//# ----------------------- submit
 	async function handleSubmit(e) {
 		e.preventDefault()
 
@@ -49,26 +75,14 @@ export function NewCategory({ setIsAddedNew }) {
 			alert('Click Create Preview and check that name and description look correct before saving.')
 			return
 		}
-		if (!preview?.name.trim() || !preview?.slug.trim()) {
+
+		if (!preview?.name.trim() || !preview?.gameSlug.trim()) {
 			alert('Missing required parameters!')
 			return
 		}
 
-		//# ----------- update DB
-		const res = await apiCreateNewGame({
-			title: preview.name.trim(),
-			slug: preview.slug.trim(),
-			desc: preview.desc.trim(),
-		})
-		if (res.success) {
-			alert('Game created successfully!')
-			setPreview(null)
-			setName('')
-			setDesc('')
-			setIsAddedNew(true)
-		} else {
-			alert(`Error: ${res.error}\n\n*Name must be unique!\nCheck name and try again.`)
-		}
+		//# ----------------------- update DB
+		mutate({ title: preview.name.trim(), gameSlug: preview.gameSlug.trim(), desc: preview.desc.trim() })
 	}
 
 	//* --------------------------------- Render --------------------------------- */
@@ -79,8 +93,13 @@ export function NewCategory({ setIsAddedNew }) {
 			<form onSubmit={handleSubmit}>
 				<div className='w-full flex justify-between gap-8'>
 					<div className='w-1/2 flex flex-col gap-4'>
-						<input type='text' name='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} />
-						<textarea name='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' />
+						{/* //# ---------------------------------Input */}
+						<label htmlFor='gameName'>
+							<input type='text' id='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} disabled={isPending} />
+						</label>
+						<label htmlFor='gameDesc'>
+							<textarea id='gameDesc' value={desc} onChange={handleChange} placeholder='Write short description...' className='w-full h-full' disabled={isPending} />
+						</label>
 					</div>
 					<div className='w-1/2 flex flex-col gap-4 justify-between'>
 						<p>
@@ -88,7 +107,7 @@ export function NewCategory({ setIsAddedNew }) {
 							<br />
 							You can add individual task instructions later during stage creation.
 						</p>
-						<Button type='button' onClick={handleCreatePreview} variant='primary' aria-label='Create new category'>
+						<Button type='button' disabled={!isUpdated} onClick={handleCreatePreview} variant='primary' aria-label='Create new category'>
 							Create preview
 						</Button>
 					</div>
@@ -96,13 +115,13 @@ export function NewCategory({ setIsAddedNew }) {
 
 				{/* //# --------------------------------- Preview */}
 				{preview && (
-					<div className='w-full flex flex-col'>
+					<div className='w-full flex flex-col mt-8'>
 						<h2 className='text-2xl font-semibold'>Preview</h2>
 						<span>
 							<strong>game_title:</strong> {preview?.name}
 						</span>
 						<span>
-							<strong>game_slug:</strong> {preview?.slug}
+							<strong>game_slug:</strong> {preview?.gameSlug}
 						</span>
 						<span>
 							<strong>game_desc:</strong> {preview?.desc}
@@ -111,7 +130,7 @@ export function NewCategory({ setIsAddedNew }) {
 				)}
 				{/* //# ---------------------------------- Save */}
 				<div className='w-full flex gap-2 justify-center mt-8'>
-					<Button type='submit' disabled={!preview || isUpdated}>
+					<Button type='submit' disabled={!preview || isUpdated || isPending}>
 						Confirm & Save
 					</Button>
 				</div>

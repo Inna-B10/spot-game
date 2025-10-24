@@ -59,7 +59,7 @@ export default async function GamePage({ params }) {
 		)
 	}
 
-	//* -------------------------------- Rendering ------------------------------- */
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<section className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>

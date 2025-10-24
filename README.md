@@ -15,6 +15,7 @@ npm i clsx
 npm i @prisma/client
 npm i @vercel/blob
 npm i axios
+npm i @tanstack/react-query
 ```
 
 ### ⚙️ Current Features
@@ -36,19 +37,16 @@ npm i axios
   - [ ] add task description
   - [ ] edit task description
   - [ ] edit difficulty
-  - [x] add a new game(category)
-  - [x] add game description
-  - [x] edit game description
+  - [ ] Optional: check unique name when preview new game properties
   - [ ] delete game
   - [ ] delete stage
   - [ ] Optional: change image
   - [ ] Add button Next
-- [ ] Drag & drop image upload
+  - [ ] Drag & drop image upload
 - [ ] Authorization (via Clerk)
 - [ ] Admin access & protection for Editor
 - [ ] Editor menu
 - [ ] Optional: save user progress
-- [ ] move from State to Tanstack Query
 
 #### Design/UI:
 
@@ -72,5 +70,10 @@ npm i axios
 - [x] Add export/import scripts for Prisma data backups
 - [x] Implement circle and rectangular click areas
 - [x] Save button activates only when unsaved changes exist
+- [x] add game description
+- [x] edit game description
+- [x] add a new game(category)
+- [x] switch from State to Tanstack Query
+- [x] Organize the routes
 
 </details>

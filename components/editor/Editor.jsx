@@ -1,12 +1,11 @@
 'use client'
 
 import { BackNavLinks } from '@/app/(pages)/editor/[gameSlug]/[stageSlug]/BackNavLinks'
-import { useCallback, useEffect, useRef, useState } from 'react'
-
 import { ImageWithAreas } from '@/components/ImageWithAreas'
 import { EditorToolbar } from '@/components/editor/EditorToolbar'
 import { BLOB_URL } from '@/config/config'
 import { useEditorAreas } from '@/hooks/useEditorAreas'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export default function Editor({ initialStage, mode, gameDB }) {
 	const [stageSlug, setStageSlug] = useState('')
@@ -19,7 +18,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 	const [modified, setModified] = useState(false)
 	const imageRef = useRef(null)
 
-	//* -------- Custom Hook To Manage Drawing/editing Areas On The Image -------- */
+	//# -------- Custom Hook To Manage Drawing/editing Areas On The Image
 	const { areas, setAreas, handleImageClick, handleContextMenu, handleMouseDown, handleMouseMove, handleMouseUp } = useEditorAreas(
 		imageRef,
 		drawMode,
@@ -27,7 +26,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 		setModified
 	)
 
-	//* ----------------------------- Load initial stage ----------------------------- */
+	//# ----------------------------- Load initial stage
 	useEffect(() => {
 		if (initialStage) {
 			// Set data for editing existing stage or creating new one
@@ -39,7 +38,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 		}
 	}, [gameId, initialStage, setAreas])
 
-	//* ---------------------------- Upload New Image ---------------------------- */
+	//# ---------------------------- Upload New Image
 	const handleImageUpload = useCallback(
 		e => {
 			const file = e.target.files?.[0]
@@ -53,7 +52,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 		[setAreas]
 	)
 
-	//* ------------ Prepared Object For Saving Or Updating The Stage ------------ */
+	//# ------------ Prepared Object For Saving Or Updating The Stage
 	const updatedNewStage = {
 		gameId,
 		stageSlug,
@@ -72,8 +71,10 @@ export default function Editor({ initialStage, mode, gameDB }) {
 			{/* //# ------------------------ Image uploader (only visible in create mode) */}
 			{mode === 'create' && (
 				<div className='flex gap-4 justify-center items-center py-4 border'>
-					<label className='text-lg'>Upload image: </label>
-					<input type='file' accept='image/*' onChange={handleImageUpload} />
+					<label className='text-lg'>
+						Upload image:
+						<input type='file' accept='image/*' onChange={handleImageUpload} />
+					</label>
 				</div>
 			)}
 

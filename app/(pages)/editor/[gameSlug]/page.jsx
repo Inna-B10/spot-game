@@ -1,5 +1,5 @@
 import NotFoundPage from '@/app/not-found'
-import { EditableDescriptionDyn } from '@/components/editor/EditableDescriptionDyn'
+import { EditableDescriptionDyn } from '@/components/editor/editableDescription/EditableDescriptionDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
@@ -9,19 +9,14 @@ import Link from 'next/link'
 
 export default async function GameIndex({ params }) {
 	const { gameSlug } = await params
-
 	if (!gameSlug) return NotFoundPage()
 
-	//# ------------------------ Fetch game info (title and description)
-	const { data: gameDB } = await dbGetGameBySlug(gameSlug)
+	const { data: gameDB } = await dbGetGameBySlug(gameSlug) // Fetch game info (title and description)
+	if (!gameDB) return NotFoundPage() // If game not found — return 404
 
-	//# ------------------------ If game not found — return 404
-	if (!gameDB) return NotFoundPage()
+	const { data: stagesByGame } = await dbGetStagesByGameSlug(gameSlug) // Fetch all stages for this game
 
-	//# ------------------------ Fetch all stages for this game
-	const { data: stagesByGame } = await dbGetStagesByGameSlug(gameSlug)
-
-	//* -------------------------------- Rendering ------------------------------- */
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<section className='space-y-8 w-full'>
 			{/* //# ------------------------ Game title and navigation */}

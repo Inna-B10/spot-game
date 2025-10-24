@@ -1,7 +1,7 @@
 'use client'
 import dynamic from 'next/dynamic'
 
-const DynamicEditableDescription = dynamic(() => import('@/components/editor/EditableDescription'), {
+const DynamicEditableDescription = dynamic(() => import('@/components/editor/editableDescription/EditableDescription'), {
 	ssr: false,
 	loading: () => <p>Loading editor...</p>,
 })

@@ -76,7 +76,7 @@ export default function PlayGame({ stage, gameSlug }) {
 		[found, stage.areas, completed]
 	)
 
-	//* -------------------------------- Rendering ------------------------------- */
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div className='space-y-6 text-center w-full'>
 			{/* //# ------------------------ Progress info */}

@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/buttons/Button'
-import { useSaveGame } from '@/hooks/useSaveGame'
+import { useSaveStage } from '@/hooks/useSaveStage'
 
 export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSlug, mode, modified, setModified, imageFile, stage }) {
-	//* -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert) - */
-	const saveGame = useSaveGame(gameSlug, mode, imageFile, setModified, stage)
+	//# -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert)
+	const { saveStage, isPending } = useSaveStage(gameSlug, mode, imageFile, setModified, stage)
 
 	//* ----------------------------- Render ----------------------------- */
 	return (
@@ -21,7 +21,7 @@ export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSl
 			{/* //# ------------------------ Radius control for drawing shapes */}
 			<label className='flex flex-col lg:flex-row lg:items-center gap-2'>
 				Radius:
-				<input type='number' value={radius} onChange={e => setRadius(Number(e.target.value))} className='w-15 text-right' />
+				<input type='number' id='radius' value={radius} onChange={e => setRadius(Number(e.target.value))} className='w-15 text-right' />
 			</label>
 
 			{/* //# ------------------------ Toggle between circle and rectangle drawing modes */}
@@ -41,8 +41,8 @@ export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSl
 			</span>
 
 			{/* //# ------------------------ Save button (disabled until modifications occur) */}
-			<Button onClick={saveGame} variant='primary' aria-label='Save stage' disabled={!modified}>
-				Save stage
+			<Button onClick={saveStage} variant='primary' aria-label='Save stage' disabled={!modified || isPending}>
+				{isPending ? 'Saving…' : 'Save'}
 			</Button>
 		</div>
 	)

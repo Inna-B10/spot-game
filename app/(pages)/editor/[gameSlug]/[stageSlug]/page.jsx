@@ -33,6 +33,6 @@ export default async function EditStage({ params }) {
 		stage = data
 	}
 
-	//* ------------------------------- Rendering ------------------------------ */
+	//* --------------------------------- Render --------------------------------- */
 	return <Editor initialStage={stage} mode={mode} gameDB={gameDB} />
 }

@@ -7,6 +7,7 @@ export function ImageWithAreas({ imageUrl, areas, onPointClick, highlightId, ima
 		onPointClick({ x, y })
 	}
 
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div
 			className='relative content-center w-fit'
