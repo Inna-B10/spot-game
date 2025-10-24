@@ -1,4 +1,4 @@
-import { getRelativeCoordsPx, isPointInArea } from '@/components/editor/areaUtils'
+import { getRelativeCoordsPx, isPointInArea } from '@/lib/utils/areaUtils'
 import { useCallback, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 

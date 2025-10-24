@@ -28,7 +28,8 @@ export async function apiCreateNewGame({ title, gameSlug, desc = null }) {
 export async function apiGetAllGames() {
 	try {
 		const { data } = await axiosClient.get('/api/games/game-get-all')
-		return data
+
+		return data.data
 	} catch (err) {
 		isDev && console.error('Request get all games failed:', err)
 

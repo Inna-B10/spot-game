@@ -16,7 +16,6 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 		mutationKey: ['update-game-desc', gameSlug],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
 		onSuccess: data => {
-			console.log(data)
 			if (data?.success) {
 				alert('Description saved!')
 				setLastSavedDesc(data.data.game_desc.trim())
@@ -47,6 +46,7 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 		setDesc(desc.trim())
 		mutate(desc.trim())
 	}
+
 	const handleCancel = () => {
 		setIsEdited(false)
 		setDesc(lastSavedDesc) // rollback to last saved

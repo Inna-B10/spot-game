@@ -91,6 +91,7 @@ export async function POST(req, { params }) {
 			{ status: 201 }
 		)
 	} catch (err) {
+		//# ---------------------------------- Catch ---------------------------------
 		// Soft rollback: delete the incomplete record
 		await prisma.stages.delete({ where: { stage_id: stageId } }).catch(e => {
 			isDev && console.error('Rollback failed:', e.message)

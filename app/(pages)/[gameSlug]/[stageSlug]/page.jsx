@@ -46,7 +46,7 @@ export default async function PlayFindPage({ params }) {
 	//# ------------------------ Next stage
 	const { data: nextStage } = await dbGetNextStage(stage.game_id, stage.stage_id)
 
-	//* -------------------------------- Rendering ------------------------------- */
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<>
 			{/* //# ------------------------ Menu */}

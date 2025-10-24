@@ -4,6 +4,7 @@ import cn from 'clsx'
 
 export default async function Home() {
 	const { success, data } = await dbGetAllGames()
+
 	let msg = ''
 	if (!success) {
 		msg = 'DB Error: Failed to fetch games from the database.'
@@ -26,15 +27,13 @@ export default async function Home() {
 
 			{/* //# ------------------------ List of games */}
 			{data && data?.length > 0 ? (
-				<ul className='inline-flex gap-2'>
+				<div className='flex flex-wrap gap-2'>
 					{data.map(({ game_id, game_title, game_slug }) => (
-						<li key={game_id}>
-							<LinkButton href={`/${game_slug}`} role='button' aria-label={`Go to ${game_title} index`}>
-								{game_title}
-							</LinkButton>
-						</li>
+						<LinkButton key={game_id} href={`/${game_slug}`} role='button' aria-label={`Go to ${game_title} index`}>
+							{game_title}
+						</LinkButton>
 					))}
-				</ul>
+				</div>
 			) : (
 				<div className={cn(!success && 'text-red-500')}>{msg}</div>
 			)}

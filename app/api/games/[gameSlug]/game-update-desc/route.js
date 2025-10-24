@@ -32,6 +32,7 @@ export async function PUT(req, { params }) {
 			{ status: 200 }
 		)
 	} catch (err) {
+		//# ---------------------------------- Catch ---------------------------------
 		isDev &&
 			console.error('API error in /game-update-desc:', {
 				message: err.message,

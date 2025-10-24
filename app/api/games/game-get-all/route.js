@@ -6,14 +6,35 @@ export async function GET() {
 	try {
 		const result = await dbGetAllGames()
 
-		if (!result.success) {
-			return NextResponse.json(result.error, { status: 400 })
-		}
+		if (!result.success)
+			throw {
+				message: 'Failed to fetch list of games.',
+				details: result.error,
+				code: 500,
+			}
 
-		return NextResponse.json(result.data, { status: 200 })
+		//# ---------------------------- Return success ----------------------------
+		return NextResponse.json(
+			{
+				success: true,
+				data: result.data,
+			},
+			{ status: 200 }
+		)
 	} catch (err) {
-		isDev && console.error('API error in /game-get-all:', err)
+		//# ---------------------------------- Catch ---------------------------------
+		isDev &&
+			console.error('API error in /game-get-all:', {
+				message: err.message,
+				details: err.details,
+			})
 
-		return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+		return NextResponse.json(
+			{
+				success: false,
+				error: err.message || 'Internal server error',
+			},
+			{ status: err.code || 500 }
+		)
 	}
 }

@@ -6,7 +6,12 @@ import { apiCreateNewGame } from '@/services/client/gamesClient.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
-//* ---------------------------------- Page ---------------------------------- */
+/**
+ * Client-side React component that provides a form UI to create a new game/category.
+ * It maintains local form state, shows a preview step, and submits the sanitized data
+ * to an API via a React Query mutation.
+ */
+
 export function NewCategory() {
 	const [name, setName] = useState('')
 	const [desc, setDesc] = useState('')
@@ -14,7 +19,7 @@ export function NewCategory() {
 	const [isUpdated, setIsUpdated] = useState(false)
 	const queryClient = useQueryClient()
 
-	//# ----------------------- Mutation To Create New Game
+	//# ----------------------- mutation to create new game
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['create-new-game'],
 		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
@@ -58,11 +63,7 @@ export function NewCategory() {
 		const gameSlug = createSlug(sanitizeName(name).trim())
 
 		//# ----------------------- show preview instead of immediate save
-		setPreview({
-			name,
-			gameSlug,
-			desc,
-		})
+		setPreview({ name, gameSlug, desc })
 		setIsUpdated(false)
 	}
 
@@ -92,6 +93,7 @@ export function NewCategory() {
 			<form onSubmit={handleSubmit}>
 				<div className='w-full flex justify-between gap-8'>
 					<div className='w-1/2 flex flex-col gap-4'>
+						{/* //# ---------------------------------Input */}
 						<label htmlFor='gameName'>
 							<input type='text' id='gameName' placeholder='Write name...' className='w-full' value={name} onChange={handleChange} disabled={isPending} />
 						</label>

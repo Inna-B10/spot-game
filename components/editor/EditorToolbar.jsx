@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/buttons/Button'
 import { useSaveStage } from '@/hooks/useSaveStage'
 
 export function EditorToolbar({ drawMode, setDrawMode, radius, setRadius, gameSlug, mode, modified, setModified, imageFile, stage }) {
-	//* -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert) - */
+	//# -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert)
 	const { saveStage, isPending } = useSaveStage(gameSlug, mode, imageFile, setModified, stage)
 
 	//* ----------------------------- Render ----------------------------- */

@@ -36,6 +36,7 @@ export async function PUT(req, { params }) {
 			{ status: 200 }
 		)
 	} catch (err) {
+		//# ---------------------------------- Catch ---------------------------------
 		isDev &&
 			console.error('API error in /stage-update: ', {
 				message: err.message,

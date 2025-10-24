@@ -8,19 +8,45 @@ export async function GET(req, { params }) {
 
 	try {
 		if (!gameSlug) {
-			return NextResponse.json({ success: false, error: 'Missing required field' }, { status: 400 })
+			throw {
+				message: 'Missing required gameSlug.',
+				details: { gameSlug },
+				code: 400,
+			}
 		}
 
 		const result = await dbGetGameBySlug(gameSlug)
 
 		if (!result.success) {
-			return NextResponse.json(result, { status: 400 })
+			throw {
+				message: 'Failed to fetch the game.',
+				details: result.error,
+				code: 500,
+			}
 		}
 
-		return NextResponse.json(result, { status: 200 })
+		//# ---------------------------- Return success ----------------------------
+		return NextResponse.json(
+			{
+				success: true,
+				data: result.data,
+			},
+			{ status: 200 }
+		)
 	} catch (err) {
-		isDev && console.error('API error in /game-by-slug:', err)
+		//# ---------------------------------- Catch ---------------------------------
+		isDev &&
+			console.error('API error in /game-by-slug:', {
+				message: err.message,
+				details: err.details,
+			})
 
-		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
+		return NextResponse.json(
+			{
+				success: false,
+				error: err.message || 'Internal server error',
+			},
+			{ status: err.code || 500 }
+		)
 	}
 }

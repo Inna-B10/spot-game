@@ -34,6 +34,7 @@ export async function POST(req) {
 			{ status: 201 }
 		)
 	} catch (err) {
+		//# ---------------------------------- Catch ---------------------------------
 		isDev &&
 			console.error('API error in /game-create-new:', {
 				message: err.message,
