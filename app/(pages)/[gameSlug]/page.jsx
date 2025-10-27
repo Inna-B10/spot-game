@@ -63,7 +63,7 @@ export default async function GamePage({ params }) {
 	return (
 		<section className='space-y-8 w-full'>
 			<div className='flex justify-between items-center gap-2'>
-				<h2 className='text-xl font-semibold'> {gameDB.game_title}</h2>
+				<h2 className='text-xl font-semibold mb-2'> {gameDB.game_title}</h2>
 				<LinkButton href='/' role='button' aria-label='Go to homepage'>
 					Home
 				</LinkButton>

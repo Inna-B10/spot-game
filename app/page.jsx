@@ -23,7 +23,7 @@ export default async function Home() {
 					</LinkButton>
 				</li>
 			</ul>
-			<h2 className='text-xl font-bold'>🎮 Choose game</h2>
+			<h2 className='text-xl font-bold mb-2'>🎮 Choose game</h2>
 
 			{/* //# ------------------------ List of games */}
 			{data && data?.length > 0 ? (

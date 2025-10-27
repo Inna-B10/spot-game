@@ -57,32 +57,36 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 		if (mode === 'create') {
 			if (!imageFile) return alert('Please upload an image file before saving.')
 			if (!stage.gameId) return alert('Internal error: missing gameId.')
+			if (!stage.difficulty) return alert('Please select stage difficulty.')
 			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area.')
 
 			const formData = new FormData()
 			formData.append('file', imageFile)
 			formData.append('gameId', String(stage.gameId)) //String() makes code explicit and safe
-			formData.append('difficulty', stage.difficulty || '')
+			formData.append('task', stage.task?.trim() || '')
+			formData.append('difficulty', stage.difficulty)
 			formData.append('name', BASE_IMG_NAME) // server will add random suffix
 			formData.append('areas', JSON.stringify(stage.areas))
 
 			createStageMutation.mutate({ gameSlug, formData })
 		} else {
 			//# ---------------------------- Edit
-			if (!stage.stageSlug) return alert('Missing stageSlug for update.')
-			if (!stage.imageUrl) return alert('Missing image URL for update.')
+			if (!stage.stageSlug) return alert('Internal error: Missing stageSlug for update.')
+			if (!stage.imageUrl) return alert('Internal error: Missing image URL for update.')
+			if (!stage.difficulty) return alert('Please select stage difficulty.')
 			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area before saving.')
 
 			const payload = {
 				stageSlug: stage.stageSlug.trim(),
 				imageUrl: stage.imageUrl.trim(),
+				task: stage.task?.trim() || '',
+				difficulty: stage.difficulty,
 				areas: stage.areas,
-				difficulty: stage.difficulty?.trim() || null,
 			}
 
 			updateStageMutation.mutate({ gameSlug, payload })
 		}
-	}, [mode, gameSlug, imageFile, stage.gameId, stage.stageSlug, stage.imageUrl, stage.difficulty, stage.areas, createStageMutation, updateStageMutation])
+	}, [mode, imageFile, stage.gameId, stage.areas, stage.difficulty, stage.stageSlug, stage.imageUrl, stage.task, createStageMutation, gameSlug, updateStageMutation])
 
 	//# ---------------------------- Derived Loading State ----------------------------
 	const isPending = useMemo(() => createStageMutation.isPending || updateStageMutation.isPending, [createStageMutation.isPending, updateStageMutation.isPending])

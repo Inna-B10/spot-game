@@ -10,16 +10,20 @@ export async function PUT(req, { params }) {
 		const { payload } = body || {}
 
 		//# ---------------------------- Validate payload ----------------------------
-		if (!payload) throw { message: 'Missing payload in request body.', code: 400 }
+		if (!payload) throw { message: 'Missing "payload" in request body.', code: 400 }
 
-		if (stageSlug !== payload.stageSlug) throw { message: 'Mismatching stageSlug in URL and payload.', code: 400 }
+		if (stageSlug !== payload.stageSlug) throw { message: 'Mismatching "stageSlug" in URL and payload.', code: 400 }
 
-		if (!payload.imageUrl || typeof payload.imageUrl !== 'string') throw { message: 'Missing or invalid imageUrl.', code: 400 }
+		if (!payload.imageUrl || typeof payload.imageUrl !== 'string') throw { message: 'Missing or invalid "imageUrl".', code: 400 }
 
-		if (!Array.isArray(payload.areas) || payload.areas.length === 0) throw { message: 'Missing or invalid areas data.', code: 400 }
+		if (!Array.isArray(payload.areas) || payload.areas.length === 0) throw { message: 'Missing or invalid "areas" data.', code: 400 }
+
+		if (!payload.difficulty) throw { message: 'Missing required "difficulty".', code: 400 }
+
+		if (typeof payload.task !== 'string') throw { message: 'Invalid format for "task".', code: 400 }
 
 		//# ---------------------------- Update stage in DB ----------------------------
-		const result = await dbUpdateExistingStage(payload.stageSlug, payload.imageUrl, payload.areas, payload.difficulty || null)
+		const result = await dbUpdateExistingStage(payload)
 
 		if (!result?.success)
 			throw {

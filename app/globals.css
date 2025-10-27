@@ -65,14 +65,15 @@ body {
   box-sizing: border-box;
 }
 
-h2 {
-  margin-bottom: 0.5rem;
-}
-
 button {
   cursor: pointer;
 }
 
+button:disabled {
+  cursor: default;
+}
+
+select,
 input,
 textarea {
   background-color: #f3f4f6;

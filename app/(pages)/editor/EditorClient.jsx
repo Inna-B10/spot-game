@@ -44,7 +44,7 @@ export function EditorClient({ initialGames }) {
 			</div>
 			{/* //# ------------------------ List of available games */}
 			<div>
-				<h2 className='text-2xl font-semibold'>Choose category</h2>
+				<h2 className='text-2xl font-semibold  mb-2'>Choose category</h2>
 				<div className='flex flex-wrap gap-2'>
 					{games?.length > 0 ? (
 						games.map(({ game_slug, game_title }) => (

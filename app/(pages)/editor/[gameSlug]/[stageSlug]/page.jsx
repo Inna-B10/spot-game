@@ -22,7 +22,7 @@ export default async function EditStage({ params }) {
 			game_id: gameDB.game_id,
 			stage_slug: '',
 			image_path: '',
-			difficulty: '', //[TODO] optional for now, can be set later in the Editor
+			difficulty: '',
 			areas: [],
 		}
 	} else {

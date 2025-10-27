@@ -1,11 +1,13 @@
 'use client'
 
 import { BackNavLinks } from '@/app/(pages)/editor/[gameSlug]/[stageSlug]/BackNavLinks'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { ImageWithAreas } from '@/components/ImageWithAreas'
 import { EditorToolbar } from '@/components/editor/EditorToolbar'
 import { BLOB_URL } from '@/config/config'
 import { useEditorAreas } from '@/hooks/useEditorAreas'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
 
 export default function Editor({ initialStage, mode, gameDB }) {
 	const [stageSlug, setStageSlug] = useState('')
@@ -17,6 +19,15 @@ export default function Editor({ initialStage, mode, gameDB }) {
 	const [radius, setRadius] = useState(25)
 	const [modified, setModified] = useState(false)
 	const imageRef = useRef(null)
+	const [task, setTask] = useState('')
+
+	//# ----------------------------- Undo changes
+	const resetStage = () => {
+		setTask(sanitizeDesc(initialStage.task)?.trim())
+		setDifficulty(initialStage.difficulty)
+		setAreas(initialStage.areas)
+		setModified(false)
+	}
 
 	//# -------- Custom Hook To Manage Drawing/editing Areas On The Image
 	const { areas, setAreas, handleImageClick, handleContextMenu, handleMouseDown, handleMouseMove, handleMouseUp } = useEditorAreas(
@@ -31,8 +42,9 @@ export default function Editor({ initialStage, mode, gameDB }) {
 		if (initialStage) {
 			// Set data for editing existing stage or creating new one
 			setGameId(initialStage.game_id || gameId)
-			setStageSlug(initialStage.stage_slug || '')
-			setImageUrl(initialStage.image_path || '')
+			setStageSlug(initialStage.stage_slug?.trim() || '')
+			setImageUrl(initialStage.image_path?.trim() || null)
+			setTask(initialStage.stage_task?.trim() || '')
 			setDifficulty(initialStage.difficulty || '')
 			setAreas(initialStage.areas || [])
 		}
@@ -57,13 +69,14 @@ export default function Editor({ initialStage, mode, gameDB }) {
 		gameId,
 		stageSlug,
 		imageUrl,
+		task,
 		difficulty,
 		areas,
 	}
 
 	//* ----------------------------- Render ----------------------------- */
 	return (
-		<div className='space-y-6 w-full border min-h-[90vh]'>
+		<div className='space-y-6 w-full min-h-[90vh]'>
 			{/* //# ------------------------ Navigation links (Back to Editor / Home) */}
 			<div className='flex justify-end items-center gap-4'>
 				<BackNavLinks gameDB={gameDB} modified={modified} />
@@ -78,9 +91,9 @@ export default function Editor({ initialStage, mode, gameDB }) {
 				</div>
 			)}
 
-			{/* //# ------------------------ Main editor section */}
 			{imageUrl && (
 				<div className='flex gap-8 flex-col items-center'>
+					{/* //# ------------------------ Toolbar */}
 					<EditorToolbar
 						drawMode={drawMode}
 						setDrawMode={setDrawMode}
@@ -92,10 +105,15 @@ export default function Editor({ initialStage, mode, gameDB }) {
 						setModified={setModified}
 						imageFile={imageFile}
 						stage={updatedNewStage}
+						task={task}
+						setTask={setTask}
+						difficulty={difficulty}
+						setDifficulty={setDifficulty}
+						resetStage={resetStage}
 					/>
 
 					{/* //# ------------------------ Image preview + clickable areas */}
-					<div className='w-full flex justify-center'>
+					<div className='w-full flex justify-center shadow-md border border-black/10 rounded p-5'>
 						<ImageWithAreas
 							// If creating — use temporary preview; if editing — show from Blob storage
 							imageUrl={mode === 'create' ? imageUrl : `${BLOB_URL}${imageUrl}`}

@@ -11,22 +11,23 @@ export async function POST(req, { params }) {
 
 		const file = formData.get('file')
 		const gameId = Number(formData.get('gameId'))
-		const difficulty = formData.get('difficulty') || ''
+		const task = formData.get('task') || ''
+		const difficulty = formData.get('difficulty')
 		const baseName = formData.get('name') || 'image'
 		const areas = JSON.parse(formData.get('areas') || '[]')
 
 		const searchParams = await params
 		const gameSlug = searchParams?.gameSlug
 
-		if (!file || !gameId || !gameSlug || areas.length === 0)
+		if (!file || !gameId || !gameSlug || !difficulty || areas.length === 0)
 			throw {
 				message: 'Missing required fields.',
-				details: { file, gameId, gameSlug, areas },
+				details: { file, gameId, gameSlug, difficulty, areas },
 				code: 400,
 			}
 
 		//# STEP 1: create a record to get stage_id
-		const newStage = await dbCreateNewStage(gameId, difficulty, areas)
+		const newStage = await dbCreateNewStage(gameId, task, difficulty, areas)
 		if (!newStage.success)
 			throw {
 				message: 'Failed to create stage and get new stage_id.',

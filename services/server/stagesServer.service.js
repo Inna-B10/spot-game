@@ -76,12 +76,13 @@ export async function dbGetNextStage(gameId, stageId) {
 }
 
 //* ---------------------------- Create New Stage ---------------------------- */
-export async function dbCreateNewStage(gameId, difficulty, areas) {
+export async function dbCreateNewStage(gameId, task, difficulty, areas) {
 	try {
 		const data = await prisma.stages.create({
 			data: {
 				game_id: gameId,
-				difficulty,
+				stage_task: task?.trim(),
+				difficulty: difficulty,
 				areas,
 				image_path: '', // will update after upload image
 				stage_slug: '', // will update after upload image
@@ -116,14 +117,15 @@ export async function dbUpdateNewStage(stageId, stageSlug, imagePath) {
 }
 
 //* -------------------------- Update Existing Stage ------------------------- */
-export async function dbUpdateExistingStage(stageSlug, imageUrl, areas, difficulty = null) {
+export async function dbUpdateExistingStage(payload) {
 	try {
 		const data = await prisma.stages.update({
-			where: { stage_slug: stageSlug },
+			where: { stage_slug: payload.stageSlug },
 			data: {
-				image_path: imageUrl?.trim(),
-				areas,
-				difficulty: difficulty?.trim(),
+				image_path: payload.imageUrl?.trim(),
+				stage_task: payload.task?.trim(),
+				difficulty: payload.difficulty,
+				areas: payload.areas,
 			},
 		})
 
