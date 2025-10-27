@@ -43,7 +43,7 @@ export default async function GameIndex({ params }) {
 			{/* //# ------------------------ List of stages */}
 			{stagesByGame?.length > 0 ? (
 				<>
-					<h2 className='text-lg font-semibold inline-block'>Choose stage to edit</h2>
+					<h2 className='text-lg font-semibold inline-block mb-2'>Choose stage to edit</h2>
 					<ul className='flex flex-wrap gap-4'>
 						{stagesByGame.map(stage => (
 							<li key={stage.stage_id} className='border p-4 rounded shadow hover:shadow-md'>

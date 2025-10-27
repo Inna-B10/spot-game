@@ -55,7 +55,7 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 	return (
 		<div className={cn('w-full flex gap-4 justify-between', isEdited ? 'items-end' : 'items-center')}>
 			<div className='w-3/4'>
-				<h2 className='font-semibold mr-2 w-full'>Description:</h2>
+				<h2 className='font-semibold mr-2 w-full mb-2'>Description:</h2>
 				{isEdited ? (
 					<textarea value={sanitizeDesc(desc)} onChange={e => setDesc(e.target.value)} disabled={isPending} className='w-full' rows={2} />
 				) : (

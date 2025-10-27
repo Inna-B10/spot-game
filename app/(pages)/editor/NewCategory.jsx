@@ -88,7 +88,7 @@ export function NewCategory() {
 	//* --------------------------------- Render --------------------------------- */
 	return (
 		<>
-			<h2 className='text-2xl font-semibold'>Create new category</h2>
+			<h2 className='text-2xl font-semibold  mb-2'>Create new category</h2>
 
 			<form onSubmit={handleSubmit}>
 				<div className='w-full flex justify-between gap-8'>
@@ -116,7 +116,7 @@ export function NewCategory() {
 				{/* //# --------------------------------- Preview */}
 				{preview && (
 					<div className='w-full flex flex-col mt-8'>
-						<h2 className='text-2xl font-semibold'>Preview</h2>
+						<h2 className='text-2xl font-semibold  mb-2'>Preview</h2>
 						<span>
 							<strong>game_title:</strong> {preview?.name}
 						</span>
