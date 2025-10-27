@@ -12,6 +12,7 @@ export async function apiCreateStage(gameSlug, formData) {
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('Client create stage error:', err)
+
 		return { success: false, error: err.response?.data?.error || err.message }
 	}
 }
@@ -20,9 +21,26 @@ export async function apiCreateStage(gameSlug, formData) {
 export async function apiUpdateStage(gameSlug, payload) {
 	try {
 		const data = await axiosClient.put(`/api/games/${gameSlug}/stages/${payload.stageSlug}/stage-update`, { payload })
-		return { success: true, data }
+
+		return { success: true }
 	} catch (err) {
 		isDev && console.error('Client update stage error:', err)
+
+		return { success: false, error: err.response?.data?.error || err.message }
+	}
+}
+
+//* --------------------------- Delete Stage By Slug ----------------------------- */
+export async function apiDeleteStageBySlug(gameSlug, stageSlug) {
+	try {
+		if (!stageSlug || !gameSlug) throw new Error('Missing required params')
+
+		const data = await axiosClient.delete(`/api/games/${gameSlug}/stages/${stageSlug}/stage-delete`)
+
+		return { success: true }
+	} catch (err) {
+		isDev && console.error('Client delete stage error:', err)
+
 		return { success: false, error: err.response?.data?.error || err.message }
 	}
 }

@@ -16,6 +16,7 @@ npm i @prisma/client
 npm i @vercel/blob
 npm i axios
 npm i @tanstack/react-query
+npm install @radix-ui/react-dialog
 ```
 
 ### ⚙️ Current Features
@@ -31,17 +32,17 @@ npm i @tanstack/react-query
 
 #### Functional:
 
-- [ ] Add `difficulty` and `stage_task` inputs when creating a new stage
+- [x] Add `difficulty` and `stage_task` inputs when creating a new stage
 - [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
-  - [ ] add task description
-  - [ ] edit task description
-  - [ ] edit difficulty
+  - [x] add task description
+  - [x] edit task description
+  - [x] edit difficulty
   - [ ] Optional: check unique name when preview new game properties
   - [ ] delete game
-  - [ ] delete stage
+  - [x] delete stage
   - [ ] Optional: change image
-  - [ ] Add button Next
+  - [ ] Add button Next when edit stage
   - [ ] Drag & drop image upload
 - [ ] Authorization (via Clerk)
 - [ ] Admin access & protection for Editor
