@@ -9,6 +9,12 @@ datasource db {
   directUrl = env("DB__POSTGRES_URL_NON_POOLING")
 }
 
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
 model Games {
   game_id     Int         @id @default(autoincrement())
   game_title  String
@@ -24,7 +30,7 @@ model Stages {
   stage_slug  String      @unique
   image_path  String
   stage_task  String?
-  difficulty  String?
+  difficulty  Difficulty  @default(EASY)
   areas       Json
   games       Games       @relation(fields: [game_id], references: [game_id])
   createdAt   DateTime    @default(now())
