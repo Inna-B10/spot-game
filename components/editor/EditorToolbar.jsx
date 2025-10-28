@@ -7,6 +7,7 @@ import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
 import { apiDeleteStageBySlug } from '@/services/client/stagesClient.service'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export function EditorToolbar({
 	drawMode,
@@ -25,21 +26,20 @@ export function EditorToolbar({
 	resetStage,
 }) {
 	const router = useRouter()
-	const msg = 'Are you shure you want to delete this stage?'
+	const alertTitle = 'Are you shure you want to delete this stage?'
+	const cautionTitle = 'Are you shure you want to undo all changes?'
 
 	//# ------------------------ Mutation To Delete Stage
 	const { mutate: deleteStage } = useMutation({
 		mutationKey: ['delete-stage'],
 		mutationFn: () => apiDeleteStageBySlug(stage.gameSlug, stage.stageSlug),
 		onSuccess: () => {
-			alert('✅ Stage deleted successfully!')
-
+			toast.success('Stage deleted successfully!')
 			router.replace(`/editor/${stage.gameSlug}`)
 		},
 		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to delete stage.'))
 			isDev && console.error('Delete stage mutation error:', err)
-
-			alert('❌ Error: ' + (err.message || 'Failed to delete stage.'))
 		},
 	})
 
@@ -61,10 +61,6 @@ export function EditorToolbar({
 		}
 	}
 
-	const handleDelete = () => {
-		deleteStage()
-	}
-
 	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div className='w-full flex flex-col gap-8'>
@@ -80,13 +76,10 @@ export function EditorToolbar({
 				<Button onClick={saveStage} variant='primary' aria-label='Save stage' disabled={!modified || isPending}>
 					Save
 				</Button>
-				<Button onClick={resetStage} variant='caution' aria-label='Reset stage' disabled={isPending || mode === 'create' || !modified}>
-					Undo changes
-				</Button>
-				{/* <Button onClick={deleteStage} variant='warn' aria-label='Delete stage' disabled={isPending || mode === 'create'}>
-					Delete
-				</Button> */}
-				<ConfirmDialog label='Delete' title={msg} onConfirm={handleDelete} disabled={isPending || mode === 'create'} />
+
+				<ConfirmDialog label='Reset' title={cautionTitle} onConfirm={resetStage} disabled={isPending || mode === 'create' || !modified} />
+
+				<ConfirmDialog label='Delete' title={alertTitle} onConfirm={deleteStage} disabled={isPending || mode === 'create'} />
 			</div>
 			{/* //# ------------------------ Description */}
 			<div className='w-full flex justify-between gap-8'>

@@ -19,21 +19,5 @@ export function Providers({ children }) {
 			})
 	)
 
-	return (
-		<QueryClientProvider client={queryClient}>
-			{/* <LazyMotion features={domAnimation}> */}
-			{children}
-			{/* <Toaster
-						toastOptions={{
-							style: {
-								backgroundColor: '#3f3f46',
-								// backgroundColor: '#202937',
-								color: 'white',
-							},
-							className: 'border border-white/20  shadow-lg',
-						}}
-					/> */}
-			{/* </LazyMotion> */}
-		</QueryClientProvider>
-	)
+	return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }

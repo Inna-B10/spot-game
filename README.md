@@ -7,7 +7,6 @@ Simple games for kids - _find pair_, _find differences_, _find all_, _find the o
 - **Next.js 15** (App Router)
 - **Prisma** + **PostgreSQL** (data layer)
 - **Vercel Blob** (image storage)
-- **UUID**, **clsx** (utilities)
 
 ```bash
 npm i uuid
@@ -16,7 +15,10 @@ npm i @prisma/client
 npm i @vercel/blob
 npm i axios
 npm i @tanstack/react-query
-npm install @radix-ui/react-dialog
+npm install @radix-ui/react-alert-dialog #confirm dialog
+npm install sonner next-themes #toast
+npm install @radix-ui/react-slot
+npm i lucide-react
 ```
 
 ### ⚙️ Current Features
@@ -32,15 +34,10 @@ npm install @radix-ui/react-dialog
 
 #### Functional:
 
-- [x] Add `difficulty` and `stage_task` inputs when creating a new stage
 - [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
-  - [x] add task description
-  - [x] edit task description
-  - [x] edit difficulty
   - [ ] Optional: check unique name when preview new game properties
   - [ ] delete game
-  - [x] delete stage
   - [ ] Optional: change image
   - [ ] Add button Next when edit stage
   - [ ] Drag & drop image upload
@@ -51,15 +48,14 @@ npm install @radix-ui/react-dialog
 
 #### Design/UI:
 
-- [ ] Replace alerts with toast messages
 - [ ] Toast when stage is completed (with “Next” and “Menu” buttons)
 - [ ] Improve Editor and game menus
 - [ ] Design
+- [ ] Optional: Tooltip, Skeleton, Dialog
 
 #### Miscellaneous
 
 - [ ] Multi-language support
-- [ ] Move `revalidate` to global config constant
 - [ ] Add Readme notes on:
   - [ ] Base image naming convention (`image`)
   - [ ] Image resizing before upload
@@ -76,5 +72,11 @@ npm install @radix-ui/react-dialog
 - [x] add a new game(category)
 - [x] switch from State to Tanstack Query
 - [x] Organize the routes
+- [x] Add `difficulty` and `stage_task` inputs when creating a new stage
+- [x] add task description
+- [x] edit task description
+- [x] edit difficulty
+- [x] delete stage
+- [x] Replace alerts with toast messages
 
 </details>

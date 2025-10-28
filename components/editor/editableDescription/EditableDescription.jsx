@@ -4,6 +4,7 @@ import { apiUpdateGameDesc } from '@/services/client/gamesClient.service'
 import { useMutation } from '@tanstack/react-query'
 import cn from 'clsx'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 //* ---------------------------------- Page ---------------------------------- */
 export default function EditableDescription({ initialDesc, gameSlug }) {
@@ -16,15 +17,14 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 		mutationKey: ['update-game-desc', gameSlug],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
 		onSuccess: data => {
-			alert('✅ Description saved!')
+			toast.success('Description saved!')
 
 			setLastSavedDesc(data.game_desc.trim())
 			setIsEdited(false)
 		},
 		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to edit game description.'))
 			isDev && console.error('Create stage mutation error:', err)
-
-			alert('❌ Error: ' + (err.message || 'Failed to edit game description.'))
 
 			setDesc(lastSavedDesc)
 			setIsEdited(false)

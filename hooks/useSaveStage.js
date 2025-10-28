@@ -4,6 +4,7 @@ import { apiCreateStage, apiUpdateStage } from '@/services/client/stagesClient.s
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
+import { toast } from 'sonner'
 
 export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 	const router = useRouter()
@@ -12,7 +13,7 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 	const createStageMutation = useMutation({
 		mutationFn: ({ gameSlug, formData }) => apiCreateStage(gameSlug, formData),
 		onSuccess: data => {
-			alert('✅ Stage saved!')
+			toast.success('Stage saved!')
 			setModified(false)
 
 			if (data?.stageSlug) {
@@ -22,8 +23,9 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 			}
 		},
 		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to create new stage.'))
 			isDev && console.error('Create stage mutation error:', err)
-			alert('❌ Error: ' + (err.message || 'Failed to create new stage.'))
+
 			setModified(true)
 		},
 	})
@@ -32,14 +34,14 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 	const updateStageMutation = useMutation({
 		mutationFn: ({ gameSlug, updatedStage }) => apiUpdateStage(gameSlug, updatedStage),
 		onSuccess: () => {
-			alert('✅ Stage updated!')
+			toast.success('Stage updated!')
 
 			setModified(false)
 		},
 		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to update stage.'))
 			isDev && console.error('Update stage mutation error:', err)
 
-			alert('❌ Error: ' + (err.message || 'Failed to update stage.'))
 			setModified(true)
 		},
 	})
@@ -48,10 +50,10 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 	const saveStage = useCallback(async () => {
 		//# ---------------------------- Create
 		if (mode === 'create') {
-			if (!imageFile) return alert('Please upload an image file before saving.')
-			if (!stage.gameId) return alert('Internal error: missing gameId.')
-			if (!stage.difficulty) return alert('Please select stage difficulty.')
-			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area.')
+			if (!imageFile) return toast.error('Please upload an image file before saving.')
+			if (!stage.gameId) return toast.error('Internal error: missing gameId.')
+			if (!stage.difficulty) return toast.error('Please select stage difficulty.')
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return toast.error('Please draw at least one area.')
 
 			const formData = new FormData()
 			formData.append('file', imageFile)
@@ -64,10 +66,10 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 			createStageMutation.mutate({ gameSlug, formData })
 		} else {
 			//# ---------------------------- Edit
-			if (!stage.stageSlug) return alert('Internal error: Missing stageSlug for update.')
-			if (!stage.imageUrl) return alert('Internal error: Missing image URL for update.')
-			if (!stage.difficulty) return alert('Please select stage difficulty.')
-			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area before saving.')
+			if (!stage.stageSlug) return toast.error('Internal error: Missing stageSlug for update.')
+			if (!stage.imageUrl) return toast.error('Internal error: Missing image URL for update.')
+			if (!stage.difficulty) return toast.error('Please select stage difficulty.')
+			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return toast.error('Please draw at least one area before saving.')
 
 			const updatedStage = {
 				stageSlug: stage.stageSlug.trim(),
