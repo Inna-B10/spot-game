@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
 	const { gameSlug, stageSlug } = await params
 	if (!stageSlug || !gameSlug) return {}
 
-	const dbGame = await dbGetGameBySlug(gameSlug)
+	const { data: dbGame } = await dbGetGameBySlug(gameSlug)
 
 	if (!dbGame) return {}
 

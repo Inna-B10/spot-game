@@ -7,28 +7,28 @@ export async function PUT(req, { params }) {
 		const searchParams = await params
 		const stageSlug = searchParams?.stageSlug
 		const body = await req.json()
-		const { payload } = body || {}
+		const { updatedStage } = body || {}
 
-		//# ---------------------------- Validate payload ----------------------------
-		if (!payload) throw { message: 'Missing "payload" in request body.', code: 400 }
+		//# ---------------------------- Validate updatedStage ----------------------------
+		if (!updatedStage) throw { message: 'Missing "updatedStage" in request body.', code: 400 }
 
-		if (stageSlug !== payload.stageSlug) throw { message: 'Mismatching "stageSlug" in URL and payload.', code: 400 }
+		if (stageSlug !== updatedStage.stageSlug) throw { message: 'Mismatching "stageSlug" in URL and updatedStage.', code: 400 }
 
-		if (!payload.imageUrl || typeof payload.imageUrl !== 'string') throw { message: 'Missing or invalid "imageUrl".', code: 400 }
+		if (!updatedStage.imageUrl || typeof updatedStage.imageUrl !== 'string') throw { message: 'Missing or invalid "imageUrl".', code: 400 }
 
-		if (!Array.isArray(payload.areas) || payload.areas.length === 0) throw { message: 'Missing or invalid "areas" data.', code: 400 }
+		if (!Array.isArray(updatedStage.areas) || updatedStage.areas.length === 0) throw { message: 'Missing or invalid "areas" data.', code: 400 }
 
-		if (!payload.difficulty) throw { message: 'Missing required "difficulty".', code: 400 }
+		if (!updatedStage.difficulty) throw { message: 'Missing required "difficulty".', code: 400 }
 
-		if (typeof payload.task !== 'string') throw { message: 'Invalid format for "task".', code: 400 }
+		if (typeof updatedStage.task !== 'string') throw { message: 'Invalid format for "task".', code: 400 }
 
 		//# ---------------------------- Update stage in DB ----------------------------
-		const result = await dbUpdateExistingStage(payload)
+		const response = await dbUpdateExistingStage(updatedStage)
 
-		if (!result?.success)
+		if (!response?.success)
 			throw {
-				message: 'Failed to update stage in database.',
-				details: result?.error,
+				message: 'Failed to update stage.',
+				details: response?.error,
 				code: 500,
 			}
 

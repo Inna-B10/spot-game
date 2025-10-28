@@ -23,20 +23,18 @@ export function NewCategory() {
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['create-new-game'],
 		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
-		onSuccess: data => {
-			if (data?.success) {
-				queryClient.invalidateQueries(['get-all-games'])
-				alert('Game created successfully!')
-				setPreview(null)
-				setName('')
-				setDesc('')
-			} else {
-				alert('❌ Error: ' + (data?.error || 'Failed to create new game'))
-			}
+		onSuccess: () => {
+			alert('✅ Game created successfully!')
+
+			queryClient.invalidateQueries(['get-all-games'])
+			setPreview(null)
+			setName('')
+			setDesc('')
 		},
 		onError: err => {
 			isDev && console.error('Create stage mutation error:', err)
-			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
+
+			alert('❌ Error: ' + (err.message || 'Failed to create new game'))
 		},
 		onSettled: () => {
 			setIsUpdated(false)

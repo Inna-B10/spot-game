@@ -15,12 +15,12 @@ export async function DELETE(req, { params }) {
 			}
 		}
 
-		const result = await dbDeleteStageBySlug(stageSlug)
+		const response = await dbDeleteStageBySlug(stageSlug)
 
-		if (!result?.success)
+		if (!response?.success)
 			throw {
-				message: 'Failed to delete the stage in DB.',
-				details: result?.error,
+				message: 'Failed to delete the stage.',
+				details: response?.error,
 				code: 500,
 			}
 

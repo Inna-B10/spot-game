@@ -14,13 +14,13 @@ export async function POST(req) {
 				code: 400,
 			}
 
-		const result = await dbCreateNewGame({ title, gameSlug, desc })
+		const response = await dbCreateNewGame({ title, gameSlug, desc })
 
-		if (!result.success) {
-			const msg = result.error === 'Unique constraint failed' ? 'Unique constraint failed' : 'Failed to create new game'
+		if (!response.success) {
+			const msg = response.error === 'Unique constraint failed' ? 'Unique constraint failed' : 'Failed to create new game.'
 			throw {
 				message: msg,
-				details: result.error,
+				details: response.error,
 				code: 500,
 			}
 		}
@@ -29,7 +29,7 @@ export async function POST(req) {
 		return NextResponse.json(
 			{
 				success: true,
-				data: result.data,
+				payload: response.data,
 			},
 			{ status: 201 }
 		)
@@ -44,7 +44,7 @@ export async function POST(req) {
 		return NextResponse.json(
 			{
 				success: false,
-				error: err.message || 'Internal server error',
+				error: err.message || 'Internal server error.',
 			},
 			{ status: err.code || 500 }
 		)

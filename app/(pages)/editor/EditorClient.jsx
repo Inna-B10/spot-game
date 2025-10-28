@@ -7,11 +7,7 @@ import { NewCategory } from './NewCategory'
 
 export function EditorClient({ initialGames }) {
 	//# --------------------------------- fetch all games
-	const {
-		data: games,
-		isLoading,
-		isError,
-	} = useQuery({
+	const { data, isLoading, isError } = useQuery({
 		queryKey: ['get-all-games'],
 		queryFn: apiGetAllGames,
 		initialData: initialGames,
@@ -46,8 +42,8 @@ export function EditorClient({ initialGames }) {
 			<div>
 				<h2 className='text-2xl font-semibold  mb-2'>Choose category</h2>
 				<div className='flex flex-wrap gap-2'>
-					{games?.length > 0 ? (
-						games.map(({ game_slug, game_title }) => (
+					{data?.length > 0 ? (
+						data.map(({ game_slug, game_title }) => (
 							<LinkButton key={game_slug} href={`/editor/${game_slug}`} role='button' aria-label={`Go to ${game_title} editor`}>
 								{game_title}
 							</LinkButton>

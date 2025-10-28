@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
 	try {
-		const result = await dbGetAllGames()
+		const response = await dbGetAllGames()
 
-		if (!result.success)
+		if (!response.success)
 			throw {
 				message: 'Failed to fetch list of games.',
-				details: result.error,
+				details: response.error,
 				code: 500,
 			}
 
@@ -17,7 +17,7 @@ export async function GET() {
 		return NextResponse.json(
 			{
 				success: true,
-				data: result.data,
+				payload: response.data,
 			},
 			{ status: 200 }
 		)
@@ -32,7 +32,7 @@ export async function GET() {
 		return NextResponse.json(
 			{
 				success: false,
-				error: err.message || 'Internal server error',
+				error: err.message || 'Internal server error.',
 			},
 			{ status: err.code || 500 }
 		)

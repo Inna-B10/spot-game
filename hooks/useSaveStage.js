@@ -12,41 +12,34 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 	const createStageMutation = useMutation({
 		mutationFn: ({ gameSlug, formData }) => apiCreateStage(gameSlug, formData),
 		onSuccess: data => {
-			if (data?.success) {
-				alert('✅ Stage saved!')
-				setModified(false)
-				if (data?.data?.stageSlug) {
-					router.replace(`/editor/${gameSlug}/${data.data.stageSlug}`)
-				} else {
-					router.replace(`/editor/${gameSlug}`)
-				}
+			alert('✅ Stage saved!')
+			setModified(false)
+
+			if (data?.stageSlug) {
+				router.replace(`/editor/${gameSlug}/${data.stageSlug}`)
 			} else {
-				alert('❌ Error: ' + (data?.error || 'Failed to create new stage'))
-				setModified(true)
+				router.replace(`/editor/${gameSlug}`)
 			}
 		},
 		onError: err => {
 			isDev && console.error('Create stage mutation error:', err)
-			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
+			alert('❌ Error: ' + (err.message || 'Failed to create new stage.'))
 			setModified(true)
 		},
 	})
 
 	//* ---------------------------- Update Stage Mutation ---------------------------- */
 	const updateStageMutation = useMutation({
-		mutationFn: ({ gameSlug, payload }) => apiUpdateStage(gameSlug, payload),
-		onSuccess: data => {
-			if (data?.success) {
-				alert('✅ Stage updated!')
-				setModified(false)
-			} else {
-				alert('❌ Update stage error: ' + (data?.error || 'Unknown'))
-				setModified(true)
-			}
+		mutationFn: ({ gameSlug, updatedStage }) => apiUpdateStage(gameSlug, updatedStage),
+		onSuccess: () => {
+			alert('✅ Stage updated!')
+
+			setModified(false)
 		},
 		onError: err => {
 			isDev && console.error('Update stage mutation error:', err)
-			alert('❌ Error updating stage: ' + (err.message || 'Unknown'))
+
+			alert('❌ Error: ' + (err.message || 'Failed to update stage.'))
 			setModified(true)
 		},
 	})
@@ -76,7 +69,7 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 			if (!stage.difficulty) return alert('Please select stage difficulty.')
 			if (!Array.isArray(stage.areas) || stage.areas.length === 0) return alert('Please draw at least one area before saving.')
 
-			const payload = {
+			const updatedStage = {
 				stageSlug: stage.stageSlug.trim(),
 				imageUrl: stage.imageUrl.trim(),
 				task: stage.task?.trim() || '',
@@ -84,7 +77,7 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 				areas: stage.areas,
 			}
 
-			updateStageMutation.mutate({ gameSlug, payload })
+			updateStageMutation.mutate({ gameSlug, updatedStage })
 		}
 	}, [mode, imageFile, stage.gameId, stage.areas, stage.difficulty, stage.stageSlug, stage.imageUrl, stage.task, createStageMutation, gameSlug, updateStageMutation])
 

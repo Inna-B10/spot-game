@@ -11,25 +11,20 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 	const [lastSavedDesc, setLastSavedDesc] = useState(initialDesc || '')
 	const [isEdited, setIsEdited] = useState(false)
 
-	//# --------------------- Mutation To Update Description
+	//# --------------------- Mutation To Update Game Description
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['update-game-desc', gameSlug],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
 		onSuccess: data => {
-			if (data?.success) {
-				alert('Description saved!')
-				setLastSavedDesc(data.data.game_desc.trim())
-				setIsEdited(false)
-			} else {
-				alert('❌ Error: ' + (data?.error || 'Failed to update game description'))
+			alert('✅ Description saved!')
 
-				setDesc(lastSavedDesc)
-				setIsEdited(false)
-			}
+			setLastSavedDesc(data.game_desc.trim())
+			setIsEdited(false)
 		},
 		onError: err => {
 			isDev && console.error('Create stage mutation error:', err)
-			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
+
+			alert('❌ Error: ' + (err.message || 'Failed to edit game description.'))
 
 			setDesc(lastSavedDesc)
 			setIsEdited(false)

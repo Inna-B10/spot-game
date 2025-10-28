@@ -31,17 +31,15 @@ export function EditorToolbar({
 	const { mutate: deleteStage } = useMutation({
 		mutationKey: ['delete-stage'],
 		mutationFn: () => apiDeleteStageBySlug(stage.gameSlug, stage.stageSlug),
-		onSuccess: data => {
-			if (data?.success) {
-				router.replace(`/editor/${stage.gameSlug}`)
-			} else {
-				alert('❌ Error: ' + (data?.error || 'Failed to delete the stage'))
-			}
+		onSuccess: () => {
+			alert('✅ Stage deleted successfully!')
+
+			router.replace(`/editor/${stage.gameSlug}`)
 		},
 		onError: err => {
-			alert('Could not delete the stage!')
 			isDev && console.error('Delete stage mutation error:', err)
-			alert('❌ Error deleting stage: ' + (err.message || 'Unknown'))
+
+			alert('❌ Error: ' + (err.message || 'Failed to delete stage.'))
 		},
 	})
 
