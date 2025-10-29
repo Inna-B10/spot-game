@@ -15,12 +15,12 @@ export async function GET(req, { params }) {
 			}
 		}
 
-		const result = await dbGetGameBySlug(gameSlug)
+		const response = await dbGetGameBySlug(gameSlug)
 
-		if (!result.success) {
+		if (!response.success) {
 			throw {
 				message: 'Failed to fetch the game.',
-				details: result.error,
+				details: response.error,
 				code: 500,
 			}
 		}
@@ -29,7 +29,7 @@ export async function GET(req, { params }) {
 		return NextResponse.json(
 			{
 				success: true,
-				data: result.data,
+				payload: response.data,
 			},
 			{ status: 200 }
 		)
@@ -44,7 +44,7 @@ export async function GET(req, { params }) {
 		return NextResponse.json(
 			{
 				success: false,
-				error: err.message || 'Internal server error',
+				error: err.message || 'Internal server error.',
 			},
 			{ status: err.code || 500 }
 		)

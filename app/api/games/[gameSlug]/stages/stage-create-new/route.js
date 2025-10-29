@@ -74,12 +74,12 @@ export async function POST(req, { params }) {
 			}
 
 		//# STEP 4: insert stageSlug and imagePath to just created stage
-		const updated = await dbUpdateNewStage(stageId, stageSlug, imagePath)
+		const response = await dbUpdateNewStage(stageId, stageSlug, imagePath)
 
-		if (!updated.success)
+		if (!response.success)
 			throw {
 				message: 'Failed to update stage record after upload.',
-				details: updated.error,
+				details: response.error,
 				code: 500,
 			}
 
@@ -87,7 +87,7 @@ export async function POST(req, { params }) {
 		return NextResponse.json(
 			{
 				success: true,
-				stageSlug: updated.data?.stage_slug,
+				payload: response.data,
 			},
 			{ status: 201 }
 		)

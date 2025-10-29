@@ -7,7 +7,6 @@ Simple games for kids - _find pair_, _find differences_, _find all_, _find the o
 - **Next.js 15** (App Router)
 - **Prisma** + **PostgreSQL** (data layer)
 - **Vercel Blob** (image storage)
-- **UUID**, **clsx** (utilities)
 
 ```bash
 npm i uuid
@@ -16,6 +15,10 @@ npm i @prisma/client
 npm i @vercel/blob
 npm i axios
 npm i @tanstack/react-query
+npm install @radix-ui/react-alert-dialog #confirm dialog
+npm install sonner next-themes #toast
+npm install @radix-ui/react-slot
+npm i lucide-react
 ```
 
 ### ⚙️ Current Features
@@ -31,17 +34,12 @@ npm i @tanstack/react-query
 
 #### Functional:
 
-- [ ] Add `difficulty` and `stage_task` inputs when creating a new stage
 - [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
-  - [ ] add task description
-  - [ ] edit task description
-  - [ ] edit difficulty
   - [ ] Optional: check unique name when preview new game properties
   - [ ] delete game
-  - [ ] delete stage
   - [ ] Optional: change image
-  - [ ] Add button Next
+  - [ ] Add button Next when edit stage
   - [ ] Drag & drop image upload
 - [ ] Authorization (via Clerk)
 - [ ] Admin access & protection for Editor
@@ -50,15 +48,14 @@ npm i @tanstack/react-query
 
 #### Design/UI:
 
-- [ ] Replace alerts with toast messages
 - [ ] Toast when stage is completed (with “Next” and “Menu” buttons)
 - [ ] Improve Editor and game menus
 - [ ] Design
+- [ ] Optional: Tooltip, Skeleton, Dialog
 
 #### Miscellaneous
 
 - [ ] Multi-language support
-- [ ] Move `revalidate` to global config constant
 - [ ] Add Readme notes on:
   - [ ] Base image naming convention (`image`)
   - [ ] Image resizing before upload
@@ -75,5 +72,11 @@ npm i @tanstack/react-query
 - [x] add a new game(category)
 - [x] switch from State to Tanstack Query
 - [x] Organize the routes
+- [x] Add `difficulty` and `stage_task` inputs when creating a new stage
+- [x] add task description
+- [x] edit task description
+- [x] edit difficulty
+- [x] delete stage
+- [x] Replace alerts with toast messages
 
 </details>

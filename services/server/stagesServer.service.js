@@ -13,9 +13,11 @@ export async function dbGetAllStages() {
 				},
 			},
 		})
+
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, fetching all stages:', err)
+
 		return { success: false, error: err.message }
 	}
 }
@@ -34,6 +36,7 @@ export async function dbGetStagesByGameSlug(gameSlug) {
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, get stages by gameSlug:', err)
+
 		return { success: false, error: err.message }
 	}
 }
@@ -50,9 +53,11 @@ export async function dbGetStageByStageSlug(stageSlug, gameSlug) {
 				games: true, // to get game_title, game_desc
 			},
 		})
+
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, get stage by stageSlug:', err)
+
 		return { success: false, error: err.message }
 	}
 }
@@ -68,9 +73,11 @@ export async function dbGetNextStage(gameId, stageId) {
 			orderBy: { stage_id: 'asc' },
 			select: { stage_slug: true },
 		})
+
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, get next stage:', err)
+
 		return { success: false, error: err.message }
 	}
 }
@@ -89,9 +96,11 @@ export async function dbCreateNewStage(gameId, task, difficulty, areas) {
 			},
 			select: { stage_id: true },
 		})
+
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, create new stage:', err)
+
 		return { success: false, error: err.message }
 	}
 }
@@ -109,29 +118,47 @@ export async function dbUpdateNewStage(stageId, stageSlug, imagePath) {
 				stage_slug: true,
 			},
 		})
-		return { success: true, data }
+
+		return { success: true, data: { stageSlug: data.stage_slug } }
 	} catch (err) {
 		isDev && console.error('DB Error, update just created stage:', err)
+
 		return { success: false, error: err.message }
 	}
 }
 
 //* -------------------------- Update Existing Stage ------------------------- */
-export async function dbUpdateExistingStage(payload) {
+export async function dbUpdateExistingStage(updatedStage) {
 	try {
 		const data = await prisma.stages.update({
-			where: { stage_slug: payload.stageSlug },
+			where: { stage_slug: updatedStage.stageSlug },
 			data: {
-				image_path: payload.imageUrl?.trim(),
-				stage_task: payload.task?.trim(),
-				difficulty: payload.difficulty,
-				areas: payload.areas,
+				image_path: updatedStage.imageUrl?.trim(),
+				stage_task: updatedStage.task?.trim(),
+				difficulty: updatedStage.difficulty,
+				areas: updatedStage.areas,
 			},
 		})
 
-		return { success: true, data }
+		return { success: true }
 	} catch (err) {
 		isDev && console.error('DB Error, update stage by stageSlug:', err)
+
+		return { success: false, error: err.message }
+	}
+}
+
+//* --------------------------- Delete Stage By Slug ------------------------- */
+export async function dbDeleteStageBySlug(stageSlug) {
+	try {
+		const data = await prisma.stages.delete({
+			where: { stage_slug: stageSlug },
+		})
+
+		return { success: true }
+	} catch (err) {
+		isDev && console.error('DB Error, delete stage by stageSlug:', err)
+
 		return { success: false, error: err.message }
 	}
 }

@@ -9,9 +9,14 @@ export async function apiCreateNewGame({ title, gameSlug, desc = null }) {
 		if (desc && typeof desc !== 'string') throw new Error('Invalid description format')
 
 		const { data } = await axiosClient.post('/api/games/game-create-new', { title, gameSlug, desc })
-		return data
+
+		if (data?.success) {
+			return
+		} else {
+			throw new Error(data?.error || 'Failed to create new game.')
+		}
 	} catch (err) {
-		isDev && console.error('Request create new game failed:', err)
+		isDev && console.error('Request create new game failed:', err.response?.data?.error, err)
 
 		let errorMsg = ''
 		if (err.response?.data?.error === 'Unique constraint failed') {
@@ -20,7 +25,7 @@ export async function apiCreateNewGame({ title, gameSlug, desc = null }) {
 			errorMsg = 'Failed to create a new game'
 		}
 
-		return { success: false, error: errorMsg || err.message || 'Failed to create new game' }
+		throw new Error(errorMsg || err.message || 'Failed to create new game.')
 	}
 }
 
@@ -29,22 +34,34 @@ export async function apiGetAllGames() {
 	try {
 		const { data } = await axiosClient.get('/api/games/game-get-all')
 
-		return data.data
+		if (data?.success) {
+			return data.payload
+		} else {
+			throw new Error(data?.error || 'Failed to fetch list of games.')
+		}
 	} catch (err) {
-		isDev && console.error('Request get all games failed:', err)
+		isDev && console.error('Request get all games failed:', err.response?.data?.error, err)
 
-		throw new Error('Failed to fetch list of games.')
+		throw new Error(err.response?.data?.error || err.message)
 	}
 }
 
 //* ---------------------------- Get Game By Slug ---------------------------- */
 // export async function apiGetGameBySlug(gameSlug) {
 // 	try {
-// 		const {data} = await axiosClient.get(`/api/games/${gameSlug}/get/game-by-slug`)
-// 		return data
+// 		if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
+//
+// 		const { data } = await axiosClient.get(`/api/games/${gameSlug}/get/game-by-slug`)
+//
+// 		if (data?.success) {
+// 			return data.payload
+// 		} else {
+// 			throw new Error(data?.error || 'Failed to fetch game.')
+// 		}
 // 	} catch (err) {
-// 		isDev && console.error('Request get game by slug failed:', err)
-// 		return { success: false, error: err.message }
+// 		isDev && console.error('Request get game by slug failed:', err.response?.data?.error, err)
+//
+// 		throw new Error(err.response?.data?.error || err.message)
 // 	}
 // }
 //* --------------------------- Update Description --------------------------- */
@@ -52,11 +69,17 @@ export async function apiUpdateGameDesc(gameSlug, desc = null) {
 	try {
 		if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
 		if (desc !== null && typeof desc !== 'string') throw new Error('Invalid description format')
+
 		const { data } = await axiosClient.put(`/api/games/${gameSlug}/game-update-desc`, { desc })
 
-		return data
+		if (data?.success) {
+			return data.payload
+		} else {
+			throw new Error(data?.error || 'Failed to edit game description.')
+		}
 	} catch (err) {
-		isDev && console.error('Request update game desc failed:', err)
-		return { success: false, error: 'Failed to edit description.' || err.message }
+		isDev && console.error('Request update game desc failed:', err.response?.data?.error, err)
+
+		throw new Error(err.response?.data?.error || err.message)
 	}
 }

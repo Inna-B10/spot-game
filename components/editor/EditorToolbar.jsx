@@ -1,14 +1,19 @@
 import { Button } from '@/components/ui/buttons/Button'
+import { ConfirmDialog } from '@/components/ui/dialog/ConfirmDialog'
 import { DIFFICULTY_OPTIONS } from '@/constants/difficulty'
 import { useSaveStage } from '@/hooks/useSaveStage'
+import { isDev } from '@/lib/utils/isDev'
 import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
+import { apiDeleteStageBySlug } from '@/services/client/stagesClient.service'
+import { useMutation } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export function EditorToolbar({
 	drawMode,
 	setDrawMode,
 	radius,
 	setRadius,
-	gameSlug,
 	mode,
 	modified,
 	setModified,
@@ -20,10 +25,28 @@ export function EditorToolbar({
 	setDifficulty,
 	resetStage,
 }) {
-	//# -- Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert)
-	const { saveStage, isPending } = useSaveStage(gameSlug, mode, imageFile, setModified, stage)
+	const router = useRouter()
+	const alertTitle = 'Are you shure you want to delete this stage?'
+	const cautionTitle = 'Are you shure you want to undo all changes?'
 
-	//# -------------------------------- Handlers
+	//# ------------------------ Mutation To Delete Stage
+	const { mutate: deleteStage } = useMutation({
+		mutationKey: ['delete-stage'],
+		mutationFn: () => apiDeleteStageBySlug(stage.gameSlug, stage.stageSlug),
+		onSuccess: () => {
+			toast.success('Stage deleted successfully!')
+			router.replace(`/editor/${stage.gameSlug}`)
+		},
+		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to delete stage.'))
+			isDev && console.error('Delete stage mutation error:', err)
+		},
+	})
+
+	//# ------------------------ Custom Hook Handles Saving Logic (Blob Upload + Prisma Update/insert)
+	const { saveStage, isPending } = useSaveStage(stage.gameSlug, mode, imageFile, setModified, stage)
+
+	//# ------------------------ Handlers
 	const handleDescChange = e => {
 		if (task !== e.target.value) {
 			setTask(e.target.value)
@@ -38,8 +61,7 @@ export function EditorToolbar({
 		}
 	}
 
-	const deleteStage = () => {}
-	//* ----------------------------- Render ----------------------------- */
+	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div className='w-full flex flex-col gap-8'>
 			<ul className='p-4 bg-blue-300 rounded'>
@@ -49,26 +71,24 @@ export function EditorToolbar({
 				<li>🔹 Rectangle: click and drag to draw</li>
 				<li>🔹 Areas should not overlap or should have only minimal shared space</li>
 			</ul>
-			{/* //# ------------------------ Save + Delete buttons */}
+			{/* //# ------------------------ Save + Reset + Delete buttons */}
 			<div className='flex justify-center gap-4'>
 				<Button onClick={saveStage} variant='primary' aria-label='Save stage' disabled={!modified || isPending}>
 					Save
 				</Button>
-				<Button onClick={resetStage} variant='warn' aria-label='Reset stage' disabled={isPending || mode === 'create' || !modified}>
-					Undo changes
-				</Button>
-				<Button onClick={deleteStage} variant='warn' aria-label='Delete stage' disabled={isPending || mode === 'create'}>
-					Delete
-				</Button>
+
+				<ConfirmDialog label='Reset' title={cautionTitle} onConfirm={resetStage} disabled={isPending || mode === 'create' || !modified} />
+
+				<ConfirmDialog label='Delete' title={alertTitle} onConfirm={deleteStage} disabled={isPending || mode === 'create'} />
 			</div>
-			{/* //# ------------------------ Desc + difficulty */}
+			{/* //# ------------------------ Description */}
 			<div className='w-full flex justify-between gap-8'>
 				<div className='w-5/12 flex flex-col gap-4 justify-between p-4 bg-blue-300 rounded'>
 					<label htmlFor='stageTask'>
 						<h2 className='font-bold text-xl'>Stage task:</h2>
 					</label>
 					<p>
-						<span className='text-red-500 font-bold'>Optional!</span> <br />
+						<span className='text-red-600 font-bold'>Optional!</span> <br />
 						Add it only if the level's idea differs from the main game category or stage needs more specific instructions.
 					</p>
 					<textarea
@@ -81,6 +101,7 @@ export function EditorToolbar({
 						className='w-full'
 					/>
 				</div>
+				{/* //# ------------------------ Difficulty */}
 				<div className='w-7/12 flex flex-col gap-4 justify-between p-4 bg-blue-300 rounded'>
 					<label htmlFor='stageDifficulty'>
 						<h2 className='font-bold text-xl'>Difficulty:</h2>
@@ -113,7 +134,7 @@ export function EditorToolbar({
 				<div className='flex flex-col justify-center'>
 					<span className='text-center'>Created:</span>
 					<div>
-						{gameSlug === 'find-pair'
+						{stage.gameSlug === 'find-pair'
 							? stage.areas?.length % 2 > 0
 								? `${(stage.areas?.length - 1) / 2} pairs + 1 point`
 								: `${stage.areas?.length / 2} pairs`

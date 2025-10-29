@@ -29,7 +29,9 @@ export default async function EditStage({ params }) {
 		//# ------------------------ Find Stage in DB
 
 		const { data } = await dbGetStageByStageSlug(stageSlug, gameSlug)
+
 		if (!data) return NotFoundPage()
+
 		stage = data
 	}
 

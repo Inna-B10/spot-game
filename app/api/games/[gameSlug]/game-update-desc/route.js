@@ -15,19 +15,19 @@ export async function PUT(req, { params }) {
 				code: 400,
 			}
 
-		const result = await dbUpdateGameDesc(gameSlug, desc)
+		const response = await dbUpdateGameDesc(gameSlug, desc)
 
-		if (!result.success)
+		if (!response.success)
 			throw {
 				message: 'Failed to update game description.',
-				details: result.error,
+				details: response.error,
 				code: 500,
 			}
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
 			{
 				success: true,
-				data: result.data,
+				payload: response.data,
 			},
 			{ status: 200 }
 		)
@@ -42,7 +42,7 @@ export async function PUT(req, { params }) {
 		return NextResponse.json(
 			{
 				success: false,
-				error: err.message || 'Internal server error',
+				error: err.message || 'Internal server error.',
 			},
 			{ status: err.code || 500 }
 		)

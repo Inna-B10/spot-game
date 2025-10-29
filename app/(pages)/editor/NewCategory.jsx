@@ -5,6 +5,7 @@ import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInpu
 import { apiCreateNewGame } from '@/services/client/gamesClient.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 /**
  * Client-side React component that provides a form UI to create a new game/category.
@@ -23,20 +24,17 @@ export function NewCategory() {
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['create-new-game'],
 		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
-		onSuccess: data => {
-			if (data?.success) {
-				queryClient.invalidateQueries(['get-all-games'])
-				alert('Game created successfully!')
-				setPreview(null)
-				setName('')
-				setDesc('')
-			} else {
-				alert('❌ Error: ' + (data?.error || 'Failed to create new game'))
-			}
+		onSuccess: () => {
+			toast.success('Game created successfully!')
+
+			queryClient.invalidateQueries(['get-all-games'])
+			setPreview(null)
+			setName('')
+			setDesc('')
 		},
 		onError: err => {
+			toast.error('Error: ' + (err.message || 'Failed to create new game'))
 			isDev && console.error('Create stage mutation error:', err)
-			alert('❌ Error creating stage: ' + (err.message || 'Unknown'))
 		},
 		onSettled: () => {
 			setIsUpdated(false)
@@ -53,7 +51,7 @@ export function NewCategory() {
 
 	const handleCreatePreview = () => {
 		if (!name.trim()) {
-			alert('Game name cannot be empty!')
+			toast.error('Game name cannot be empty!')
 			return
 		}
 		setName(name.trim())
@@ -72,12 +70,12 @@ export function NewCategory() {
 		e.preventDefault()
 
 		if (isUpdated) {
-			alert('Click Create Preview and check that name and description look correct before saving.')
+			toast.warning('Click Create Preview and check that name and description look correct before saving.')
 			return
 		}
 
 		if (!preview?.name.trim() || !preview?.gameSlug.trim()) {
-			alert('Missing required parameters!')
+			toast.error('Missing required parameters!')
 			return
 		}
 

@@ -67,6 +67,7 @@ export default function Editor({ initialStage, mode, gameDB }) {
 	//# ------------ Prepared Object For Saving Or Updating The Stage
 	const updatedNewStage = {
 		gameId,
+		gameSlug: gameDB.game_slug,
 		stageSlug,
 		imageUrl,
 		task,
@@ -83,10 +84,10 @@ export default function Editor({ initialStage, mode, gameDB }) {
 			</div>
 			{/* //# ------------------------ Image uploader (only visible in create mode) */}
 			{mode === 'create' && (
-				<div className='flex gap-4 justify-center items-center py-4 border'>
+				<div className='flex gap-4 justify-center items-center py-8'>
 					<label className='text-lg'>
 						Upload image:
-						<input type='file' accept='image/*' onChange={handleImageUpload} />
+						<input type='file' accept='image/*' onChange={handleImageUpload} className='ml-2' />
 					</label>
 				</div>
 			)}
@@ -99,7 +100,6 @@ export default function Editor({ initialStage, mode, gameDB }) {
 						setDrawMode={setDrawMode}
 						radius={radius}
 						setRadius={setRadius}
-						gameSlug={gameDB.game_slug}
 						mode={mode}
 						modified={modified}
 						setModified={setModified}
