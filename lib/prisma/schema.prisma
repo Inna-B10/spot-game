@@ -32,6 +32,6 @@ model Stages {
   stage_task  String?
   difficulty  Difficulty  @default(EASY)
   areas       Json
-  games       Games       @relation(fields: [game_id], references: [game_id])
+  games       Games       @relation(fields: [game_id], references: [game_id], onDelete: Cascade)
   createdAt   DateTime    @default(now())
 }
