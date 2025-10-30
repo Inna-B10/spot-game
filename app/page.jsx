@@ -1,15 +1,12 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
+import { REVALIDATE_INTERVAL } from '@/config/config'
 import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
 
-// Use 86400 for development to test ISR/build-time snapshot
-// Use false in production to avoid build errors and use runtime fetch with tags (set NEXT_REVALIDATE=false in Environment Variables on production)
-
-export const revalidate = Number(process.env.NEXT_REVALIDATE) || 86400
+export const revalidate = false
 
 export default async function Home() {
-	let payload
-	let ok
+	let payload, ok
 
 	if (process.env.NODE_ENV === 'development') {
 		// Dev: fetch data directly from server service
@@ -17,9 +14,10 @@ export default async function Home() {
 		payload = data
 		ok = success
 	} else {
-		// Prod: fetch data via API with tags for runtime cache revalidation
+		// Prod: fetch data via API with tags for manual cache revalidation
 		const res = await fetch('/api/games/game-get-all', {
 			next: { tags: ['games-list'] },
+			revalidate: REVALIDATE_INTERVAL,
 		})
 		const { success, data } = await res.json()
 		payload = data
