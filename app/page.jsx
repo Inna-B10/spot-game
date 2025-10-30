@@ -2,7 +2,7 @@ import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
 
-export const revalidate = false
+export const revalidate = 86400 //1 day
 
 export default async function Home() {
 	let payload, ok
