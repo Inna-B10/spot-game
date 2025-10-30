@@ -3,9 +3,9 @@ import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
 
 // Use 86400 for development to test ISR/build-time snapshot
-// Use false in production to avoid build errors and use runtime fetch with tags
+// Use false in production to avoid build errors and use runtime fetch with tags (set NEXT_REVALIDATE=false in Environment Variables on production)
 
-export const revalidate = process.env.NODE_ENV === 'development' ? 86400 : false
+export const revalidate = Number(process.env.NEXT_REVALIDATE) || 86400
 
 export default async function Home() {
 	let payload
