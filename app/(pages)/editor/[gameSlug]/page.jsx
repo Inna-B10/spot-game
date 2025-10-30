@@ -1,4 +1,5 @@
 import NotFoundPage from '@/app/not-found'
+import { DeleteGameButtonDyn } from '@/components/editor/deleteGameButton/DeleteGameButtonDyn'
 import { EditableDescriptionDyn } from '@/components/editor/editableDescription/EditableDescriptionDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
@@ -20,16 +21,17 @@ export default async function GameIndex({ params }) {
 	return (
 		<section className='space-y-8 w-full'>
 			{/* //# ------------------------ Game title and navigation */}
+			<span className='space-x-4'>
+				<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
+					Editor
+				</LinkButton>
+				<LinkButton href='/' role='button' aria-label='Go to homepage'>
+					Home
+				</LinkButton>
+			</span>
 			<div className='flex justify-between items-center gap-2'>
 				<h1 className='text-xl font-bold'>Category: {gameDB.game_title}</h1>
-				<span className='space-x-4'>
-					<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
-						Back to Editor
-					</LinkButton>
-					<LinkButton href='/' role='button' aria-label='Go to homepage'>
-						Back to Home
-					</LinkButton>
-				</span>
+				<DeleteGameButtonDyn gameSlug={gameSlug} />
 			</div>
 			{/* //# ------------------------ Game description (client-side) */}
 			<EditableDescriptionDyn initialDesc={gameDB.game_desc} gameSlug={gameSlug} />

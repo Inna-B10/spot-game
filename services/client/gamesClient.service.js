@@ -11,7 +11,7 @@ export async function apiCreateNewGame({ title, gameSlug, desc = null }) {
 		const { data } = await axiosClient.post('/api/games/game-create-new', { title, gameSlug, desc })
 
 		if (data?.success) {
-			return
+			return data.payload
 		} else {
 			throw new Error(data?.error || 'Failed to create new game.')
 		}
@@ -79,6 +79,25 @@ export async function apiUpdateGameDesc(gameSlug, desc = null) {
 		}
 	} catch (err) {
 		isDev && console.error('Request update game desc failed:', err.response?.data?.error, err)
+
+		throw new Error(err.response?.data?.error || err.message)
+	}
+}
+
+//* --------------------------- Delete Game By Slug -------------------------- */
+export async function apiDeleteGameBySlug(gameSlug) {
+	try {
+		if (!gameSlug) throw new Error('Internal error: Missing required gameSlug')
+
+		const { data } = await axiosClient.delete(`/api/games/${gameSlug}/game-delete`)
+
+		if (data?.success) {
+			return
+		} else {
+			throw new Error(data?.error || 'Failed to delete game.')
+		}
+	} catch (err) {
+		isDev && console.error('Request delete game failed:', err.response?.data?.error, err)
 
 		throw new Error(err.response?.data?.error || err.message)
 	}

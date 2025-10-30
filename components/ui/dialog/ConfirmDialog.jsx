@@ -11,7 +11,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/dialog/confirm-dialog'
 
-export function ConfirmDialog({ label, title, msg = '', onConfirm, disabled = 'false' }) {
+export function ConfirmDialog({ label, title, msg = '', onConfirm, disabled = false }) {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
@@ -22,7 +22,7 @@ export function ConfirmDialog({ label, title, msg = '', onConfirm, disabled = 'f
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>{title}</AlertDialogTitle>
-					<AlertDialogDescription>{msg}</AlertDialogDescription>
+					<AlertDialogDescription className={label === 'Delete' ? 'text-red-600' : ''}>{msg}</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>

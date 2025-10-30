@@ -56,7 +56,7 @@ export async function dbGetGameBySlug(gameSlug) {
 	}
 }
 
-//* --------------------------- Update Description --------------------------- */
+//* ------------------------ Update Game Description ------------------------- */
 export async function dbUpdateGameDesc(gameSlug, desc) {
 	try {
 		const data = await prisma.games.update({
@@ -67,6 +67,21 @@ export async function dbUpdateGameDesc(gameSlug, desc) {
 		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, update game description:', err)
+		return { success: false, error: err.message }
+	}
+}
+
+//* --------------------------- Delete Game By Slug -------------------------- */
+export async function dbDeleteGameBySlug(gameSlug) {
+	try {
+		const data = await prisma.games.delete({
+			where: { game_slug: gameSlug },
+		})
+
+		return { success: true }
+	} catch (err) {
+		isDev && console.error('DB Error, delete game by gameSlug:', err)
+
 		return { success: false, error: err.message }
 	}
 }
