@@ -1,5 +1,4 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
-import { REVALIDATE_INTERVAL } from '@/config/config'
 import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
 
@@ -15,9 +14,8 @@ export default async function Home() {
 		ok = success
 	} else {
 		// Prod: fetch data via API with tags for manual cache revalidation
-		const res = await fetch('/api/games/game-get-all', {
+		const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/games/game-get-all`, {
 			next: { tags: ['games-list'] },
-			revalidate: REVALIDATE_INTERVAL,
 		})
 		const { success, data } = await res.json()
 		payload = data
