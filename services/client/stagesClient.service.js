@@ -31,7 +31,7 @@ export async function apiUpdateStage(gameSlug, updatedStage) {
 		const { data } = await axiosClient.put(`/api/games/${gameSlug}/stages/${updatedStage.stageSlug}/stage-update`, { updatedStage })
 
 		if (data?.success) {
-			return
+			return data.payload
 		} else {
 			throw new Error(data?.error || 'Failed to update stage.')
 		}
@@ -50,7 +50,7 @@ export async function apiDeleteStageBySlug(gameSlug, stageSlug) {
 		const { data } = await axiosClient.delete(`/api/games/${gameSlug}/stages/${stageSlug}/stage-delete`)
 
 		if (data?.success) {
-			return
+			return data.payload
 		} else {
 			throw new Error(data?.error || 'Failed to delete stage.')
 		}

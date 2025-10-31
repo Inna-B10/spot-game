@@ -14,6 +14,8 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 		mutationFn: ({ gameSlug, formData }) => apiCreateStage(gameSlug, formData),
 		onSuccess: data => {
 			toast.success('Stage saved!')
+
+			router.refresh(`/${gameSlug}`)
 			setModified(false)
 
 			if (data?.stageSlug) {
@@ -35,6 +37,8 @@ export function useSaveStage(gameSlug, mode, imageFile, setModified, stage) {
 		mutationFn: ({ gameSlug, updatedStage }) => apiUpdateStage(gameSlug, updatedStage),
 		onSuccess: () => {
 			toast.success('Stage updated!')
+
+			router.refresh(`/${gameSlug}/${stage.stageSlug}`)
 
 			setModified(false)
 		},

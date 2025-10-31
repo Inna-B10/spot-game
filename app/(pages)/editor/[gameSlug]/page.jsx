@@ -3,10 +3,19 @@ import { DeleteGameButtonDyn } from '@/components/editor/deleteGameButton/Delete
 import { EditableDescriptionDyn } from '@/components/editor/editableDescription/EditableDescriptionDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
 import { dbGetStagesByGameSlug } from '@/services/server/stagesServer.service'
 import Image from 'next/image'
 import Link from 'next/link'
+
+export async function generateMetadata({ params }) {
+	const { gameSlug } = await params
+	return {
+		title: `Editor | ${gameSlug}`,
+		...NO_INDEX_PAGE,
+	}
+}
 
 export default async function GameIndex({ params }) {
 	const { gameSlug } = await params

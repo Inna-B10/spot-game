@@ -1,6 +1,7 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbCreateNewStage, dbUpdateNewStage } from '@/services/server/stagesServer.service'
 import { put } from '@vercel/blob'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(req, { params }) {
@@ -82,6 +83,8 @@ export async function POST(req, { params }) {
 				details: response.error,
 				code: 500,
 			}
+
+		revalidatePath(`/${gameSlug}`)
 
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(

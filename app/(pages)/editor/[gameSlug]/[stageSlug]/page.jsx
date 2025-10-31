@@ -1,7 +1,16 @@
 import NotFoundPage from '@/app/not-found'
 import Editor from '@/components/editor/Editor'
+import { NO_INDEX_PAGE } from '@/constants/seo.constants'
 import { dbGetGameBySlug } from '@/services/server/gamesServer.service'
 import { dbGetStageByStageSlug } from '@/services/server/stagesServer.service'
+
+export async function generateMetadata({ params }) {
+	const { stageSlug } = await params
+	return {
+		title: `Editor | ${stageSlug}`,
+		...NO_INDEX_PAGE,
+	}
+}
 
 export default async function EditStage({ params }) {
 	const { gameSlug, stageSlug } = await params

@@ -1,5 +1,6 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbUpdateGameDesc } from '@/services/server/gamesServer.service'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function PUT(req, { params }) {
@@ -23,6 +24,9 @@ export async function PUT(req, { params }) {
 				details: response.error,
 				code: 500,
 			}
+
+		revalidatePath(`/${gameSlug}`)
+
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
 			{

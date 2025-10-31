@@ -26,7 +26,6 @@ export async function POST(req) {
 			}
 		}
 
-		// revalidateTag('games-list')
 		revalidatePath('/')
 
 		//# ---------------------------- Return success ----------------------------

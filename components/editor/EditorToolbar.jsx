@@ -35,6 +35,8 @@ export function EditorToolbar({
 		mutationFn: () => apiDeleteStageBySlug(stage.gameSlug, stage.stageSlug),
 		onSuccess: () => {
 			toast.success('Stage deleted successfully!')
+
+			router.refresh(`/${stage.gameSlug}`)
 			router.replace(`/editor/${stage.gameSlug}`)
 		},
 		onError: err => {

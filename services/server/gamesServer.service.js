@@ -3,7 +3,6 @@ import { isDev } from '@/lib/utils/isDev'
 
 //* ---------------------------- Get List Of Games --------------------------- */
 export async function dbGetAllGames() {
-	console.log('dbGetAllGames runs')
 	try {
 		const data = await prisma.games.findMany({
 			orderBy: { game_id: 'asc' },

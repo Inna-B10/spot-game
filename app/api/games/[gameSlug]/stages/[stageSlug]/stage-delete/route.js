@@ -1,5 +1,6 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbDeleteStageBySlug } from '@/services/server/stagesServer.service'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function DELETE(req, { params }) {
@@ -24,10 +25,13 @@ export async function DELETE(req, { params }) {
 				code: 500,
 			}
 
+		revalidatePath(`/${gameSlug}`)
+
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
 			{
 				success: true,
+				payload: response.data,
 			},
 			{ status: 200 }
 		)

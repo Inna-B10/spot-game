@@ -140,7 +140,7 @@ export async function dbUpdateExistingStage(updatedStage) {
 			},
 		})
 
-		return { success: true }
+		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, update stage by stageSlug:', err)
 
@@ -155,7 +155,7 @@ export async function dbDeleteStageBySlug(stageSlug) {
 			where: { stage_slug: stageSlug },
 		})
 
-		return { success: true }
+		return { success: true, data }
 	} catch (err) {
 		isDev && console.error('DB Error, delete stage by stageSlug:', err)
 

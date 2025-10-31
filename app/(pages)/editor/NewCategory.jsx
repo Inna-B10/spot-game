@@ -1,9 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/buttons/Button'
+import { updateCachedList } from '@/lib/utils/reactQueryHelpers'
 import { createSlug, sanitizeDesc, sanitizeName } from '@/lib/utils/sanitizeInput'
 import { apiCreateNewGame } from '@/services/client/gamesClient.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -19,15 +22,21 @@ export function NewCategory() {
 	const [preview, setPreview] = useState(null)
 	const [isUpdated, setIsUpdated] = useState(false)
 	const queryClient = useQueryClient()
+	const router = useRouter()
 
 	//# ----------------------- mutation to create new game
 	const { mutate, isPending } = useMutation({
 		mutationKey: ['create-new-game'],
 		mutationFn: ({ title, gameSlug, desc }) => apiCreateNewGame({ title, gameSlug, desc }),
-		onSuccess: () => {
+		onSuccess: newGame => {
 			toast.success('Game created successfully!')
 
-			queryClient.invalidateQueries(['get-all-games'])
+			// instantly add new game to cached list
+			updateCachedList(queryClient, ['get-all-games'], newGame, 'add')
+			queryClient.invalidateQueries({ queryKey: ['get-all-games'] })
+
+			router.refresh('/')
+
 			setPreview(null)
 			setName('')
 			setDesc('')

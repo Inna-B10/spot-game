@@ -3,6 +3,7 @@ import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
 import { apiUpdateGameDesc } from '@/services/client/gamesClient.service'
 import { useMutation } from '@tanstack/react-query'
 import cn from 'clsx'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -12,12 +13,16 @@ export default function EditableDescription({ initialDesc, gameSlug }) {
 	const [lastSavedDesc, setLastSavedDesc] = useState(initialDesc || '')
 	const [isEdited, setIsEdited] = useState(false)
 
+	const router = useRouter()
+
 	//# --------------------- Mutation To Update Game Description
 	const { mutate, isPending } = useMutation({
-		mutationKey: ['update-game-desc', gameSlug],
+		mutationKey: ['update-game-desc'],
 		mutationFn: newDesc => apiUpdateGameDesc(gameSlug, newDesc),
 		onSuccess: data => {
 			toast.success('Description saved!')
+
+			router.refresh(`/${gameSlug}`)
 
 			setLastSavedDesc(data.game_desc.trim())
 			setIsEdited(false)

@@ -1,5 +1,6 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbUpdateExistingStage } from '@/services/server/stagesServer.service'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function PUT(req, { params }) {
@@ -32,10 +33,13 @@ export async function PUT(req, { params }) {
 				code: 500,
 			}
 
+		revalidatePath(`/${gameSlug}/${stageSlug}`)
+
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
 			{
 				success: true,
+				payload: response.data,
 			},
 			{ status: 200 }
 		)

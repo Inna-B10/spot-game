@@ -2,11 +2,10 @@
 
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { apiGetAllGames } from '@/services/client/gamesClient.service'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { NewCategory } from './NewCategory'
 
 export function EditorClientPage({ initialGames }) {
-	const queryClient = useQueryClient()
 	// //# --------------------------------- fetch all games
 	const { data, isLoading, isError } = useQuery({
 		queryKey: ['get-all-games'],
