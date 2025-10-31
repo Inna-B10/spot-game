@@ -1,5 +1,6 @@
 import { isDev } from '@/lib/utils/isDev'
 import { dbCreateNewGame } from '@/services/server/gamesServer.service'
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
@@ -24,6 +25,9 @@ export async function POST(req) {
 				code: 500,
 			}
 		}
+
+		// revalidateTag('games-list')
+		revalidatePath('/')
 
 		//# ---------------------------- Return success ----------------------------
 		return NextResponse.json(
