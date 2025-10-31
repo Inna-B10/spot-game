@@ -56,17 +56,17 @@ export async function dbGetGameBySlug(gameSlug) {
 	}
 }
 
-//* ------------------------ Update Game Description ------------------------- */
-export async function dbUpdateGameDesc(gameSlug, desc) {
+//* ------------------------------- Update Game ------------------------------ */
+export async function dbUpdateGame(gameSlug, title, desc) {
 	try {
 		const data = await prisma.games.update({
 			where: { game_slug: gameSlug },
-			data: { game_desc: desc?.trim() },
+			data: { game_title: title?.trim(), game_desc: desc?.trim() },
 		})
 
 		return { success: true, data }
 	} catch (err) {
-		isDev && console.error('DB Error, update game description:', err)
+		isDev && console.error('DB Error, update game:', err)
 		return { success: false, error: err.message }
 	}
 }

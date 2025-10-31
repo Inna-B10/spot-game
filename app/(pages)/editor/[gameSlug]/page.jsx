@@ -1,6 +1,6 @@
 import NotFoundPage from '@/app/not-found'
 import { DeleteGameButtonDyn } from '@/components/editor/deleteGameButton/DeleteGameButtonDyn'
-import { EditableDescriptionDyn } from '@/components/editor/editableDescription/EditableDescriptionDyn'
+import { GameDetailsDyn } from '@/components/editor/gameDetails/GameDetailsDyn'
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { BLOB_URL } from '@/config/config'
 import { NO_INDEX_PAGE } from '@/constants/seo.constants'
@@ -29,7 +29,7 @@ export default async function GameIndex({ params }) {
 	//* --------------------------------- Render --------------------------------- */
 	return (
 		<section className='space-y-8 w-full'>
-			{/* //# ------------------------ Game title and navigation */}
+			{/* //# ------------------------ Navigation */}
 			<span className='space-x-4'>
 				<LinkButton href='/editor' role='button' aria-label='Go to main editor page'>
 					Editor
@@ -38,14 +38,14 @@ export default async function GameIndex({ params }) {
 					Home
 				</LinkButton>
 			</span>
-			<div className='flex justify-between items-center gap-2'>
-				<h1 className='text-xl font-bold'>Category: {gameDB.game_title}</h1>
+
+			{/* //# ------------------------ Edit/Delete game */}
+			<div className='flex justify-between items-top gap-2'>
+				<GameDetailsDyn initialGame={gameDB} />
 				<DeleteGameButtonDyn gameSlug={gameSlug} />
 			</div>
-			{/* //# ------------------------ Game description (client-side) */}
-			<EditableDescriptionDyn initialDesc={gameDB.game_desc} gameSlug={gameSlug} />
 			{/* //# ------------------------ Add new stage button */}
-			<div className='text-center w-full my-16'>
+			<div className='text-center w-full my-20'>
 				<LinkButton href={`/editor/${gameSlug}/new`} role='button' aria-label='Create new stage' style={{ fontSize: '22px' }}>
 					Create new stage
 				</LinkButton>

@@ -64,21 +64,22 @@ export async function apiGetAllGames() {
 // 		throw new Error(err.response?.data?.error || err.message)
 // 	}
 // }
-//* --------------------------- Update Description --------------------------- */
-export async function apiUpdateGameDesc(gameSlug, desc = null) {
+//* ------------------------------- Update Game ------------------------------ */
+export async function apiUpdateGame(gameSlug, title, desc = null) {
 	try {
 		if (!gameSlug || typeof gameSlug !== 'string') throw new Error('Invalid or missing gameSlug')
+		if (!title || typeof title !== 'string') throw new Error('Invalid or missing title')
 		if (desc !== null && typeof desc !== 'string') throw new Error('Invalid description format')
 
-		const { data } = await axiosClient.put(`/api/games/${gameSlug}/game-update-desc`, { desc })
+		const { data } = await axiosClient.put(`/api/games/${gameSlug}/game-update`, { title, desc })
 
 		if (data?.success) {
 			return data.payload
 		} else {
-			throw new Error(data?.error || 'Failed to edit game description.')
+			throw new Error(data?.error || 'Failed to update game.')
 		}
 	} catch (err) {
-		isDev && console.error('Request update game desc failed:', err.response?.data?.error, err)
+		isDev && console.error('Request update game failed:', err.response?.data?.error, err)
 
 		throw new Error(err.response?.data?.error || err.message)
 	}

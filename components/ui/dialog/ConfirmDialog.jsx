@@ -10,14 +10,22 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from '@/components/ui/dialog/confirm-dialog'
+import { RotateCcw, Trash2 } from 'lucide-react'
 
 export function ConfirmDialog({ label, title, msg = '', onConfirm, disabled = false }) {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
-				<Button variant={label === 'Delete' ? 'destructive' : 'caution'} disabled={disabled}>
-					{label}
-				</Button>
+				{label === 'Delete' ? (
+					<Button variant='destructive' aria-label={label} disabled={disabled}>
+						<Trash2 className='inline-flex align-text-top mr-0.5' size={16} />
+						{label}
+					</Button>
+				) : (
+					<Button variant='caution' aria-label={label} disabled={disabled}>
+						<RotateCcw className='inline-flex align-text-top mr-0.5' size={16} /> {label}
+					</Button>
+				)}
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>

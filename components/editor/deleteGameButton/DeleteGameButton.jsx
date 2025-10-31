@@ -19,12 +19,13 @@ export default function DeleteGameButton({ gameSlug }) {
 		onSuccess: () => {
 			toast.success('Game deleted successfully!')
 
+			window.location.href = '/editor' //no option to go back
+
 			// instantly remove deleted game from cached list
 			updateCachedList(queryClient, ['get-all-games'], { game_slug: gameSlug }, 'remove')
 			queryClient.invalidateQueries({ queryKey: ['get-all-games'] })
 
 			router.refresh('/')
-			window.location.href = '/editor' //no option to go back
 		},
 		onError: err => {
 			toast.error('Error: ' + (err.message || 'Failed to delete game.'))

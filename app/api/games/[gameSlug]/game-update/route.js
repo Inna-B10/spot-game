@@ -1,5 +1,5 @@
 import { isDev } from '@/lib/utils/isDev'
-import { dbUpdateGameDesc } from '@/services/server/gamesServer.service'
+import { dbUpdateGame } from '@/services/server/gamesServer.service'
 import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
@@ -7,7 +7,7 @@ export async function PUT(req, { params }) {
 	try {
 		const searchParams = await params
 		const gameSlug = searchParams?.gameSlug
-		const { desc } = await req.json()
+		const { title, desc } = await req.json()
 
 		if (!gameSlug)
 			throw {
@@ -16,11 +16,12 @@ export async function PUT(req, { params }) {
 				code: 400,
 			}
 
-		const response = await dbUpdateGameDesc(gameSlug, desc)
+		const response = await dbUpdateGame(gameSlug, title, desc)
+		console.log('API: ', response)
 
 		if (!response.success)
 			throw {
-				message: 'Failed to update game description.',
+				message: 'Failed to update game.',
 				details: response.error,
 				code: 500,
 			}
@@ -38,7 +39,7 @@ export async function PUT(req, { params }) {
 	} catch (err) {
 		//# ---------------------------------- Catch ---------------------------------
 		isDev &&
-			console.error('API error in /game-update-desc:', {
+			console.error('API error in /game-update:', {
 				message: err.message,
 				details: err.details,
 			})

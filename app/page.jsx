@@ -1,6 +1,7 @@
 import { LinkButton } from '@/components/ui/buttons/LinkButton'
 import { dbGetAllGames } from '@/services/server/gamesServer.service'
 import cn from 'clsx'
+import { Dices, House, LayoutDashboard } from 'lucide-react'
 
 export const revalidate = 86400 //1 day
 
@@ -17,15 +18,23 @@ export default async function Home() {
 	//* --------------------------------- Render --------------------------------- */
 	return (
 		<div className='space-y-6'>
-			<h1 className='text-2xl font-bold'>🏠 Home</h1>
+			<h1 className='inline-flex text-2xl font-bold'>
+				<House className='mr-2' size={28} /> Home
+			</h1>
 			<ul className='mb-8'>
 				<li>
 					<LinkButton href='/editor' role='button' aria-label='Go to editor main page'>
-						🎨 Editor
+						<h2 className='inline-flex font-semibold text-xl align-bottom'>
+							<LayoutDashboard className='mr-2' />
+							Editor
+						</h2>
 					</LinkButton>
 				</li>
 			</ul>
-			<h2 className='text-xl font-bold mb-2'>🎮 Choose game</h2>
+			<h2 className='inline-flex text-xl font-bold mb-2'>
+				<Dices className='mr-2' />
+				Choose game
+			</h2>
 
 			{/* //# ------------------------ List of games */}
 			{data && data?.length > 0 ? (

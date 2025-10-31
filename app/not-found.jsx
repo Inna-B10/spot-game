@@ -8,7 +8,7 @@ export default function NotFoundPage(page = true, text = 'Page') {
 				<p className='text-xl'>{text} not found!</p>
 				<div className='flex gap-4 justify-center items-center'>
 					<LinkButton href='/'>Back to Home</LinkButton>
-					<LinkButton href='/editor'>Back to Editor</LinkButton> //[TODO] Hide from unauthorized users
+					<LinkButton href='/editor'>Back to Editor</LinkButton> {/*//[TODO] Hide from unauthorized users*/}
 				</div>
 			</div>
 		</div>

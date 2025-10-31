@@ -6,6 +6,7 @@ import { isDev } from '@/lib/utils/isDev'
 import { sanitizeDesc } from '@/lib/utils/sanitizeInput'
 import { apiDeleteStageBySlug } from '@/services/client/stagesClient.service'
 import { useMutation } from '@tanstack/react-query'
+import { Save } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
@@ -76,7 +77,7 @@ export function EditorToolbar({
 			{/* //# ------------------------ Save + Reset + Delete buttons */}
 			<div className='flex justify-center gap-4'>
 				<Button onClick={saveStage} variant='primary' aria-label='Save stage' disabled={!modified || isPending}>
-					Save
+					<Save className='inline-flex align-text-top mr-0.5' size={16} /> Save
 				</Button>
 
 				<ConfirmDialog label='Reset' title={cautionTitle} onConfirm={resetStage} disabled={isPending || mode === 'create' || !modified} />
