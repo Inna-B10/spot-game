@@ -37,7 +37,6 @@ npm i lucide-react
 - [ ] Add `groupId` in areas for par(s)/groups
 - [ ] In Editor: ability to
   - [ ] Optional: check unique name when preview new game properties
-  - [ ] delete game
   - [ ] Optional: change image
   - [ ] Add button Next when edit stage
   - [ ] Drag & drop image upload
@@ -51,6 +50,7 @@ npm i lucide-react
 - [ ] Toast when stage is completed (with “Next” and “Menu” buttons)
 - [ ] Improve Editor and game menus
 - [ ] Design
+- [ ] Change icons (Lucide)
 - [ ] Optional: Tooltip, Skeleton, Dialog
 
 #### Miscellaneous
@@ -78,5 +78,6 @@ npm i lucide-react
 - [x] edit difficulty
 - [x] delete stage
 - [x] Replace alerts with toast messages
+  - [x] delete game
 
 </details>
