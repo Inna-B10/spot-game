@@ -1,48 +1,48 @@
 {
-	"name": "spot-game",
-	"links": {
-		"website": "https://spot-game-topaz.vercel.app/",
-		"github": "https://github.com/Inna-B10/spot-game"
-	},
-	"version": "0.1.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "next dev --turbopack",
-		"build": "npm run prisma:generate && next build",
-		"start": "next start",
-		"lint": "next lint",
-		"prisma:generate": "prisma generate --schema=lib/prisma/schema.prisma",
-		"prisma:migrate": "prisma migrate dev --schema=lib/prisma/schema.prisma",
-		"prisma:migrate:deploy": "prisma migrate deploy --schema=lib/prisma/schema.prisma",
-		"prisma:push": "prisma db push --schema=lib/prisma/schema.prisma",
-		"prisma:studio": "prisma studio --schema=lib/prisma/schema.prisma",
-		"prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma",
-		"prisma:export": "node lib/prisma/exportData.js",
-		"prisma:import": "node lib/prisma/importData.js"
-	},
-	"dependencies": {
-		"@prisma/client": "^6.17.1",
-		"@radix-ui/react-alert-dialog": "^1.1.15",
-		"@radix-ui/react-slot": "^1.2.3",
-		"@tanstack/react-query": "^5.90.5",
-		"@vercel/blob": "^2.0.0",
-		"axios": "^1.12.2",
-		"clsx": "^2.1.1",
-		"lucide-react": "^0.548.0",
-		"next": "^15.5.7",
-		"next-themes": "^0.4.6",
-		"react": "^19.0.1",
-		"react-dom": "^19.0.1",
-		"sonner": "^2.0.7",
-		"uuid": "^11.1.0"
-	},
-	"devDependencies": {
-		"@eslint/eslintrc": "^3",
-		"@tailwindcss/postcss": "^4",
-		"eslint": "^9",
-		"eslint-config-next": "15.3.5",
-		"prisma": "^6.17.1",
-		"tailwindcss": "^4"
-	}
+  "name": "spot-game",
+  "links": {
+    "website": "https://spot-game-topaz.vercel.app/",
+    "github": "https://github.com/Inna-B10/spot-game"
+  },
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "npm run prisma:generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prisma:generate": "prisma generate --schema=lib/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=lib/prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema=lib/prisma/schema.prisma",
+    "prisma:push": "prisma db push --schema=lib/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=lib/prisma/schema.prisma",
+    "prisma:reset": "prisma migrate reset --schema=lib/prisma/schema.prisma",
+    "prisma:export": "node lib/prisma/exportData.js",
+    "prisma:import": "node lib/prisma/importData.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.17.1",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.90.5",
+    "@vercel/blob": "^2.0.0",
+    "axios": "^1.12.2",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.548.0",
+    "next": "15.5.9",
+    "next-themes": "^0.4.6",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "sonner": "^2.0.7",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.5",
+    "prisma": "^6.17.1",
+    "tailwindcss": "^4"
+  }
 }
